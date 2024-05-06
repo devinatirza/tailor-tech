@@ -16,6 +16,8 @@ export function UserProvider({children}: ContentLayout){
             const response = await axios.post("http://localhost:8000/login", {
                 email: email,
                 pass: pass
+            }, {
+                withCredentials: true
             })
 
             if(response.status === 200){
