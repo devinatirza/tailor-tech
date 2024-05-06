@@ -6,12 +6,11 @@ import { CheckBox } from 'react-native-elements';
 import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import axios, { AxiosError } from 'axios';
+import StyledText from '../components/text-input';
 
 interface Styles {
   container: ViewStyle;
   inputContainer: ViewStyle;
-  inputLine: ViewStyle;
-  input: TextStyle;
   inputLabel: TextStyle;
   inputField: TextStyle;
   checkBoxText: TextStyle;
@@ -37,17 +36,6 @@ const styles = StyleSheet.create<Styles>({
   inputContainer: {
     width: '100%',
     marginBottom: 20,
-  },
-  inputLine: {
-    borderBottomColor: '#401201',
-    borderBottomWidth: 1,
-    width: '100%',
-    marginBottom: 10,
-  },
-  input: {
-    height: 50,
-    paddingHorizontal: 10,
-    fontSize: 16,
   },
   inputLabel: {
     flex: 1, 
@@ -150,6 +138,9 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
         address: addressProp
       });
       setError('');
+      if(response.status === 200){
+        navigation.navigate('Login')
+      }
     } catch (error) {
       setError(error.response?.data.error || 'An error occurred');
     }
@@ -172,15 +163,9 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to TailorTech!</Text>
       <View style={styles.inputContainer}>
-        <View style={styles.inputLine}>
-          <TextInput style={styles.input} placeholder="Name" value={nameProp} onChangeText={setNameProp} />
-        </View>
-        <View style={styles.inputLine}>
-          <TextInput style={styles.input} placeholder="Email" value={emailProp} onChangeText={setEmailProp} />
-        </View>
-        <View style={styles.inputLine}>
-          <TextInput style={styles.input} placeholder="Password" secureTextEntry={true} value={passwordProp} onChangeText={handlePasswordChange} />
-        </View>
+       <StyledText nameProp={nameProp} placeholder='Name' setNameProp={setNameProp}/> 
+       <StyledText nameProp={emailProp} placeholder='Email' setNameProp={setEmailProp}/> 
+       <StyledText nameProp={passwordProp} placeholder='Password' setNameProp={setPasswordProp} secureTextEntry={true}/> 
         <Text style={styles.checkBoxText}>Password Requirements:</Text>
         <View style={styles.validationContainer}>
           <View style={styles.checkBoxRow}>
@@ -208,15 +193,9 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
             <Text style={styles.checkBoxText}>At least one number and special character</Text>
           </View>
         </View>
-        <View style={styles.inputLine}>
-          <TextInput style={styles.input} placeholder="Confirm Password" secureTextEntry={true} value={confirmPasswordProp} onChangeText={setConfirmPasswordProp} />
-        </View>
-        <View style={styles.inputLine}>
-          <TextInput style={styles.input} placeholder="Phone Number" value={phoneNumberProp} onChangeText={setPhoneNumberProp} />
-        </View>
-        <View style={styles.inputLine}>
-          <TextInput style={styles.input} placeholder="Address" value={addressProp} onChangeText={setAddressProp} />
-        </View>
+        <StyledText nameProp={confirmPasswordProp} placeholder='Confirm Password' setNameProp={setConfirmPasswordProp} secureTextEntry={true}/> 
+        <StyledText nameProp={phoneNumberProp} placeholder='Phone Number' setNameProp={setPhoneNumberProp}/> 
+        <StyledText nameProp={addressProp} placeholder='Address' setNameProp={setAddressProp}/> 
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
