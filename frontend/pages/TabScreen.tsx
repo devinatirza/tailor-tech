@@ -7,7 +7,9 @@ import { ParamListBase } from '@react-navigation/routers';
 import HomeScreen from './Home';
 import OrderScreen from './Order';
 import ProfileScreen from './Profile';
-import CartScreen from './cart';
+import CartScreen from './Cart';
+import HomeStack from './HomeStack';
+import ProfileStack from './ProfileStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,35 +18,35 @@ type Props = {
 };
 
 const HomeIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\home_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/home_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const HomeIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\home_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/home_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const CartIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\cart_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/cart_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const CartIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\cart_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/cart_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const OrderIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\order_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/order_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const OrderIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\order_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/order_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const ProfileIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\profile_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/profile_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const ProfileIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\profile_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
+  return <Image source={require('../assets/profile_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
 };
 
 const TabNavigation = () => {
@@ -60,12 +62,12 @@ const TabNavigation = () => {
         tabBarShowLabel: false,
         headerTitle: () => null,
         headerBackImage: (
-          <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\back_icon.png')} style={{ width: 24, height: 24 }} />
+          <Image source={require('../assets/back_icon.png')} style={{ width: 24, height: 24 }} />
         ),
         headerBackTitleVisible: false,
         headerLeft: () => (
           <Pressable onPress={() => navigation.goBack()}>
-            <Image source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\back_icon.png')} style={{ width: 24, height: 24 }} />
+            <Image source={require('../assets/back_icon.png')} style={{ width: 24, height: 24 }} />
           </Pressable>
         ),
         tabBarIcon: ({ color, focused }) => {
@@ -91,10 +93,10 @@ const TabNavigation = () => {
         tabBarIconStyle: { width: 32, height: 32 }, 
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Order" component={OrderScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 };

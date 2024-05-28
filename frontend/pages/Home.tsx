@@ -1,156 +1,315 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions, Image, TextInput, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ViewStyle, TextStyle, ImageStyle } from 'react-native';
-import { IStackScreenProps } from '../src/library/StackScreenProps';
-import { StatusBar } from 'expo-status-bar';
-import axios from 'axios';
 
-// interface Tailor {
-//   id: string;
-//   name: string;
-//   email: string;
-// }
+interface ServiceItemProps {
+  src: string;
+  label: string;
+}
 
-// interface Styles {
-//   container: ViewStyle;
-//   text: TextStyle;
-//   searchBarContainer: ViewStyle;
-//   searchBar: TextStyle;
-//   tailorContainer: ViewStyle;
-//   tailorName: TextStyle;
-// }
+const ServiceItem: React.FC<ServiceItemProps> = ({ src, label }) => (
+  <View style={styles.serviceItem}>
+    <Image source={{ uri: src }} style={styles.serviceImage} />
+    <Text style={styles.serviceLabel}>{label}</Text>
+  </View>
+);
 
-// const styles = StyleSheet.create<Styles>({
-//   container: {
-//     flex: 1,
-//   },
-//   text: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//   },
-//   searchBarContainer: {
-//     width: '80%',
-//     marginHorizontal: 20,
-//     marginTop: 10,
-//   },
-//   searchBar: {
-//     height: 40,
-//     width: '100%',
-//     borderWidth: 1,
-//     borderRadius: 20,
-//     paddingLeft: 15,
-//     ...Platform.select({
-//       ios: {
-//         backgroundColor: 'transparent',
-//         borderBottomColor: 'transparent',
-//         shadowColor: 'transparent',
-//       },
-//       android: {
-//         elevation: 0,
-//       },
-//     }),
-//   },
-//   tailorContainer: {
-//     width: '80%',
-//     marginBottom: 10,
-//   },
-//   tailorName: {
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//   },
-// });
+interface TailorItemProps {
+  src: string;
+  name: string;
+  specialty: string;
+  location: string;
+  rating: number;
+}
 
-// const HomeScreen = () => {
-//   const navigation = useNavigation<any>();
-//   const [tailors, setTailors] = useState<Tailor[]>([]);
-//   const [searchText, setSearchText] = useState('');
-//   const [isFocused, setIsFocused] = useState(false);
+const TailorCard: React.FC<TailorItemProps> = ({ src, name, specialty, location, rating }) => (
+  <View style={styles.tailorItem}>
+    <Image source={{ uri: src }} style={styles.tailorImage} />
+    <Text style={styles.tailorName}>{name}</Text>
+    <Text style={styles.tailorSpecialty}>{specialty}</Text>
+    <View style={styles.locationContainer}>
+      <Image source={{ uri: '../assets/location_icon.png' }} style={styles.icon} />
+      <Text style={styles.tailorLocation}>{location}</Text>
+    </View>
+    <View style={styles.ratingContainer}>
+      <Image source={{ uri: '../assets/rating_icon.png' }} style={styles.icon} />
+      <Text style={styles.ratingText}>{rating}</Text>
+    </View>
+  </View>
+);
 
-//   useEffect(() => {
-//     const fetchTailors = async () => {
-//       try {
-//         const response = await axios.get('https://your-api-url.com/tailors');
-//         setTailors(response.data);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     };
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  imageUrl1: string;
+}
 
-//     fetchTailors();
-//   }, []);
+const ProductCard: React.FC<{ product: Product }> = ({ product }) => (
+  <View style={styles.productItem}>
+    <Image source={{ uri: product.imageUrl1 }} style={styles.productImage} />
+    <Image source={require('../assets/sale_icon.png')} style={styles.plusIcon} />
+    <Text style={styles.productName}>{product.name}</Text>
+    <Text style={styles.productDescription}>{product.description}</Text>
+    <Text style={styles.productPrice}>{product.price}</Text>
+  </View>
+);
 
-//   const renderTailor = ({ item }: { item: Tailor }) => {
-//     return (
-//       <View style={styles.tailorContainer}>
-//         <Text style={styles.tailorName}>{item.name}</Text>
-//       </View>
-//     );
-//   };
-
-//   const filteredTailors = tailors.filter((tailor) =>
-//     tailor.name.toLowerCase().includes(searchText.toLowerCase())
-//   );
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <ScrollView>
-//         <View style={{ paddingTop: 10 }}>
-//           <View style={styles.searchBarContainer}>
-//             <TextInput
-//               style={[styles.searchBar, { borderColor: isFocused ? '#401201' : '#CCCCCC' }]}
-//               placeholder="Search tailors..."
-//               onChangeText={(text) => setSearchText(text)}
-//               onFocus={() => setIsFocused(true)}
-//               onBlur={() => setIsFocused(false)}
-//             />
-//           </View>
-//           <FlatList
-//             data={filteredTailors}
-//             renderItem={renderTailor}
-//             keyExtractor={(item) => item.id}
-//             contentContainerStyle={{ paddingBottom: 10 }}
-//           />
-//           <StatusBar style="auto" />
-//         </View>
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// };
-
-const FavoriteScreen = () => {
+const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
 
-  const handlePress = () => {
-    // navigation.navigate('Favorite');
-  };
+  const services = [
+    { src: "../assets/tops_icon.webp", label: "Tops" },
+    { src: "../assets/bottoms_icon.webp", label: "Bottoms" },
+    { src: "../assets/dresses_icon.webp", label: "Dresses" },
+    { src: "../assets/suits_icon.png", label: "Suits" },
+    { src: "../assets/bags_icon.png", label: "Bags" },
+  ];
+
+  const tailors = [
+    {
+      src: "../assets/tailor_dev.jpg",
+      name: "Dev’s Tailor House",
+      specialty: "Speciality in Tops, Dresses, and Suits",
+      location: "Jakarta Barat",
+      rating: 1112,
+    },
+    {
+      src: "../assets/tailor_cia.jpg",
+      name: "Cia House of Fashion",
+      specialty: "Speciality in Tops, Bottoms, and Suits",
+      location: "Jakarta Barat",
+      rating: 89,
+    },
+    {
+      src: "../assets/tailor_lini.jpg",
+      name: "Lini Tailor",
+      specialty: "Speciality in Tops, Bottoms, and Suits",
+      location: "Jakarta Timur",
+      rating: 320,
+    },
+  ];
+
+  const products: Product[] = [
+    {
+      id: 1,
+      name: "Woman’s Blouse",
+      description: "Hazelnut Woman’s Blouse",
+      price: "IDR 99K",
+      imageUrl1: "../assets/product_blouse.png"
+    },
+    {
+      id: 2,
+      name: "Batik Blouse",
+      description: "Brown Batik Strecht Blouse",
+      price: "IDR 129K",
+      imageUrl1: "../assets/product_batik.jpg"
+    },
+    {
+      id: 3,
+      name: "Short Pleated Skirt",
+      description: "Short, flared skirt in woven fabric",
+      price: "IDR 99K",
+      imageUrl1: "../assets/product_skirt.jpeg"
+    }
+  ];
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={handlePress}>
-        {/* <Image
-          source={require('D:\\Tezet\\AOL SoftEng\\AOL\\frontend\\assets\\fav_icon.png')}
-          style={styles.favoriteIcon}
-        /> */}
-      </TouchableOpacity>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.section}>
+        <Text style={styles.title}>TailorTech</Text>
+        <Text style={styles.sectionTitle}>Services</Text>
+        <View style={styles.servicesContainer}>
+          {services.map((service, index) => (
+            <ServiceItem key={index} src={service.src} label={service.label} />
+          ))}
+        </View>
+      </View>
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Tailors</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('All Tailor')}>
+            <Text style={styles.moreButton}>More {'>'}</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tailorsContainer}>
+          {tailors.map((tailor, index) => (
+            <TailorCard
+              key={index}
+              src={tailor.src}
+              name={tailor.name}
+              specialty={tailor.specialty}
+              location={tailor.location}
+              rating={tailor.rating}
+            />
+          ))}
+        </ScrollView>
+      </View>
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Products</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('All Product')}>
+            <Text style={styles.moreButton}>More {'>'}</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.productsContainer}>
+          {products.map((product, index) => (
+            <ProductCard
+              key={index}
+              product={product}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: '#260101',
   },
-  favoriteIcon: {
-    width: 24,
-    height: 24,
+  container: {
+    paddingTop: 7,
+    paddingHorizontal: 30,
+    backgroundColor: 'white',
+    width: '100%',
+    alignSelf: 'center',
+  },
+  section: {
+    marginTop: 14,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    paddingTop: 10,
+  },
+  servicesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    flexWrap: 'wrap',
+  },
+  serviceItem: {
+    alignItems: 'center',
+    width: (Dimensions.get('window').width - 60) / 5, // Adjust based on the padding and number of items per row
+    marginBottom: 10,
+  },
+  serviceImage: {
+    width: '80%',
+    height: undefined,
+    aspectRatio: 1, // Ensures the image is square
+    borderRadius: 28,
+  },
+  serviceLabel: {
+    marginTop: 8,
+  },
+  moreButton: {
+    fontSize: 16,
+    color: 'black',
+    marginTop: 15,
+  },
+  tailorsContainer: {
+    marginTop: 8,
+    flexDirection: 'row',
+  },
+  tailorItem: {
+    paddingVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginRight: 20,
+    width: 160,
+  },
+  tailorImage: {
+    width: '100%',
+    height: 126,
+    resizeMode: 'cover',
+    borderRadius: 8,
+  },
+  tailorName: {
+    marginTop: 8,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#260101',
+  },
+  tailorSpecialty: {
+    marginTop: 4,
+    fontSize: 13,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  tailorLocation: {
+    fontSize: 13,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  ratingText: {
+    fontSize: 13,
+    color: '#181818',
+  },
+  productsContainer: {
+    marginTop: 8,
+    flexDirection: 'row',
+  },
+  productItem: {
+    paddingVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginRight: 20,
+    width: 160,
+  },
+  productImage: {
+    width: '100%',
+    height: 160,
+    resizeMode: 'cover',
+  },
+  productName: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color:'#260101',
+  },
+  productDescription: {
+    marginTop: 2,
+    fontSize: 13,
+    textAlign: 'center',
+    marginHorizontal: 5,
+  },
+  productPrice: {
+    marginTop: 3,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  plusIcon: {
     position: 'absolute',
-    top: 0,
-    right: 20,
-    padding: 10,
+    top: 6,
+    right: 6,
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
+  },
+  icon: {
+    width: 14,
+    height: 14,
+    marginRight: 4,
   },
 });
 
-export default FavoriteScreen;
+export default HomeScreen;

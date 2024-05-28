@@ -11,6 +11,10 @@ type ContentLayout = {
 export function UserProvider({children}: ContentLayout){
     const [user, setUser] = useState<IUser|null>(null)
 
+    function updateUser(user: IUser){
+        setUser(user)
+    }
+
     async function login(email: string, pass: string){
         try{
             const response = await axios.post("http://localhost:8000/login", {
@@ -32,7 +36,7 @@ export function UserProvider({children}: ContentLayout){
         }
     }
 
-    const data = {user, login}
+    const data = {user, login, updateUser}
 
     return <userContext.Provider value={data}>{children}</userContext.Provider>
 }

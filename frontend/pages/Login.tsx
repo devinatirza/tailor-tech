@@ -5,6 +5,8 @@ import { ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import { useUser } from '../contexts/user-context';
+import { IUser } from '../interfaces/user-interfaces';
+import axios from 'axios';
 
 interface Styles {
   container: ViewStyle;
@@ -56,7 +58,7 @@ const styles = StyleSheet.create<Styles>({
   },
   button: {
     height: 50,
-    backgroundColor: '#C1AEA7',
+    backgroundColor: '#D9C3A9',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -65,7 +67,7 @@ const styles = StyleSheet.create<Styles>({
   },
   buttonText: {
     fontSize: 18,
-    color: '#401201',
+    color: '#260101',
     fontWeight: 'bold',
   },
   logo: {
@@ -92,13 +94,32 @@ const LoginScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('');
 
-  const {login} = useUser()
+  const {login, updateUser, user} = useUser()
+
+  useEffect(() => {
+      const validate = async() => {
+        const response = await axios.get("http://localhost:8000/validate", {
+          withCredentials: true
+        })
+        return response.data
+      }
+
+      validate().then((res: IUser) => {
+        if(!user){
+          updateUser(res)
+        }
+        }).catch((error) => {
+          // navigate("/")
+        })
+        if(user) navigation.navigate('TailorTech')
+        }, [user]);
 
   async function loginHandler(){
-
     const res = await login(email, password)
     
     if(res === ''){
+      setEmail('')
+      setPassword('')
       navigation.navigate('TailorTech')
     }
     else{
@@ -111,10 +132,10 @@ const LoginScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
       <Text style={styles.title}>Welcome Back!</Text>
       <View style={styles.inputContainer}>
         <View style={styles.inputLine}>
-          <TextInput style={styles.input} onChangeText={setEmail} placeholder="Email" />
+          <TextInput value={email} style={styles.input} onChangeText={setEmail} placeholder="Email" />
         </View>
         <View style={styles.inputLine}>
-          <TextInput style={styles.input} onChangeText={setPassword} placeholder="Password" secureTextEntry={true} />
+          <TextInput value={password}style={styles.input} onChangeText={setPassword} placeholder="Password" secureTextEntry={true} />
         </View>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}

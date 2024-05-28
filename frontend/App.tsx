@@ -18,11 +18,8 @@ const App: React.FC = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'SplashScreen'}>
-          <Stack.Screen name='SplashScreen' component={SplashScreen}
-          options={{
-            headerShown: false
-          }}></Stack.Screen>
+        <Stack.Navigator initialRouteName={'SplashScreen'} screenOptions={{headerShown: false}}>
+          <Stack.Screen name='SplashScreen' component={SplashScreen}></Stack.Screen>
           {routes.map((r, i) =>(
               <Stack.Screen key={i} name={r.name}>
                 {(props) => <r.component nameProp={r.name} {...props} />} 

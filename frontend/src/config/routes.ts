@@ -5,6 +5,7 @@ import RegisterScreen from "../../pages/Register";
 import { IRouteProps } from "../library/RouteProp";
 import TabNavigation from "../../pages/TabScreen";
 import FavoriteScreen from "../../pages/Home";
+import TailorScreen from "../../pages/Tailor";
 
 const routes: IRouteProps[] = [
     
@@ -23,6 +24,10 @@ const routes: IRouteProps[] = [
     {
         name: 'Favorite',
         component: FavoriteScreen
+    },
+    {
+        name: 'Tailor',
+        component: TailorScreen
     },
 ];
 

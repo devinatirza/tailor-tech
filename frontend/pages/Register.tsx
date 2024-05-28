@@ -79,7 +79,7 @@ const styles = StyleSheet.create<Styles>({
   },
   button: {
     height: 50,
-    backgroundColor: '#C1AEA7',
+    backgroundColor: '#D9C3A9',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -88,7 +88,7 @@ const styles = StyleSheet.create<Styles>({
   },
   buttonText: {
     fontSize: 18,
-    color: '#401201',
+    color: '#260101',
     fontWeight: 'bold',
   },
   logo: {
@@ -157,7 +157,6 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
       specialChar: /[~`!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]/.test(value),
     });
   };
-  
 
   return (
     <View style={styles.container}>
@@ -165,7 +164,7 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
       <View style={styles.inputContainer}>
        <StyledText nameProp={nameProp} placeholder='Name' setNameProp={setNameProp}/> 
        <StyledText nameProp={emailProp} placeholder='Email' setNameProp={setEmailProp}/> 
-       <StyledText nameProp={passwordProp} placeholder='Password' setNameProp={setPasswordProp} secureTextEntry={true}/> 
+       <StyledText nameProp={passwordProp} placeholder='Password' setNameProp={handlePasswordChange} secureTextEntry={true}/> 
         <Text style={styles.checkBoxText}>Password Requirements:</Text>
         <View style={styles.validationContainer}>
           <View style={styles.checkBoxRow}>

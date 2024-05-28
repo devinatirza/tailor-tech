@@ -3,6 +3,7 @@ package model
 import (
 	"regexp"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -19,6 +20,15 @@ type User struct {
 	Wishlist []Product `gorm:"many2many:wishlists"`
 	Points int
 	Promos []Promo `gorm:"many2many:user_promos;references:PromoCode;joinReferences:PromoCode"`
+}
+
+func (user *User) SetPassword(password string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
+	return nil
 }
 
 func IsValidEmail(email string) bool {

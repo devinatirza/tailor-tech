@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Register(c *gin.Context) {
@@ -33,7 +34,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	regex := regexp.MustCompile("^[a-zA-Z\\s]+$")
+	regex := regexp.MustCompile(`^[a-zA-Z\\s]+$`)
 	if !regex.MatchString(input.Name) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Name must not contain symbols or numbers"})
 		return
@@ -87,10 +88,17 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not hash password"})
+		return
+	}
+
 	insert := model.User{
 		Name:        input.Name,
 		Email:       input.Email,
-		Password:    input.Password,
+		Password:    string(hashedPassword),
 		PhoneNumber: input.PhoneNumber,
 		Address:     input.Address,
 	}

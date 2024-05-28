@@ -21,6 +21,9 @@ func main() {
 
 	r.POST("/register", controller.Register)
 	r.POST("/login", controller.LoginHandler)
+	r.POST("/update-profile", controller.UpdateProfile)
+	r.GET("/validate", controller.GetUserFromJWT)
+	r.GET("/logout", controller.LogoutHandler)
 
 	r.Run(":8000")
 }
