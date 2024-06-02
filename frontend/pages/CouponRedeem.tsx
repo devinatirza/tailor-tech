@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const VoucherScreen = () => {
+const CouponRedeemScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Your Voucher</Text>
+      <Text>Coupon Redeem</Text>
     </View>
   );
 };
@@ -18,5 +18,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VoucherScreen;
+export default CouponRedeemScreen;
 

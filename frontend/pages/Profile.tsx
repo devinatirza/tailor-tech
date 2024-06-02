@@ -49,8 +49,8 @@ const ProfileScreen = () => {
           </View>
         </View>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('Vouchers')}>
-            <OptionItem text="Voucher" iconSrc={{ uri: '../assets/voucherIcon.png' }} />
+          <TouchableOpacity onPress={() => navigation.navigate('Coupon Code')}>
+            <OptionItem text="Coupon Code" iconSrc={{ uri: '../assets/voucherIcon.png' }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('FAQs')}>
           <OptionItem text="FAQs" iconSrc={{ uri: '../assets/faqIcon.png' }} />
@@ -79,9 +79,8 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '100%',
-    maxWidth: 480,
+    height: '100%',
     backgroundColor: 'white',
-    borderRadius: 32,
   },
   innerContainer: {
     flex: 1,

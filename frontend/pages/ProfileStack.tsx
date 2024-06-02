@@ -6,8 +6,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
 import ProfileScreen from './Profile';
 import UpdateProfileScreen from './UpdateProfile';
-import VoucherScreen from './Voucher';
 import FAQsScreen from './FAQs';
+import CouponCodeScreen from './CouponCode';
+import CouponRedeemScreen from './CouponRedeem';
 
 
 const Stack = createStackNavigator();
@@ -23,7 +24,8 @@ const ProfileStack = () => {
         }}>   
         </Stack.Screen>
         <Stack.Screen name='Update Profile' component={UpdateProfileScreen}></Stack.Screen>
-        <Stack.Screen name='Vouchers' component={VoucherScreen}></Stack.Screen>  
+        <Stack.Screen name='Coupon Code' component={CouponCodeScreen}></Stack.Screen>  
+        <Stack.Screen name='Coupon Redeem' component={CouponRedeemScreen}></Stack.Screen>  
         <Stack.Screen name='FAQs' component={FAQsScreen}></Stack.Screen>  
     </Stack.Navigator>
     );

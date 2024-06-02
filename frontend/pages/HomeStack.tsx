@@ -8,11 +8,8 @@ import HomeScreen from './Home';
 import TailorScreen from './Tailor';
 import ProductScreen from './Product';
 
-
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-
 
 const HomeStack = () => {
   

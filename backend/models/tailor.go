@@ -8,6 +8,7 @@ type Tailor struct {
 	Email string
 	Password string
 	Address string
+	ImgUrl string
 	OutfitPrices []Outfit `gorm:"many2many:tailor_prices"`
 	Products []Product
 }

@@ -1,7 +1,8 @@
+// pages/Login.tsx
+
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import { useUser } from '../contexts/user-context';
@@ -87,42 +88,43 @@ const styles = StyleSheet.create<Styles>({
   },
 });
 
-const LoginScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
+const LoginScreen: React.FC<IStackScreenProps> = (props) => {
   const { navigation, route, nameProp } = props;
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const {login, updateUser, user} = useUser()
+  const { login, updateUser, user } = useUser();
 
   useEffect(() => {
-      const validate = async() => {
-        const response = await axios.get("http://localhost:8000/validate", {
-          withCredentials: true
-        })
-        return response.data
-      }
+    const validate = async () => {
+      const response = await axios.get("http://localhost:8000/validate", {
+        withCredentials: true,
+      });
+      return response.data;
+    };
 
-      validate().then((res: IUser) => {
-        if(!user){
-          updateUser(res)
+    validate()
+      .then((res: IUser) => {
+        if (!user) {
+          updateUser(res);
         }
-        }).catch((error) => {
-          // navigate("/")
-        })
-        if(user) navigation.navigate('TailorTech')
-        }, [user]);
+      })
+      .catch((error) => {
+        // navigate("/")
+      });
+    if (user) navigation.navigate('TailorTech');
+  }, [user]);
 
-  async function loginHandler(){
-    const res = await login(email, password)
-    
-    if(res === ''){
-      setEmail('')
-      setPassword('')
-      navigation.navigate('TailorTech')
-    }
-    else{
+  async function loginHandler() {
+    const res = await login(email, password);
+
+    if (res === '') {
+      setEmail('');
+      setPassword('');
+      navigation.navigate('TailorTech');
+    } else {
       setError(res);
     }
   }
@@ -135,7 +137,7 @@ const LoginScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
           <TextInput value={email} style={styles.input} onChangeText={setEmail} placeholder="Email" />
         </View>
         <View style={styles.inputLine}>
-          <TextInput value={password}style={styles.input} onChangeText={setPassword} placeholder="Password" secureTextEntry={true} />
+          <TextInput value={password} style={styles.input} onChangeText={setPassword} placeholder="Password" secureTextEntry />
         </View>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}

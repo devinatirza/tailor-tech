@@ -25,5 +25,15 @@ func main() {
 	r.GET("/validate", controller.GetUserFromJWT)
 	r.GET("/logout", controller.LogoutHandler)
 
+	product := r.Group("/products")
+	{
+		product.GET("/get-all", controller.GetAllProduct)
+	}
+
+	tailor := r.Group("/tailors")
+	{
+		tailor.GET("/get-all", controller.GetAllTailor)
+	}
+
 	r.Run(":8000")
 }

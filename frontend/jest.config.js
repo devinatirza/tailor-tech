@@ -1,28 +1,34 @@
+// module.exports = {
+//   preset: 'react-native',
+//   setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
+//   transformIgnorePatterns: [
+//     'node_modules/(?!(jest-)?react-native|@react-native|@react-navigation|react-navigation|@react-navigation|react-native-reanimated|@react-native-async-storage|@react-native-community|@react-native-masked-view|@react-native-picker|@react-native-picker/.*|expo-status-bar)',
+//   ],
+//   transform: {
+//     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+//     '^.+\\.tsx?$': 'ts-jest',
+//   },
+//   testMatch: [
+//     "**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"
+//   ],
+//   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+// };
+
 module.exports = {
-  setupFilesAfterEnv: ['./jest/setup.js'],
-  preset: 'ts-jest',
-  moduleFileExtensions: [
-    'js',
-    'jsx',
-    'ts',
-    'tsx',
-    'json',
-    'node'
-  ],
-  testEnvironment: 'node',
-  transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest'
-  },
-  moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '^react-native$': 'react-native',
-    '^@/(.*)$': '<rootDir>/src/$1',
-    // 'Utilities/(.*)$': '<rootDir>/node_modules/react-native/Libraries/Utilities/$1'
-  },
+  preset: 'react-native',
+  setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
   transformIgnorePatterns: [
-    'node_modules/(?!(jest-)?react|react-native|@react-native-community|react-native-elements|@react-native/js-polyfills|@react-native/assets-registry|expo-status-bar|react-native-button)'
+    'node_modules/(?!(jest-)?react-native|@react-native|react-native-elements|react-navigation|@react-navigation|react-native-reanimated|@react-native-async-storage|@react-native-community|@react-native-masked-view|@react-native-picker|@react-native-picker/.*|expo-status-bar)',
   ],
-  globals: {
-    __DEV__: true
-},
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    '^.+\\.tsx?$': 'ts-jest',
+  },
+  testMatch: [
+    "**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"
+  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  // moduleNameMapper: {
+  //   '^react-native-elements$': '<rootDir>/__mocks__/react-native-elements.js',
+  // },
 };

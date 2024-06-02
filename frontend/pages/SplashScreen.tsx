@@ -39,7 +39,7 @@ const SplashScreen = () => {
       <View style={styles.container}>
         <Image
           style={styles.image}
-          source={require('..\\assets\\spashscreen.png')}>
+          source={require('../assets/spashscreen.png')}>
         </Image>
       </View>
     </TouchableWithoutFeedback>
