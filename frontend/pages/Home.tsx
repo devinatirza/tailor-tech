@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { ITailor } from '../interfaces/tailor-interfaces';
 import { IProduct } from '../interfaces/product-interfaces';
 import axios from 'axios';
-import { ITailor } from '../interfaces/tailor-interfaces';
 
 interface ServiceItemProps {
   src: string;
@@ -16,7 +16,6 @@ const ServiceItem: React.FC<ServiceItemProps> = ({ src, label }) => (
     <Text style={styles.serviceLabel}>{label}</Text>
   </View>
 );
-
 
 const TailorCard: React.FC<{tailor: ITailor}> = ({tailor}) => (
   <View style={styles.tailorItem}>
@@ -34,16 +33,18 @@ const TailorCard: React.FC<{tailor: ITailor}> = ({tailor}) => (
   </View>
 );
 
-
 const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => (
   <View style={styles.productItem}>
     <Image source={{ uri: product.ImgUrl }} style={styles.productImage} />
     <Image source={require('../assets/sale_icon.png')} style={styles.plusIcon} />
-    <Text style={styles.productName}>{product.Name}</Text>
+    <Text style={styles.productName}>{product.Product}</Text>
+    <Text style={styles.productTailorName}>{product.Tailor}</Text>
     <Text style={styles.productDesc}>{product.Desc}</Text>
     <Text style={styles.productPrice}>IDR {product.Price}K</Text>
   </View>
 );
+
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -82,7 +83,6 @@ const HomeScreen: React.FC = () => {
     { src: "../assets/bags_icon.png", label: "Bags" },
   ];
 
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.section}>
@@ -102,7 +102,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tailorsContainer}>
-          {tailors.map((tailor) => (
+          {tailors.slice(0, 8).map((tailor) => (
             <TailorCard
               key={tailor.ID}
               tailor={tailor}
@@ -132,9 +132,9 @@ const HomeScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 32,
+    fontSize: deviceWidth * 0.09,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 15,
     color: '#260101',
   },
   container: {
@@ -166,11 +166,11 @@ const styles = StyleSheet.create({
   },
   serviceItem: {
     alignItems: 'center',
-    width: (Dimensions.get('window').width - 60) / 5, 
+    width: (deviceWidth / 5) - 30, 
     marginBottom: 10,
   },
   serviceImage: {
-    width: '80%',
+    width: '100%',
     height: undefined,
     aspectRatio: 1,
     borderRadius: 28,
@@ -232,7 +232,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   productItem: {
-    paddingVertical: 5,
     backgroundColor: 'white',
     borderRadius: 8,
     marginRight: 20,
@@ -250,6 +249,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color:'#260101',
   },
+  productTailorName: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#593825',
+    fontWeight: '600',
+    marginTop: 2,
+  },
   productDesc: {
     marginTop: 2,
     fontSize: 15,
@@ -258,7 +264,7 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     marginTop: 3,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
     color:'#260101',
