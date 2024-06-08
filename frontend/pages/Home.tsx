@@ -53,7 +53,7 @@ const HomeScreen: React.FC = () => {
 
   async function fetchTailors() {
     try {
-      const response = await axios.get('http://localhost:8000/tailors/details');
+      const response = await axios.get('http://localhost:8000/tailors/get-all');
       setTailors(response.data);
     } catch (error) {
       setError('Failed to fetch tailors');

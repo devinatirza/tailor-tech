@@ -11,7 +11,7 @@ const TailorScreen: React.FC = () => {
 
   async function fetchTailors(query = '') {
     try {
-      const response = await axios.get(`http://localhost:8000/tailors/details`, {
+      const response = await axios.get(`http://localhost:8000/tailors/get-all`, {
         params: { query },
       });
       setTailors(response.data);

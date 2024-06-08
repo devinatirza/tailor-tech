@@ -10,6 +10,11 @@ import (
 )
 
 func GetAllTailor(c *gin.Context) {
+	type Speciality struct {
+		Category string
+		Price    int
+	}
+
 	type GetTailor struct {
 		ID      int
 		Name    string
@@ -19,9 +24,20 @@ func GetAllTailor(c *gin.Context) {
 		Rating  float32
 	}
 
+	type GetTailorFinal struct {
+		ID         int
+		Name       string
+		Email      string
+		Address    string
+		ImgUrl     string
+		Rating     float32
+		Speciality []Speciality
+	}
+
 	db := database.GetInstance()
 
 	var tailors []GetTailor
+	var tailorFinal []GetTailorFinal
 	query := c.Query("query")
 
 	sql := "SELECT id, name, email, address, img_url, round(avg(rating), 1) as rating " +
@@ -41,7 +57,26 @@ func GetAllTailor(c *gin.Context) {
 		db.Raw(sql).Scan(&tailors)
 	}
 
-	c.JSON(http.StatusOK, tailors)
+	for _, tailor := range tailors {
+		var specialities []Speciality
+		sql = "SELECT o.category, tp.price " +
+			"FROM tailor_prices tp " +
+			"JOIN outfits o ON o.id = tp.outfit_id " +
+			"WHERE tp.tailor_id = ?"
+		db.Raw(sql, tailor.ID).Scan(&specialities)
+	
+		tailorFinal = append(tailorFinal, GetTailorFinal{
+			ID:         tailor.ID,
+			Name:       tailor.Name,
+			Address:    tailor.Address,
+			Email:      tailor.Email,
+			ImgUrl:     tailor.ImgUrl,
+			Rating:     tailor.Rating,
+			Speciality: specialities,
+		}) 
+	}
+
+	c.JSON(http.StatusOK, tailorFinal)
 }
 
 func GetTailorDetails(c *gin.Context) {
