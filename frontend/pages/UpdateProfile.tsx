@@ -1,10 +1,37 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, Alert, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, Button, Alert, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
+import { CheckBox } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
+
+interface InfoBlockProps {
+  label: string;
+  text: string;
+  isEditing: boolean;
+  iconSrc: string;
+  secureTextEntry?: boolean;
+  onEdit: () => void;
+  onChangeText: (text: string) => void;
+}
+
+const InfoBlock: React.FC<InfoBlockProps> = ({ label, text, isEditing, iconSrc, secureTextEntry, onEdit, onChangeText }) => (
+  <View style={styles.infoBlockContainer}>
+    <TextInput
+      style={[styles.infoBlockText, { backgroundColor: '#F3EADE' }]}
+      value={text}
+      onChangeText={onChangeText}
+      secureTextEntry={secureTextEntry}
+      placeholder={label}
+      editable={isEditing}
+    />
+    <TouchableOpacity onPress={onEdit}>
+      <Image source={{ uri: iconSrc }} style={styles.infoBlockIcon} />
+    </TouchableOpacity>
+  </View>
+);
 
 const UpdateProfileScreen = () => {
   const { user, updateUser } = useUser();
@@ -16,6 +43,12 @@ const UpdateProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState(user.PhoneNumber);
   const [address, setAddress] = useState(user.Address);
+
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
+  const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
 
   const [validations, setValidations] = useState({
     minLength: false,
@@ -71,7 +104,6 @@ const UpdateProfileScreen = () => {
       } else {
         updateUser(result.user);
         Alert.alert('Success', 'Profile updated successfully!');
-        navigation.navigate('ProfileScreen');
       }
     } catch (error) {
       Alert.alert('Error', 'An error occurred. Please try again later.');
@@ -81,60 +113,102 @@ const UpdateProfileScreen = () => {
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.innerContainer}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: '../assets/profileIcon.png' }} style={styles.profileImage} />
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>Edit Profile</Text>
         </View>
-        <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.input}
-          value={name}
+        <InfoBlock
+          label="Name"
+          text={name}
+          isEditing={isEditingName}
+          iconSrc="../assets/pencilIcon.png"
+          onEdit={() => setIsEditingName(!isEditingName)}
           onChangeText={setName}
-          placeholder="Name"
         />
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          value={email}
+        <InfoBlock
+          label="Email"
+          text={email}
+          isEditing={isEditingEmail}
+          iconSrc="../assets/pencilIcon.png"
+          onEdit={() => setIsEditingEmail(!isEditingEmail)}
           onChangeText={setEmail}
-          placeholder="Email"
         />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
+        <InfoBlock
+          label="Password"
+          text={password}
+          isEditing={isEditingPassword}
+          iconSrc="../assets/pencilIcon.png"
+          secureTextEntry={true}
+          onEdit={() => setIsEditingPassword(!isEditingPassword)}
           onChangeText={handlePasswordChange}
-          placeholder="Password"
-          secureTextEntry
         />
-        {password.length > 0 && (
+        {isEditingPassword && (
           <>
-            <Text style={styles.label}>Confirm Password</Text>
-            <TextInput
-              style={styles.input}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="Confirm Password"
-              secureTextEntry
-            />
+            <View style={styles.passwordRequirements}>
+              <CheckBox
+                title="Minimum 8 characters"
+                checked={validations.minLength}
+                textStyle={validations.minLength ? styles.valid : styles.invalid}
+                containerStyle={styles.checkBoxContainer}
+                disabled
+              />
+              <CheckBox
+                title="At least one uppercase letter"
+                checked={validations.uppercase}
+                textStyle={validations.uppercase ? styles.valid : styles.invalid}
+                containerStyle={styles.checkBoxContainer}
+                disabled
+              />
+              <CheckBox
+                title="At least one lowercase letter"
+                checked={validations.lowercase}
+                textStyle={validations.lowercase ? styles.valid : styles.invalid}
+                containerStyle={styles.checkBoxContainer}
+                disabled
+              />
+              <CheckBox
+                title="At least one digit"
+                checked={validations.digit}
+                textStyle={validations.digit ? styles.valid : styles.invalid}
+                containerStyle={styles.checkBoxContainer}
+                disabled
+              />
+              <CheckBox
+                title="At least one special character"
+                checked={validations.specialChar}
+                textStyle={validations.specialChar ? styles.valid : styles.invalid}
+                containerStyle={styles.checkBoxContainer}
+                disabled
+              />
+            </View>
+            <View style={styles.infoBlockContainer}>
+              <TextInput
+                style={[styles.infoBlockText, { backgroundColor: '#F3EADE' }]}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={true}
+                placeholder="Confirm Password"
+              />
+            </View>
           </>
         )}
-        <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={[styles.input, styles.addressInput]}
-          value={address}
-          onChangeText={setAddress}
-          placeholder="Address"
-          multiline
-        />
-        <Text style={styles.label}>Phone Number</Text>
-        <TextInput
-          style={styles.input}
-          value={phoneNumber}
+        <InfoBlock
+          label="Phone Number"
+          text={phoneNumber}
+          isEditing={isEditingPhoneNumber}
+          iconSrc="../assets/pencilIcon.png"
+          onEdit={() => setIsEditingPhoneNumber(!isEditingPhoneNumber)}
           onChangeText={setPhoneNumber}
-          placeholder="Phone Number"
+        />
+        <InfoBlock
+          label="Address"
+          text={address}
+          isEditing={isEditingAddress}
+          iconSrc="../assets/pencilIcon.png"
+          onEdit={() => setIsEditingAddress(!isEditingAddress)}
+          onChangeText={setAddress}
         />
         <TouchableOpacity style={styles.buttonContainer} onPress={handleSave}>
-          <Text style={styles.buttonText}>Save</Text>
+          <Text style={styles.buttonText}>SAVE</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -144,46 +218,52 @@ const UpdateProfileScreen = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    paddingTop: 28,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#F8F8F8',
   },
   innerContainer: {
-    flex: 1,
-    paddingHorizontal: 30,
-    width: '100%',
+    marginHorizontal: 30,
   },
-  imageContainer: {
+  titleContainer: {
+    marginVertical: 30,
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 30,
   },
-  profileImage: {
-    width: deviceWidth * 0.4,
-    height: deviceWidth * 0.4,
+  titleText: {
+    color: '#401201',
+    fontSize: screenWidth * 0.08,
+    fontWeight: 'bold',
   },
-  label: {
-    color: '#260101',
-    fontSize: 18,
-    marginBottom: 5,
-    fontWeight: '500',
-    marginLeft: 15,
-  },
-  input: {
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#F3EADE',
-    height: 50,
+  infoBlockContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 20,
-    color: '#260101',
-    fontSize: 18,
   },
-  addressInput: {
-    height: 80,
-    textAlignVertical: 'top',
+  infoBlockText: {
+    flex: 1,
+    padding: 10,
+    borderColor: '#401201',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  infoBlockIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 10,
+  },
+  passwordRequirements: {
+    marginBottom: 20,
+  },
+  checkBoxContainer: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    margin: 0,
+    padding: 0,
+  },
+  valid: {
+    color: 'green',
+  },
+  invalid: {
+    color: 'red',
   },
   buttonContainer: {
     backgroundColor: '#D9C3A9',
@@ -192,8 +272,15 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 30,
+  },
+  logoutButtonContainer: {
+    marginTop: 30,
+    backgroundColor: '#D9C3A9',
+    marginHorizontal: 50,
+    height: 45,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 18,

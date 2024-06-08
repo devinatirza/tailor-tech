@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 import { ITailor } from '../interfaces/tailor-interfaces';
 import { IProduct } from '../interfaces/product-interfaces';
-import axios from 'axios';
+import TailorCard from './TailorCard'; 
 
 interface ServiceItemProps {
   src: string;
@@ -14,22 +15,6 @@ const ServiceItem: React.FC<ServiceItemProps> = ({ src, label }) => (
   <View style={styles.serviceItem}>
     <Image source={{ uri: src }} style={styles.serviceImage} />
     <Text style={styles.serviceLabel}>{label}</Text>
-  </View>
-);
-
-const TailorCard: React.FC<{tailor: ITailor}> = ({tailor}) => (
-  <View style={styles.tailorItem}>
-    <Image source={{ uri: tailor.ImgUrl }} style={styles.tailorImage} />
-    <Text style={styles.tailorName}>{tailor.Name}</Text>
-    {/* <Text style={styles.tailorSpecialty}>{specialty}</Text> */}
-    <View style={styles.locationContainer}>
-      <Image source={{ uri: '../assets/location_icon.png' }} style={styles.icon} />
-      <Text style={styles.tailorLocation}>{tailor.Address}</Text>
-    </View>
-    <View style={styles.ratingContainer}>
-      <Image source={{ uri: '../assets/rating_icon.png' }} style={styles.icon} />
-      <Text style={styles.ratingText}>{tailor.Rating}</Text>
-    </View>
   </View>
 );
 
@@ -49,38 +34,62 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
 
-  const [products, setProducts] = useState<IProduct[]>([])
-  const [tailors, setTailors] = useState<ITailor[]>([])
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [tailors, setTailors] = useState<ITailor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  async function fetchProducts(){
-    try{
-      const response =await axios.get('http://localhost:8000/products/get-all');
-      setProducts(response.data)
-    } catch(error){
-      console.log(error)
+  async function fetchProducts() {
+    try {
+      const response = await axios.get('http://localhost:8000/products/get-all');
+      setProducts(response.data);
+    } catch (error) {
+      setError('Failed to fetch products');
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
-  async function fetchTailors(){
-    try{
-      const response =await axios.get('http://localhost:8000/tailors/get-all');
-      setTailors(response.data)
-    } catch(error){
-      console.log(error)
+  async function fetchTailors() {
+    try {
+      const response = await axios.get('http://localhost:8000/tailors/details');
+      setTailors(response.data);
+    } catch (error) {
+      setError('Failed to fetch tailors');
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchProducts()
-    fetchTailors()
-  }, [])
+    fetchProducts();
+    fetchTailors();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text>{error}</Text>
+      </View>
+    );
+  }
 
   const services = [
-    { src: "../assets/tops_icon.webp", label: "Tops" },
-    { src: "../assets/bottoms_icon.webp", label: "Bottoms" },
-    { src: "../assets/dresses_icon.webp", label: "Dresses" },
-    { src: "../assets/suits_icon.png", label: "Suits" },
-    { src: "../assets/bags_icon.png", label: "Bags" },
+    { src: '../assets/tops_icon.webp', label: 'Tops' },
+    { src: '../assets/bottoms_icon.webp', label: 'Bottoms' },
+    { src: '../assets/dresses_icon.webp', label: 'Dresses' },
+    { src: '../assets/suits_icon.png', label: 'Suits' },
+    { src: '../assets/bags_icon.png', label: 'Bags' },
   ];
 
   return (
@@ -97,32 +106,26 @@ const HomeScreen: React.FC = () => {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Tailors</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('All Tailor')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Tailors')}>
             <Text style={styles.moreButton}>More {'>'}</Text>
           </TouchableOpacity>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tailorsContainer}>
           {tailors.slice(0, 8).map((tailor) => (
-            <TailorCard
-              key={tailor.ID}
-              tailor={tailor}
-            />
+            <TailorCard key={tailor.ID} tailor={tailor} />
           ))}
         </ScrollView>
       </View>
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Products</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('All Product')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Products')}>
             <Text style={styles.moreButton}>More {'>'}</Text>
           </TouchableOpacity>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.productsContainer}>
-          {products.slice(0, 8).map((product, index) => (  
-            <ProductCard
-              key={index}
-              product={product}
-            />
+          {products.slice(0, 8).map((product, index) => (
+            <ProductCard key={index} product={product} />
           ))}
         </ScrollView>
       </View>
@@ -166,7 +169,7 @@ const styles = StyleSheet.create({
   },
   serviceItem: {
     alignItems: 'center',
-    width: (deviceWidth / 5) - 30, 
+    width: (deviceWidth / 5) - 30,
     marginBottom: 10,
   },
   serviceImage: {
@@ -186,46 +189,6 @@ const styles = StyleSheet.create({
   tailorsContainer: {
     marginTop: 8,
     flexDirection: 'row',
-  },
-  tailorItem: {
-    paddingVertical: 5,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    marginRight: 20,
-    width: 160,
-  },
-  tailorImage: {
-    width: 160,
-    height: 126,
-    resizeMode: 'cover',
-    borderRadius: 8,
-  },
-  tailorName: {
-    marginTop: 8,
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#260101',
-  },
-  tailorSpecialty: {
-    marginTop: 4,
-    fontSize: 15,
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  tailorLocation: {
-    fontSize: 13,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  ratingText: {
-    fontSize: 13,
-    color: '#181818',
   },
   productsContainer: {
     marginTop: 8,
@@ -247,7 +210,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'#260101',
+    color: '#260101',
   },
   productTailorName: {
     fontSize: 16,
@@ -267,7 +230,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'#260101',
+    color: '#260101',
   },
   plusIcon: {
     position: 'absolute',
@@ -282,6 +245,17 @@ const styles = StyleSheet.create({
     height: 14,
     marginRight: 4,
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default HomeScreen;
+

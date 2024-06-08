@@ -1,8 +1,14 @@
-export interface ITailor{
-    ID: number
-    Name:  string
-    Email: string
-    Address: string
-    ImgUrl: string
-    Rating: float32
-  }
+interface Speciality {
+  Category: string;
+  Price: number;
+}
+
+export interface ITailor {
+  ID: number;
+  Name: string;
+  Email: string;
+  Address: string;
+  ImgUrl: string;
+  Rating: number;
+  Speciality: Speciality[];
+}

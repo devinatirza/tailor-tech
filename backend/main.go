@@ -33,6 +33,7 @@ func main() {
 	tailor := r.Group("/tailors")
 	{
 		tailor.GET("/get-all", controller.GetAllTailor)
+		tailor.GET("/details", controller.GetTailorDetails)
 	}
 
 	r.Run(":8000")

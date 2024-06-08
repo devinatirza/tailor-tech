@@ -1,33 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, FlatList, Dimensions, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { ITailor } from '../interfaces/tailor-interfaces';
-
-const TailorCard: React.FC<{ tailor: ITailor }> = ({ tailor }) => (
-  <View style={styles.tailorItem}>
-    <Image source={{ uri: tailor.ImgUrl }} style={styles.tailorImage} />
-    <Text style={styles.tailorName}>{tailor.Name}</Text>
-    <View style={styles.locationContainer}>
-      <Image source={{ uri: '../assets/location_icon.png' }} style={styles.icon} />
-      <Text style={styles.tailorLocation}>{tailor.Address}</Text>
-    </View>
-    <View style={styles.ratingContainer}>
-      <Image source={{ uri: '../assets/rating_icon.png' }} style={styles.icon} />
-      <Text style={styles.ratingText}>{tailor.Rating}</Text>
-    </View>
-  </View>
-);
+import TailorCard from './TailorCard'; 
 
 const TailorScreen: React.FC = () => {
-  const navigation = useNavigation();
   const [tailors, setTailors] = useState<ITailor[]>([]);
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
   const [searchQuery, setSearchQuery] = useState('');
 
   async function fetchTailors(query = '') {
     try {
-      const response = await axios.get(`http://localhost:8000/tailors/get-all`, {
+      const response = await axios.get(`http://localhost:8000/tailors/details`, {
         params: { query },
       });
       setTailors(response.data);
@@ -52,7 +36,7 @@ const TailorScreen: React.FC = () => {
   };
 
   const numColumns = 2;
-  const itemWidth = screenWidth / numColumns - 40; 
+  const itemWidth = screenWidth / numColumns - 40;
 
   return (
     <View style={styles.container}>
@@ -63,7 +47,7 @@ const TailorScreen: React.FC = () => {
           <TextInput
             style={styles.searchInput}
             placeholder="Search for Tailors..."
-            placeholderTextColor="#260101" 
+            placeholderTextColor="#260101"
             value={searchQuery}
             onChangeText={handleSearch}
           />
@@ -87,7 +71,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8,
     color: '#260101',
-    alignSelf: 'flex-start', 
+    alignSelf: 'flex-start',
   },
   container: {
     flex: 1,
@@ -102,7 +86,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3EADE', 
+    backgroundColor: '#F3EADE',
     borderRadius: 25,
     paddingHorizontal: 12,
     height: 50,
@@ -110,7 +94,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 25,
     height: 25,
-    tintColor: '#260101', 
+    tintColor: '#260101',
   },
   searchInput: {
     flex: 1,
@@ -125,7 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     marginBottom: 20,
-    width: (Dimensions.get('window').width / 2) - 40, 
+    width: (Dimensions.get('window').width / 2) - 40,
   },
   tailorImage: {
     width: '100%',
@@ -139,6 +123,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     color: '#260101',
+  },
+  tailorSpecialty: {
+    marginTop: 3,
+    fontSize: 15,
   },
   locationContainer: {
     flexDirection: 'row',

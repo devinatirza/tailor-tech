@@ -1,15 +1,12 @@
 import React from 'react';
 import { Image, Pressable } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { RouteProp } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-import { ParamListBase } from '@react-navigation/routers';
-import HomeScreen from './Home';
+import { RouteProp, useNavigation } from '@react-navigation/native';
+import HomeStack from './HomeStack'; 
 import OrderScreen from './Order';
-import ProfileScreen from './Profile';
+import ProfileStack from './ProfileStack'; 
 import CartScreen from './Cart';
-import HomeStack from './HomeStack';
-import ProfileStack from './ProfileStack';
+import { ParamListBase } from '@react-navigation/routers';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,37 +14,37 @@ type Props = {
   route: RouteProp<ParamListBase, string>;
 };
 
-const HomeIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/home_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const HomeIconActive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/home_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
-const HomeIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/home_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const HomeIconInactive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/home_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
-const CartIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/cart_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const CartIconActive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/cart_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
-const CartIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/cart_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const CartIconInactive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/cart_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
-const OrderIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/order_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const OrderIconActive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/order_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
-const OrderIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/order_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const OrderIconInactive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/order_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
-const ProfileIconActive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/profile_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const ProfileIconActive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/profile_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
-const ProfileIconInactive = ({ color }: { color: string }) => {
-  return <Image source={require('../assets/profile_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />;
-};
+const ProfileIconInactive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/profile_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />
+);
 
 const TabNavigation = () => {
   const navigation = useNavigation();
