@@ -36,12 +36,9 @@ const ProfileScreen = () => {
           <View style={styles.profileContent}>
             <View style={styles.profileImageContainer}>
               <Image source={{ uri: '../assets/profileIcon.png' }} style={styles.profileImage} />
-              <Text style={styles.profileName}>
-                {user.Name}
-              </Text>
-              <Text style={styles.profileEmail}>
-                {user.Email}
-              </Text>
+              <Text style={styles.profileName}>{user?.Name}</Text>
+              <Text style={styles.profileEmail}>{user?.Email}</Text>
+              <Text style={styles.profilePoint}>{user?.Points} Points</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Update Profile')} style={styles.editProfileButton}>
                 <Text style={styles.editProfileButtonText}>Edit Profile</Text>
               </TouchableOpacity>
@@ -90,9 +87,8 @@ const styles = StyleSheet.create({
   profileText: {
     fontSize: deviceWidth * 0.09,
     fontWeight: 'bold',
-    marginTop: 35,
+    marginTop: 15,
     color: '#260101',
-    textAlign: 'center',
   },
   profileContainer: {
     alignItems: 'center',
@@ -111,17 +107,25 @@ const styles = StyleSheet.create({
     height: deviceWidth * 0.4,
   },
   profileName: {
-    marginTop: 14,
-    fontSize: deviceWidth * 0.07,
-    fontWeight: '500',
+    marginTop: 11,
+    fontSize: deviceWidth * 0.09,
+    fontWeight: '600',
     textAlign: 'center',
-    color: '#260101',
+    color: '#593825',
+    fontFamily: 'Montserrat',
+    letterSpacing: 0.5,
   },
   profileEmail: {
     fontSize: deviceWidth * 0.05,
     color: '#260101',
     textAlign: 'center',
-    marginTop: 5,
+  },
+  profilePoint: {
+    fontSize: deviceWidth * 0.05,
+    color: '#593825',
+    textAlign: 'center',
+    marginTop: 4,
+    fontWeight: '400',
   },
   editProfileButton: {
     justifyContent: 'center',
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D9C3A9',
   },
   editProfileButtonText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '500',
     textAlign: 'center',
     color: '#260101',
