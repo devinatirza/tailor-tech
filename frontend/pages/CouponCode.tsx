@@ -6,6 +6,7 @@ import axios from "axios";
 
 interface CouponProps {
   code: string;
+  quantity: number;
 }
 
 interface PointsProps {
@@ -18,10 +19,13 @@ interface ButtonProps {
   textStyle: object;
 }
 
-const Coupon: React.FC<CouponProps> = ({ code }) => (
-  <View style={styles.couponContainer}>
-    <Image source={{ uri: '../assets/couponIcon.png' }} style={styles.couponBackground} />
-    <Text style={styles.couponText}>{code}</Text>
+const Coupon: React.FC<CouponProps> = ({ code, quantity }) => (
+  <View style={styles.couponWrapper}>
+    {quantity > 1 && <Text style={styles.quantityText}>{quantity}x</Text>}
+    <View style={styles.couponContainer}>
+      <Image source={{ uri: '../assets/couponIcon.png' }} style={styles.couponBackground} />
+      <Text style={styles.couponText}>{code}</Text>
+    </View>
   </View>
 );
 
@@ -29,7 +33,7 @@ const Points: React.FC<PointsProps> = ({ points }) => (
   <View style={styles.pointsContainer}>
     <Text style={styles.pointsLabel}>You Have</Text>
     <View style={styles.pointsValueContainer}>
-      <Text style={styles.pointsValue}>{points} </Text>
+      <Text style={styles.pointsValue}>{points}</Text>
       <Text style={styles.pointsValuePoints}>Points</Text>
     </View>
   </View>
@@ -63,6 +67,10 @@ const CouponCodeScreen: React.FC = () => {
     }
   }, [user]);
 
+  const hasCoupons = coupons.length > 0;
+  const buttonText = hasCoupons ? "Get Another Coupon Code" : "Get Coupon Code";
+  const emptyMessage = "You don't have a coupon yet. Start shopping to earn your first coupon!";
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerTextContainer}>
@@ -70,17 +78,19 @@ const CouponCodeScreen: React.FC = () => {
       </View>
       <Button text="Your Coupon" style={styles.couponButton} textStyle={styles.couponButtonText} />
       <View style={styles.couponsContainer}>
-        {coupons.flatMap(({ PromoCode, Quantity }) => 
-          Array.from({ length: Quantity }).map((_, index) => (
-            <Coupon key={`${PromoCode}-${index}`} code={PromoCode} />
+        {hasCoupons ? (
+          coupons.map(({ PromoCode, Quantity }) => (
+            <Coupon key={PromoCode} code={PromoCode} quantity={Quantity} />
           ))
+        ) : (
+          <Text style={styles.emptyMessage}>{emptyMessage}</Text>
         )}
       </View>
       <TouchableOpacity 
         style={styles.anotherCouponButton} 
         onPress={() => navigation.navigate('Coupon Redeem')}
       >
-        <Text style={styles.anotherCouponButtonText}>Get Coupon Code</Text>
+        <Text style={styles.anotherCouponButtonText}>{buttonText}</Text>
       </TouchableOpacity> 
     </ScrollView>
   );
@@ -105,16 +115,34 @@ const styles = StyleSheet.create({
     fontSize: deviceWidth * 0.045,
     color: '#260101',
   },
-  couponContainer: {
+  couponWrapper: {
     width: deviceWidth * 0.8,
+    marginVertical: 5,
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityText: {
+    position: 'absolute',
+    top: 0,
+    right: 5,
+    backgroundColor: '#4B2618',
+    color: 'white',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 12,
+    fontSize: 18,
+    zIndex: 1,
+  },
+  couponContainer: {
+    width: '100%',
     height: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 1,
     position: 'relative',
   },
   couponBackground: {
-    width: '100%',
+    width: '95%',
     height: '100%',
     position: 'absolute',
     resizeMode: 'contain',
@@ -122,6 +150,12 @@ const styles = StyleSheet.create({
   couponText: {
     color: '#260101',
     fontSize: 24,
+  },
+  emptyMessage: {
+    fontSize: 18,
+    color: '#260101',
+    textAlign: 'center',
+    marginTop: 20,
   },
   pointsContainer: {
     flexDirection: 'row',
@@ -185,7 +219,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingHorizontal: 30,
     paddingVertical: 10,
-    marginTop: 15,
+    marginTop: 35,
     marginBottom: 30,
   },
   anotherCouponButtonText: {
