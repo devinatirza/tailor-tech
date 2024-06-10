@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, ScrollView } from "react-native";
 import { useUser } from '../contexts/user-context';
 import { useNavigation } from '@react-navigation/native';
+import axios from "axios";
 
 interface CouponProps {
   code: string;
@@ -43,8 +44,24 @@ const Button: React.FC<ButtonProps> = ({ text, style, textStyle }) => (
 const CouponCodeScreen: React.FC = () => {
   const { user } = useUser();
   const navigation = useNavigation();
+  const [coupons, setCoupons] = useState<{ PromoCode: string, Quantity: number }[]>([]);
 
-  console.log(user);
+  useEffect(() => {
+    const fetchCoupons = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/coupons/code', {
+          params: { userId: user.ID }
+        });
+        setCoupons(response.data.coupons);
+      } catch (error) {
+        console.error('Failed to fetch user coupons', error);
+      }
+    };
+
+    if (user) {
+      fetchCoupons();
+    }
+  }, [user]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -53,15 +70,17 @@ const CouponCodeScreen: React.FC = () => {
       </View>
       <Button text="Your Coupon" style={styles.couponButton} textStyle={styles.couponButtonText} />
       <View style={styles.couponsContainer}>
-        <Coupon code="FZ1112" />
-        <Coupon code="FD0809" />
+        {coupons.flatMap(({ PromoCode, Quantity }) => 
+          Array.from({ length: Quantity }).map((_, index) => (
+            <Coupon key={`${PromoCode}-${index}`} code={PromoCode} />
+          ))
+        )}
       </View>
-      <Points points={user.Points} />
       <TouchableOpacity 
         style={styles.anotherCouponButton} 
         onPress={() => navigation.navigate('Coupon Redeem')}
       >
-        <Text style={styles.anotherCouponButtonText}>Get Another Coupon Code</Text>
+        <Text style={styles.anotherCouponButtonText}>Get Coupon Code</Text>
       </TouchableOpacity> 
     </ScrollView>
   );
@@ -167,6 +186,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     marginTop: 15,
+    marginBottom: 30,
   },
   anotherCouponButtonText: {
     color: '#260101',

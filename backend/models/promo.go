@@ -8,6 +8,6 @@ type Promo struct {
 
 type UserPromo struct{
 	PromoCode string `gorm:"primaryKey"`
-	UserID int `gorm:"primaryKey"`
+	UserID uint `gorm:"primaryKey"`
 	Quantity int
 }

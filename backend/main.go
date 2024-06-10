@@ -36,5 +36,11 @@ func main() {
 		tailor.GET("/details", controller.GetTailorDetails)
 	}
 
+	coupon := r.Group("/coupons")
+	{
+		coupon.POST("/redeem", controller.RedeemCoupon) 
+		coupon.GET("/code", controller.GetUserCoupons)
+	}
+
 	r.Run(":8000")
 }
