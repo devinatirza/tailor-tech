@@ -1,5 +1,3 @@
-// pages/Login.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';

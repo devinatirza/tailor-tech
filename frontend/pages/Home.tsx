@@ -9,13 +9,14 @@ import TailorCard from './TailorCard';
 interface ServiceItemProps {
   src: string;
   label: string;
+  onPress: () => void;
 }
 
-const ServiceItem: React.FC<ServiceItemProps> = ({ src, label }) => (
-  <View style={styles.serviceItem}>
+const ServiceItem: React.FC<ServiceItemProps> = ({ src, label, onPress }) => (
+  <TouchableOpacity onPress={onPress} style={styles.serviceItem}>
     <Image source={{ uri: src }} style={styles.serviceImage} />
     <Text style={styles.serviceLabel}>{label}</Text>
-  </View>
+  </TouchableOpacity>
 );
 
 const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => (
@@ -68,21 +69,21 @@ const HomeScreen: React.FC = () => {
     fetchTailors();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.loaderContainer}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={styles.loaderContainer}>
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text>{error}</Text>
-      </View>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <View style={styles.errorContainer}>
+  //       <Text>{error}</Text>
+  //     </View>
+  //   );
+  // }
 
   const services = [
     { src: '../assets/tops_icon.webp', label: 'Tops' },
@@ -95,17 +96,22 @@ const HomeScreen: React.FC = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.section}>
-        <Text style={styles.title}>TailorTech</Text>
-        <Text style={styles.sectionTitle}>Services</Text>
+        <Text style={styles.title} id='TailorTech'>TailorTech</Text>
+        <Text style={styles.sectionTitle} id='Services'>Services</Text>
         <View style={styles.servicesContainer}>
           {services.map((service, index) => (
-            <ServiceItem key={index} src={service.src} label={service.label} />
+            <ServiceItem
+              key={index}
+              src={service.src}
+              label={service.label}
+              onPress={() => navigation.navigate('Services', { speciality: service.label })}
+            />
           ))}
         </View>
       </View>
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Tailors</Text>
+          <Text style={styles.sectionTitle} id='Tailors'>Tailors</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Tailors')}>
             <Text style={styles.moreButton}>More {'>'}</Text>
           </TouchableOpacity>
@@ -118,7 +124,7 @@ const HomeScreen: React.FC = () => {
       </View>
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Products</Text>
+          <Text style={styles.sectionTitle} id='Products '>Products</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Products')}>
             <Text style={styles.moreButton}>More {'>'}</Text>
           </TouchableOpacity>
@@ -258,4 +264,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
