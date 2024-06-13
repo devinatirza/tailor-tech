@@ -22,14 +22,12 @@ jest.mock('../contexts/user-context', () => ({
 jest.mock('axios');
 
 jest.mock('react-native-elements', () => {
-  // const originalModule = jest.requireActual('react-native-elements');
 
   const mockCheckBox = ({ checked, disabled, checkedColor }: { checked: boolean; disabled?: boolean; checkedColor?: string }) => (
     <input type="checkbox" checked={checked} disabled={disabled} style={{ color: checkedColor }} />
   );
 
   return {
-    // ...originalModule,
     CheckBox: mockCheckBox,
   };
 });
@@ -140,7 +138,6 @@ describe('RegisterScreen', () => {
     }));
 
     const errorMessage = instance.findAllByType(Text).find(node => node.props.children === 'Name must not contain symbols or numbers');
-    // const errorMessage = instance.findByProps({ children: 'Name must not contain symbols or numbers' });
     expect(errorMessage).toBeTruthy();
   });
 
@@ -149,7 +146,6 @@ describe('RegisterScreen', () => {
     const instance = component.root;
 
     const passwordInput = instance.findAllByType(TextInput).find(node => node.props.placeholder === 'Password');
-    // const passwordInput = instance.findByProps({ placeholder: 'Password' });
 
     act(() => {
       passwordInput?.props.onChangeText('Pass123!');

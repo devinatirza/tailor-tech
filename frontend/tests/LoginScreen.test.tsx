@@ -140,7 +140,7 @@ describe('LoginScreen', () => {
   });
 
   it('redirects to TailorTech if user is already logged in', async () => {
-    mockUserContext.user = { id: 1, name: 'John Doe', email: 'john.doe@example.com', phoneNumber: '', address: '', points: 0};
+    mockUserContext.user = { Id: 1, Name: 'John Doe', Email: 'john.doe@example.com', PhoneNumber: '', Address: '', Points: 0};
     (axios.get as jest.MockedFunction<any>).mockResolvedValue({ data: mockUserContext.user });
 
     await act(async () => {
