@@ -34,7 +34,11 @@ const TailorCard: React.FC<{ tailor: ITailor }> = ({ tailor }) => {
   };
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Categories', { specialities: tailor.Speciality })}>
+    <TouchableOpacity onPress={() => navigation.navigate('Categories', { 
+      specialities: tailor.Speciality, 
+      tailorId: tailor.ID, 
+      tailorName: tailor.Name
+    })}>
       <View style={styles.tailorItem}>
         <Image source={{ uri: tailor.ImgUrl }} style={styles.tailorImage} />
         <Text style={styles.tailorName}>{tailor.Name}</Text>

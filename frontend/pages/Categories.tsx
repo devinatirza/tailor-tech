@@ -11,13 +11,13 @@ const clothingTypes = [
   { type: 'BOTTOMS', basePrice: '' },
   { type: 'DRESSES', basePrice: '' },
   { type: 'SUITS', basePrice: '' },
-  { type: 'BAGS', basePrice: '' }
+  { type: 'TOTE BAGS', basePrice: '' }
 ];
 
-const ClothingTypes: React.FC = () => {
+const CategoriesScreen: React.FC = () => {
   const route = useRoute<ClothingTypesRouteProp>();
   const navigation = useNavigation<Navigation>();
-  const { specialities } = route.params;
+  const { specialities, tailorId, tailorName } = route.params;
   const [selected, setSelected] = useState<string | null>(null);
 
   const isSpeciality = (type: string) => {
@@ -35,7 +35,11 @@ const ClothingTypes: React.FC = () => {
 
   const handleChoose = () => {
     if (selected) {
-      navigation.navigate('Measurement', { selectedType: selected });
+      navigation.navigate('Measurement', { 
+        selectedType: selected,
+        tailorId,
+        tailorName
+      });
     }
   };
 
@@ -165,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ClothingTypes;
+export default CategoriesScreen;

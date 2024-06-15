@@ -67,8 +67,12 @@ const HomeScreen: React.FC = () => {
     { src: '../assets/bottoms_icon.webp', label: 'Bottoms' },
     { src: '../assets/dresses_icon.png', label: 'Dresses' },
     { src: '../assets/suits_icon.png', label: 'Suits' },
-    { src: '../assets/bags_icon.png', label: 'Bags' },
+    { src: '../assets/bags_icon.png', label: 'ToteBags' },
   ];
+
+  const formatServiceLabel = (label: string) => {
+    return label.replace(/([a-z])([A-Z])/g, '$1 $2');
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -91,7 +95,7 @@ const HomeScreen: React.FC = () => {
               key={index}
               src={service.src}
               label={service.label}
-              onPress={() => navigation.navigate('Services', { speciality: service.label })}
+              onPress={() => navigation.navigate('Services', { speciality: formatServiceLabel(service.label) })}
             />
           ))}
         </View>
@@ -111,7 +115,7 @@ const HomeScreen: React.FC = () => {
       </View>
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle} id='Products '>Products</Text>
+          <Text style={styles.sectionTitle} id='Products'>Products</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Products')}>
             <Text style={styles.moreButton}>More {'>'}</Text>
           </TouchableOpacity>

@@ -6,6 +6,7 @@ interface Props {
   label: string;
   value: string | boolean;
   onChange: (name: string, value: string | boolean) => void;
+  unit?: string; 
 }
 
 interface Styles {
@@ -16,6 +17,7 @@ interface Styles {
   booleanButton: TextStyle;
   selectedBooleanButton: TextStyle;
   booleanButtonText: TextStyle;
+  unitText: TextStyle;
 }
 
 const inputStyles = StyleSheet.create<Styles>({
@@ -29,6 +31,7 @@ const inputStyles = StyleSheet.create<Styles>({
     height: 50,
     paddingHorizontal: 10,
     fontSize: 16,
+    flex: 1,
   },
   label: {
     fontSize: 16,
@@ -52,9 +55,14 @@ const inputStyles = StyleSheet.create<Styles>({
   booleanButtonText: {
     color: 'white',
   },
+  unitText: {
+    fontSize: 16,
+    color: '#260101',
+    marginRight: 10,
+  },
 });
 
-const InputField: React.FC<Props> = ({ name, label, value, onChange, ...inputProps }) => {
+const InputField: React.FC<Props> = ({ name, label, value, onChange, unit, ...inputProps }) => {
   if (typeof value === 'boolean') {
     return (
       <View style={inputStyles.inputRow}>
@@ -78,13 +86,16 @@ const InputField: React.FC<Props> = ({ name, label, value, onChange, ...inputPro
   return (
     <View style={inputStyles.inputLine}>
       <Text style={inputStyles.label}>{label}</Text>
-      <TextInput
-        style={inputStyles.input}
-        placeholder={label}
-        value={value as string}
-        onChangeText={(text) => onChange(name, text)}
-        {...inputProps}
-      />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          style={inputStyles.input}
+          placeholder={label}
+          value={value as string}
+          onChangeText={(text) => onChange(name, text)}
+          {...inputProps}
+        />
+        {unit && <Text style={inputStyles.unitText}>{unit}</Text>}
+      </View>
     </View>
   );
 };
