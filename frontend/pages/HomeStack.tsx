@@ -4,25 +4,40 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './Home';
 import TailorScreen from './Tailor';
 import ProductScreen from './Product';
-import ClothingTypesScreen from './ClothingTypes';
 import TailorService from './TailorService';
 import MeasurementScreen from './Measurement';
 import HelpOption from './HelpOptions';
 import HomeServiceScreen from './HomeService';
 import WishlistScreen from './Wishlists';
-import ChatScreen from './Chats';
+import ChatScreen from './Chat';
+import CategoriesScreen from './Categories';
+import ConfirmationScreen from './Confirmation';
 
 export type HomeStackParamList = {
   Home: undefined;
   Chats: undefined;
-  Wishlists: undefined
+  Wishlists: undefined;
   Tailors: undefined;
   Products: undefined;
   Services: { speciality: string };
-  Categories: { specialities: { Category: string, Price: number }[] };
-  Measurement: { selectedType: string };
-  Help: undefined
-  HomeService: undefined
+  Categories: { 
+    specialities: { Category: string, Price: number }[], 
+    tailorId: number, 
+    tailorName: string 
+  };
+  Measurement: { 
+    selectedType: string,
+    tailorId: number,
+    tailorName: string
+  };
+  Help: undefined;
+  HomeService: undefined;
+  Confirmation: { 
+    measurements: any,
+    selectedType: string, 
+    tailorId: number, 
+    tailorName: string 
+  };
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -58,11 +73,24 @@ const HomeStack = () => {
       />
       <Stack.Screen 
         name="Categories" 
-        component={ClothingTypesScreen}
+        component={CategoriesScreen}
       />
-        <Stack.Screen name="Measurement" component={MeasurementScreen} />
-        <Stack.Screen name="Help" component={HelpOption} />
-        <Stack.Screen name="HomeService" component={HomeServiceScreen} />
+      <Stack.Screen 
+        name="Measurement" 
+        component={MeasurementScreen} 
+      />
+      <Stack.Screen 
+        name="Help" 
+        component={HelpOption} 
+      />
+      <Stack.Screen 
+        name="HomeService" 
+        component={HomeServiceScreen} 
+      />
+      <Stack.Screen 
+        name="Confirmation" 
+        component={ConfirmationScreen}  
+      />
     </Stack.Navigator>
   );
 };
