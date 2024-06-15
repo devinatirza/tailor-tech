@@ -4,10 +4,11 @@ import "gorm.io/gorm"
 
 type Request struct {
 	gorm.Model
-	UserID int
+	TailorID uint
+	Tailor Tailor
 	Name  string
 	Desc string
 	Price int
-	RequestType int
+	RequestType uint
 	ReqType Outfit `gorm:"foreignKey:RequestType"`
 }

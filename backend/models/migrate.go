@@ -17,7 +17,7 @@ func Migrate() {
 
 	// db.AutoMigrate(&Tailor{})
 	// db.AutoMigrate(&Assistant{})
-	// db.AutoMigrate(&Transaction{})
+	db.AutoMigrate(&Transaction{})
 	// db.AutoMigrate(&Product{})
 	// db.AutoMigrate(&TailorRating{})
 	// db.AutoMigrate(&Promo{})

@@ -15,7 +15,6 @@ type User struct {
 	Password string
 	Address string
 	Transactions []Transaction
-	SavedRequests []Request
 	Cart []Product `gorm:"many2many:carts"`
 	Wishlist []Product `gorm:"many2many:wishlists"`
 	Points int

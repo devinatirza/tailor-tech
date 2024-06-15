@@ -1,16 +1,16 @@
 package main
 
 import (
-	"main/controller"
 	// model "main/models"
+	"main/controller"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	r := gin.Default()
 	// model.Migrate()
+	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:8081"},
@@ -37,8 +37,33 @@ func main() {
 
 	coupon := r.Group("/coupons")
 	{
-		coupon.POST("/redeem", controller.RedeemCoupon) 
+		coupon.POST("/redeem", controller.RedeemCoupon)
 		coupon.GET("/code", controller.GetUserCoupons)
+	}
+
+	measurements := r.Group("/measurements")
+	{
+		measurements.POST("/tops", controller.CreateTopMeasurement)
+		measurements.POST("/bottoms", controller.CreateBottomMeasurement)
+		measurements.POST("/dresses", controller.CreateDressMeasurement)
+		measurements.POST("/suits", controller.CreateSuitMeasurement)
+		measurements.POST("/totebags", controller.CreateToteBagMeasurement)
+	}
+
+	carts := r.Group("/carts")
+	{
+		carts.POST("/add-to-cart", controller.AddToCart)
+	}
+
+	wishlists := r.Group("/wishlists")
+	{
+		wishlists.POST("/add-to-wishlist", controller.AddToWishlist)
+		wishlists.GET("/:userID", controller.GetWishlist)
+		wishlists.DELETE("/remove", controller.RemoveFromWishlist)
+	}
+	requests := r.Group("/requests")
+	{
+		requests.POST("/add-request", controller.CreateUserRequest)
 	}
 
 	r.Run(":8000")
