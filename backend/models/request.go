@@ -8,5 +8,6 @@ type Request struct {
 	Name  string
 	Desc string
 	Price int
-	ReqType []Outfit `gorm:"many2many:req_type"`
+	RequestType int
+	ReqType Outfit `gorm:"foreignKey:RequestType"`
 }

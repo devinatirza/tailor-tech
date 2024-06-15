@@ -1,60 +1,60 @@
 package model
 
-type Top struct{
-	ProductID uint `gorm:"primaryKey"`
-	Product Product
-	Chest float64
-	ShoulderToWaist float64
-	Shoulder float64
-	SleveLength float64
-	Waist float64
-	Neck float64
-	Collar bool
+type Top struct {
+	RequestID       uint `gorm:"primaryKey"`
+	Request         Request
+	Chest           string
+	ShoulderToWaist string
+	Shoulder        string
+	SleveLength     string
+	Waist           string
+	Neck            string
+	Collar          bool
 }
 
 type Bottom struct {
-	ProductID    uint    `gorm:"primaryKey"`
-	Product      Product
-	WaistToAnkle float64
-	Waist        float64
-	Hip          float64
-	Ankle        float64
-	Thigh        float64
-	Knee         float64
-	CuffWidth    float64
+	RequestID    uint `gorm:"primaryKey"`
+	Request      Request
+	WaistToAnkle string
+	Waist        string
+	Hip          string
+	Ankle        string
+	Thigh        string
+	Knee         string
+	CuffWidth    string
 }
 
-type Dress struct{
-	ProductID uint `gorm:"primaryKey"`
-	Product Product
-	Chest float64
-	Shoulder float64
-	DressLength float64
-	Waist float64
-	Hip float64
+type Dress struct {
+	RequestID   uint `gorm:"primaryKey"`
+	Request     Request
+	Chest       string
+	Shoulder    string
+	DressLength string
+	Waist       string
+	Hip         string
 }
 
 type Suit struct {
-	ProductID   uint    `gorm:"primaryKey"`
-	Product     Product
-	Chest       float64
-	Waist       float64
-	Hip         float64
-	Shoulder    float64
-	SleeveLength float64
-	JacketLength float64
-	Inseam      float64
-	Outseam     float64
-	Thigh       float64
-	Knee        float64
-	Ankle       float64
+	RequestID    uint `gorm:"primaryKey"`
+	Request      Request
+	Chest        string
+	Waist        string
+	Hip          string
+	Shoulder     string
+	SleeveLength string
+	JacketLength string
+	Inseam       string
+	Outseam      string
+	Thigh        string
+	Knee         string
+	Ankle        string
 }
 
 type ToteBag struct {
-	ProductID   uint    `gorm:"primaryKey"`
-	Product     Product
-	Color string
-	Material string
-	Writing string
+	RequestID uint `gorm:"primaryKey"`
+	Request   Request
+	Color     string
+	Material  string
+	Writing   string
 	ImageDesc string
 }

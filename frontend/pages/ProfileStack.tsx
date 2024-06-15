@@ -10,22 +10,29 @@ import FAQsScreen from './FAQs';
 import CouponCodeScreen from './CouponCode';
 import CouponRedeemScreen from './CouponRedeem';
 
+export type ProfileStackParamList = {
+  Profile: undefined;
+  UpdateProfile: undefined;
+  FAQs: undefined;
+  CouponCode: undefined;
+  CouponRedeem: undefined;
+};
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<ProfileStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const ProfileStack = () => {
   
   return (
-    <Stack.Navigator initialRouteName={'ProfileScreen'}>
-        <Stack.Screen name='ProfileScreen' component={ProfileScreen}
+    <Stack.Navigator initialRouteName={'Profile'}>
+        <Stack.Screen name='Profile' component={ProfileScreen}
         options={{
         headerShown: false
         }}>   
         </Stack.Screen>
-        <Stack.Screen name='Update Profile' component={UpdateProfileScreen}></Stack.Screen>
-        <Stack.Screen name='Coupon Code' component={CouponCodeScreen}></Stack.Screen>  
-        <Stack.Screen name='Coupon Redeem' component={CouponRedeemScreen}></Stack.Screen>  
+        <Stack.Screen name='UpdateProfile' component={UpdateProfileScreen}></Stack.Screen>
+        <Stack.Screen name='CouponCode' component={CouponCodeScreen}></Stack.Screen>  
+        <Stack.Screen name='CouponRedeem' component={CouponRedeemScreen}></Stack.Screen>  
         <Stack.Screen name='FAQs' component={FAQsScreen}></Stack.Screen>  
     </Stack.Navigator>
     );

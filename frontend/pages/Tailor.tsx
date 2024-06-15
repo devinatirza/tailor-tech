@@ -67,11 +67,12 @@ const TailorScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 32,
+    fontSize: 40,
     fontWeight: 'bold',
     marginLeft: 8,
     color: '#260101',
     alignSelf: 'flex-start',
+    marginTop: 10,
   },
   container: {
     flex: 1,
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 16.5,
+    fontSize: 18,
     color: '#260101',
   },
   tailorsContainer: {
@@ -110,45 +111,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 20,
     width: (Dimensions.get('window').width / 2) - 40,
-  },
-  tailorImage: {
-    width: '100%',
-    height: undefined,
-    aspectRatio: 4 / 3,
-    resizeMode: 'cover',
-    borderRadius: 8,
-  },
-  tailorName: {
-    marginTop: 8,
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#260101',
-  },
-  tailorSpecialty: {
-    marginTop: 3,
-    fontSize: 15,
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  tailorLocation: {
-    fontSize: 13,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  ratingText: {
-    fontSize: 13,
-    color: '#181818',
-  },
-  icon: {
-    width: 14,
-    height: 14,
-    marginRight: 4,
   },
 });
 

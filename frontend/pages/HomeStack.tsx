@@ -1,4 +1,3 @@
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,15 +8,21 @@ import ClothingTypesScreen from './ClothingTypes';
 import TailorService from './TailorService';
 import MeasurementScreen from './Measurement';
 import HelpOption from './HelpOptions';
+import HomeServiceScreen from './HomeService';
+import WishlistScreen from './Wishlists';
+import ChatScreen from './Chats';
 
 export type HomeStackParamList = {
   Home: undefined;
-  Services: undefined;
+  Chats: undefined;
+  Wishlists: undefined
   Tailors: undefined;
   Products: undefined;
+  Services: { speciality: string };
   Categories: { specialities: { Category: string, Price: number }[] };
-  Measurement: undefined;
+  Measurement: { selectedType: string };
   Help: undefined
+  HomeService: undefined
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -30,6 +35,14 @@ const HomeStack = () => {
         name="Home" 
         component={HomeScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="Wishlists" 
+        component={WishlistScreen}
+      />
+      <Stack.Screen 
+        name="Chats" 
+        component={ChatScreen}
       />
       <Stack.Screen 
         name="Services" 
@@ -49,6 +62,7 @@ const HomeStack = () => {
       />
         <Stack.Screen name="Measurement" component={MeasurementScreen} />
         <Stack.Screen name="Help" component={HelpOption} />
+        <Stack.Screen name="HomeService" component={HomeServiceScreen} />
     </Stack.Navigator>
   );
 };

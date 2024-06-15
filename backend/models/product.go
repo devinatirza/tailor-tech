@@ -8,5 +8,6 @@ type Product struct {
 	TailorID uint
 	Desc string
 	Price int
+	Size string
 	ImgUrl string
 }

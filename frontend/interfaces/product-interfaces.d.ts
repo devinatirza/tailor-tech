@@ -5,4 +5,5 @@ export interface IProduct {
   Desc: string;
   Price: number;
   ImgUrl: string;
+  Size: string;
 }

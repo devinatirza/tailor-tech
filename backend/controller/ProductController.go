@@ -16,13 +16,14 @@ func GetAllProduct(c *gin.Context) {
 		Desc    string
 		Price   int
 		ImgUrl  string
+		Size 	string
 	}
 	db := database.GetInstance()
 
 	var products []GetProduct
 	query := c.Query("query")
 
-	sql := "SELECT products.id, products.name as product, tailors.name as tailor, `desc`, products.price, products.img_url " +
+	sql := "SELECT products.id, products.name as product, tailors.name as tailor, `desc`, products.price, products.img_url, products.size " +
 		"FROM products " +
 		"LEFT JOIN tailors ON products.tailor_id = tailors.id "
 

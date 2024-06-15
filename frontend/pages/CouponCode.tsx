@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, ScrollView } from "react-native";
 import { useUser } from '../contexts/user-context';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import axios from "axios";
+import { ProfileStackParamList } from "./ProfileStack";
+
+type Navigation = NavigationProp<ProfileStackParamList, 'CouponRedeem'>;
 
 interface CouponProps {
   code: string;
@@ -47,7 +50,7 @@ const Button: React.FC<ButtonProps> = ({ text, style, textStyle }) => (
 
 const CouponCodeScreen: React.FC = () => {
   const { user } = useUser();
-  const navigation = useNavigation();
+  const navigation = useNavigation<Navigation>();
   const [coupons, setCoupons] = useState<{ PromoCode: string, Quantity: number }[]>([]);
 
   useEffect(() => {
@@ -88,7 +91,7 @@ const CouponCodeScreen: React.FC = () => {
       </View>
       <TouchableOpacity 
         style={styles.anotherCouponButton} 
-        onPress={() => navigation.navigate('Coupon Redeem')}
+        onPress={() => navigation.navigate('CouponRedeem')}
       >
         <Text style={styles.anotherCouponButtonText}>{buttonText}</Text>
       </TouchableOpacity> 

@@ -142,7 +142,7 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
         navigation.navigate('Login')
       }
     } catch (error) {
-      setError(error.response?.data.error || 'An error occurred');
+      setError('An error occurred');
     }
   };
 

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { HomeStackParamList } from './HomeStack'; 
+import { useRoute, RouteProp, useNavigation, NavigationProp } from '@react-navigation/native';
+import { HomeStackParamList } from './HomeStack';
 
 type ClothingTypesRouteProp = RouteProp<HomeStackParamList, 'Categories'>;
+type Navigation = NavigationProp<HomeStackParamList, 'Measurement'>;
 
 const clothingTypes = [
   { type: 'TOPS', basePrice: '' },
@@ -15,6 +16,7 @@ const clothingTypes = [
 
 const ClothingTypes: React.FC = () => {
   const route = useRoute<ClothingTypesRouteProp>();
+  const navigation = useNavigation<Navigation>();
   const { specialities } = route.params;
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -29,6 +31,12 @@ const ClothingTypes: React.FC = () => {
 
   const handleSelect = (type: string) => {
     setSelected(type);
+  };
+
+  const handleChoose = () => {
+    if (selected) {
+      navigation.navigate('Measurement', { selectedType: selected });
+    }
   };
 
   return (
@@ -60,7 +68,7 @@ const ClothingTypes: React.FC = () => {
           )}
         </TouchableOpacity>
       ))}
-      <TouchableOpacity style={styles.chooseButton}>
+      <TouchableOpacity style={styles.chooseButton} onPress={handleChoose}>
         <Text style={styles.chooseButtonText}>Choose</Text>
       </TouchableOpacity>
     </View>
@@ -141,13 +149,14 @@ const styles = StyleSheet.create({
   },
   chooseButton: {
     backgroundColor: '#D9C3A9',
-    marginHorizontal: width * 0.2,
+    position: 'absolute',
+    bottom: 60,
+    left: width * 0.2,
+    right: width * 0.2,
     height: height * 0.06,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 30,
   },
   chooseButtonText: {
     fontSize: width * 0.05,

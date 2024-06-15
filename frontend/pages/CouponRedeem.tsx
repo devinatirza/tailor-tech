@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert, Image } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native'; 
+import { NavigationProp, useNavigation } from '@react-navigation/native'; 
+import { ProfileStackParamList } from './ProfileStack';
+
+type Navigation = NavigationProp<ProfileStackParamList, 'CouponCode'>;
 
 const CouponRedeemScreen = () => {
   const { user, updateUser } = useUser();
-  const navigation = useNavigation(); 
+  const navigation = useNavigation<Navigation>(); 
   const points = user.Points;
   const id = user.ID;
   const remainingPoints = 100 - points;
@@ -28,7 +31,7 @@ const CouponRedeemScreen = () => {
       });
       updateUser({ ...user, Points: newPoints });
       Alert.alert('Success!', `Your promo code is: ${promoCode}`);
-      navigation.navigate('Coupon Code');
+      navigation.navigate('CouponCode');
     } catch (error) {
       console.error('Redeem error:', error);
       Alert.alert('Error', 'Failed to redeem points. Please try again.');

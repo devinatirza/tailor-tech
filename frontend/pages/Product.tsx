@@ -2,17 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, FlatList, Dimensions, TextInput } from 'react-native';
 import axios from 'axios';
 import { IProduct } from '../interfaces/product-interfaces';
-
-const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => (
-  <View style={styles.productItem}>
-    <Image source={{ uri: product.ImgUrl }} style={styles.productImage} />
-    <Image source={require('../assets/sale_icon.png')} style={styles.plusIcon} />
-    <Text style={styles.productName}>{product.Product}</Text>
-    <Text style={styles.tailorName}>{product.Tailor}</Text>
-    <Text style={styles.productDesc}>{product.Desc}</Text>
-    <Text style={styles.productPrice}>IDR {product.Price}K</Text>
-  </View>
-);
+import ProductCard from './ProductCard';
 
 const ProductScreen: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -77,16 +67,18 @@ const ProductScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 32,
+    fontSize: 40,
     fontWeight: 'bold',
     marginLeft: 8,
     color: '#260101',
     alignSelf: 'flex-start',
+    marginTop: 10,
   },
   container: {
     flex: 1,
     paddingTop: 7,
-    paddingHorizontal: 30,
+    paddingLeft: 28,
+    paddingRight: 33,
     backgroundColor: 'white',
   },
   searchContainer: {
@@ -109,7 +101,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 16.5,
+    fontSize: 18,
     color: '#260101',
   },
   productsContainer: {
@@ -120,46 +112,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 20,
     width: (Dimensions.get('window').width / 2) - 40,
-  },
-  productImage: {
-    width: '100%',
-    height: 160,
-    resizeMode: 'cover',
-  },
-  productName: {
-    marginTop: 10,
-    fontSize: 17,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#260101',
-  },
-  tailorName: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#593825',
-    fontWeight: '600',
-    marginTop: 2,
-  },
-  productDesc: {
-    marginTop: 2,
-    fontSize: 15,
-    textAlign: 'center',
-    marginHorizontal: 5,
-  },
-  productPrice: {
-    marginTop: 3,
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#260101',
-  },
-  plusIcon: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 25,
-    height: 25,
-    resizeMode: 'contain',
   },
 });
 

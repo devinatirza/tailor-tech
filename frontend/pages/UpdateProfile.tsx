@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, Alert, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { ProfileStackParamList } from './ProfileStack';
 
+type Navigation = NavigationProp<ProfileStackParamList, 'Profile'>;
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 const UpdateProfileScreen = () => {
   const { user, updateUser } = useUser();
-  const navigation = useNavigation();
+  const navigation = useNavigation<Navigation>();
 
   const [name, setName] = useState(user.Name);
   const [email, setEmail] = useState(user.Email);
@@ -71,7 +73,7 @@ const UpdateProfileScreen = () => {
       } else {
         updateUser(result.user);
         Alert.alert('Success', 'Profile updated successfully!');
-        navigation.navigate('ProfileScreen');
+        navigation.navigate('Profile');
       }
     } catch (error) {
       Alert.alert('Error', 'An error occurred. Please try again later.');

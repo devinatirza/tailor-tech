@@ -1,8 +1,11 @@
 import * as React from "react";
 import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import { useUser } from '../contexts/user-context';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import axios from "axios";
+import { ProfileStackParamList } from "./ProfileStack";
+
+type Navigation = NavigationProp<ProfileStackParamList, 'UpdateProfile', 'FAQs'>;
 
 const OptionItem: React.FC<{ text: string; iconSrc: any }> = ({ text, iconSrc }) => (
   <View style={styles.optionItemContainer}>
@@ -16,7 +19,7 @@ const OptionItem: React.FC<{ text: string; iconSrc: any }> = ({ text, iconSrc })
 
 const ProfileScreen = () => {
   const { updateUser, user } = useUser();
-  const navigation = useNavigation();
+  const navigation = useNavigation<Navigation>();
 
   const handleLogout = async () => {
     try {
@@ -39,14 +42,14 @@ const ProfileScreen = () => {
               <Text style={styles.profileName}>{user?.Name}</Text>
               <Text style={styles.profileEmail}>{user?.Email}</Text>
               <Text style={styles.profilePoint}>{user?.Points} Points</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Update Profile')} style={styles.editProfileButton}>
+              <TouchableOpacity onPress={() => navigation.navigate('UpdateProfile')} style={styles.editProfileButton}>
                 <Text style={styles.editProfileButtonText}>Edit Profile</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('Coupon Code')}>
+          <TouchableOpacity onPress={() => navigation.navigate('CouponCode')}>
             <OptionItem text="Coupon Code" iconSrc={{ uri: '../assets/voucherIcon.png' }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('FAQs')}>
