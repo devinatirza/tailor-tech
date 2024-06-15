@@ -7,7 +7,6 @@ import { useUser } from '../contexts/user-context';
 
 type ConfirmationPageRouteProp = RouteProp<HomeStackParamList, 'Confirmation'>;
 type Navigation = NavigationProp<HomeStackParamList, 'Measurement'>;
-// type Navigation = NavigationProp<HomeStackParamList, 'Measurement' | 'Request'>;
 
 const ConfirmationScreen: React.FC = () => {
   const route = useRoute<ConfirmationPageRouteProp>();
@@ -40,7 +39,7 @@ const ConfirmationScreen: React.FC = () => {
         });
         if (response.status === 201) {
           console.log('Measurements saved successfully.');
-        //   navigation.navigate('RequestFinal');
+          navigation.navigate('RequestSent');
         } else {
           console.error(`Unexpected response status: ${response.status}`);
         }
