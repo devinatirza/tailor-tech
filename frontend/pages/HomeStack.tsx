@@ -12,7 +12,6 @@ import WishlistScreen from './Wishlists';
 import ChatScreen from './Chat';
 import CategoriesScreen from './Categories';
 import ConfirmationScreen from './Confirmation';
-import RequestSent from './RequestSent';
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -93,11 +92,6 @@ const HomeStack = () => {
         name="Confirmation" 
         component={ConfirmationScreen}  
       />
-      {/* <Stack.Screen 
-        name="RequestSent" 
-        component={RequestSent}  
-        options={{ headerShown: false }}
-      /> */}
     </Stack.Navigator>
   );
 };
