@@ -6,7 +6,7 @@ import { HomeStackParamList } from './HomeStack';
 import { useUser } from '../contexts/user-context';
 
 type ConfirmationPageRouteProp = RouteProp<HomeStackParamList, 'Confirmation'>;
-type Navigation = NavigationProp<HomeStackParamList, 'Measurement'>;
+type Navigation = NavigationProp<HomeStackParamList, 'Measurement' | 'RequestSent'>;
 
 const ConfirmationScreen: React.FC = () => {
   const route = useRoute<ConfirmationPageRouteProp>();
@@ -17,6 +17,11 @@ const ConfirmationScreen: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleConfirm = async () => {
+    if (!description) {
+      setErrorMessage('Please provide details for your tailoring request.');
+      return;
+    }
+
     try {
       const requestEndpoint = 'http://localhost:8000/requests/add-request';
       const requestData = {
@@ -28,30 +33,40 @@ const ConfirmationScreen: React.FC = () => {
         Status: 'Pending',
       };
       const requestResponse = await axios.post(requestEndpoint, requestData);
-  
+
       if (requestResponse.status === 201) {
-        const requestId = requestResponse.data.ID; 
-        const endpoint = `http://localhost:8000/measurements/${selectedType.toLowerCase()}`;
+        const requestId = requestResponse.data.ID;
+        let endpoint
+        if (selectedType == 'TOTE BAGS') {
+          endpoint = `http://localhost:8000/measurements/totebags`;
+        } else {
+          endpoint = `http://localhost:8000/measurements/${selectedType.toLowerCase()}`;
+        }
         console.log('Submitting payload:', measurements);
         const response = await axios.post(endpoint, {
           ...measurements,
-          RequestID: requestId 
+          RequestID: requestId
         });
         if (response.status === 201) {
           console.log('Measurements saved successfully.');
           navigation.navigate('RequestSent');
         } else {
           console.error(`Unexpected response status: ${response.status}`);
+          setErrorMessage('Failed to save measurements');
         }
       } else {
         console.error(`Unexpected response status: ${requestResponse.status}`);
+        setErrorMessage('Failed to create request');
       }
     } catch (error) {
       console.error('Error saving measurements:', error);
       setErrorMessage('Failed to save measurements');
     }
   };
-  
+
+  const getTitle = () => {
+    return selectedType === 'TOTE BAGS' ? 'Description' : 'Measurement';
+  };
 
   return (
     <View style={styles.container}>
@@ -69,7 +84,7 @@ const ConfirmationScreen: React.FC = () => {
         <Text style={styles.value}>{selectedType}</Text>
       </View>
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>Measurement</Text>
+        <Text style={styles.label}>{getTitle()}</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Measurement', { selectedType: selectedType, tailorId, tailorName })}>
           <Image source={require('../assets/pencilIcon.png')} style={styles.pencilIcon} />
         </TouchableOpacity>
@@ -82,7 +97,7 @@ const ConfirmationScreen: React.FC = () => {
         <Text style={styles.label}>Description</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your request description"
+          placeholder="Enter tailoring details"
           value={description}
           onChangeText={setDescription}
         />
@@ -123,7 +138,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 20,
     color: '#260101',
-    fontWeight: '600'
+    fontWeight: '600',
   },
   value: {
     fontSize: 18,
@@ -146,16 +161,18 @@ const styles = StyleSheet.create({
     borderBottomColor: '#5B3E31',
     paddingVertical: 5,
     paddingHorizontal: 10,
-    color: '#5B3E51',
+    color: 'grey',
   },
   confirmButton: {
     backgroundColor: '#D9C3A9',
+    position: 'absolute',
+    bottom: 60,
+    left: width * 0.2,
+    right: width * 0.2,
     height: height * 0.06,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
-    marginTop: 20,
   },
   confirmText: {
     fontSize: width * 0.05,

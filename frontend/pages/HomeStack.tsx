@@ -37,7 +37,7 @@ export type HomeStackParamList = {
     measurements: any,
     selectedType: string, 
     tailorId: number, 
-    tailorName: string 
+    tailorName: string,
   };
   RequestSent: undefined;
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, TextInput } from 'react-native';
 import { useRoute, RouteProp, useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList } from './HomeStack';
 import InputField from '../components/input-field';
@@ -140,18 +140,18 @@ const MeasurementPage: React.FC = () => {
           {renderInputs()}
         </View>
         {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.nextButton, !allFieldsFilled && styles.disabledButton]}
-            onPress={handleNext}
-          >
-            <Text style={styles.nextButtonText}>Next</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Help')}>
-            <Text style={styles.helpText}>Need Help?</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.nextButton, !allFieldsFilled && styles.disabledButton]}
+          onPress={handleNext}
+        >
+          <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Help')}>
+          <Text style={styles.helpText}>Need Help?</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -176,12 +176,17 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     paddingHorizontal: 40,
     paddingBottom: height * 0.17, 
+    flexGrow: 1,
   },
   inputContainer: {
     flexGrow: 1,
   },
   buttonContainer: {
-    paddingHorizontal: 40,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 85,
     paddingVertical: 20,
     backgroundColor: 'white',
   },

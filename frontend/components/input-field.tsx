@@ -14,6 +14,7 @@ interface Styles {
   input: TextStyle;
   label: TextStyle;
   inputRow: TextStyle;
+  booleanRow: TextStyle;
   booleanButton: TextStyle;
   selectedBooleanButton: TextStyle;
   booleanButtonText: TextStyle;
@@ -41,11 +42,14 @@ const inputStyles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
+  },
+  booleanRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   booleanButton: {
     padding: 10,
-    backgroundColor: '#D9C3A9',
+    backgroundColor: '#D7D7D7',
     borderRadius: 5,
     marginHorizontal: 5,
   },
@@ -67,18 +71,20 @@ const InputField: React.FC<Props> = ({ name, label, value, onChange, unit, ...in
     return (
       <View style={inputStyles.inputRow}>
         <Text style={inputStyles.label}>{label}</Text>
-        <TouchableOpacity
-          style={[inputStyles.booleanButton, value === true && inputStyles.selectedBooleanButton]}
-          onPress={() => onChange(name, true)}
-        >
-          <Text style={inputStyles.booleanButtonText}>Yes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[inputStyles.booleanButton, value === false && inputStyles.selectedBooleanButton]}
-          onPress={() => onChange(name, false)}
-        >
-          <Text style={inputStyles.booleanButtonText}>No</Text>
-        </TouchableOpacity>
+        <View style={inputStyles.booleanRow}>
+          <TouchableOpacity
+            style={[inputStyles.booleanButton, value === true && inputStyles.selectedBooleanButton]}
+            onPress={() => onChange(name, true)}
+          >
+            <Text style={inputStyles.booleanButtonText}>Yes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[inputStyles.booleanButton, value === false && inputStyles.selectedBooleanButton]}
+            onPress={() => onChange(name, false)}
+          >
+            <Text style={inputStyles.booleanButtonText}>No</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

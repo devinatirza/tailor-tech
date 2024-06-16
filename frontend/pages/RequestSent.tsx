@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 
 const RequestSent = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('TailorTech');
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'TailorTech' }],
+        })
+      );
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -34,7 +39,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 230,
     height: 212,
-    marginBottom: 20,
+    marginBottom: 3,
   },
   message: {
     fontSize: 18,
