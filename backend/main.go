@@ -20,7 +20,11 @@ func main() {
 	}))
 
 	r.POST("/register", controller.Register)
-	r.POST("/login", controller.LoginHandler)
+	login := r.Group("/login")
+	{
+		login.POST("/user", controller.LoginHandler)
+		// login.POST("/tailor", controller.TailorLoginHandler)
+	}
 	r.POST("/update-profile", controller.UpdateProfile)
 	r.GET("/validate", controller.GetUserFromJWT)
 	r.GET("/logout", controller.LogoutHandler)
