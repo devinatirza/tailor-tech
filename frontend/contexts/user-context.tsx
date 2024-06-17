@@ -17,7 +17,7 @@ export function UserProvider({children}: ContentLayout){
 
     async function login(email: string, pass: string){
         try{
-            const response = await axios.post("http://localhost:8000/login", {
+            const response = await axios.post("http://localhost:8000/login/user", {
                 email: email,
                 pass: pass
             }, {
