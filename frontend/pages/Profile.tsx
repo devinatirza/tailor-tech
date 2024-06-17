@@ -13,7 +13,7 @@ const OptionItem: React.FC<{ text: string; iconSrc: any }> = ({ text, iconSrc })
     <View style={styles.optionItemTextContainer}>
       <Text style={styles.optionItemText}>{text}</Text>
     </View>
-    <Image source={{ uri: '../assets/arrowIcon.png' }} style={styles.optionItemIcon} />
+    <Image source={require('../assets/arrowIcon.png')} style={styles.optionItemIcon} />
   </View>
 );
 
@@ -25,7 +25,8 @@ const ProfileScreen = () => {
     try {
       await axios.get('http://localhost:8000/logout');
       document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      navigation.navigate('Login');
+      updateUser(null);
+      navigation.navigate('Role');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -38,7 +39,7 @@ const ProfileScreen = () => {
         <View style={styles.profileContainer}>
           <View style={styles.profileContent}>
             <View style={styles.profileImageContainer}>
-              <Image source={{ uri: '../assets/profileIcon.png' }} style={styles.profileImage} />
+              <Image source={require('../assets/profileIcon.png')} style={styles.profileImage} />
               <Text style={styles.profileName}>{user?.Name}</Text>
               <Text style={styles.profileEmail}>{user?.Email}</Text>
               <Text style={styles.profilePoint}>{user?.Points} Points</Text>
@@ -50,15 +51,15 @@ const ProfileScreen = () => {
         </View>
         <View style={styles.optionsContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('CouponCode')}>
-            <OptionItem text="Coupon Code" iconSrc={{ uri: '../assets/voucherIcon.png' }} />
+            <OptionItem text="Coupon Code" iconSrc={require('../assets/voucherIcon.png')} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('FAQs')}>
-          <OptionItem text="FAQs" iconSrc={{ uri: '../assets/faqIcon.png' }} />
+          <OptionItem text="FAQs" iconSrc={require('../assets/faqIcon.png')} />
           </TouchableOpacity>   
         </View>
         <TouchableOpacity onPress={handleLogout}>
           <View style={styles.logoutContainer}>
-            <Image source={{ uri: '../assets/logoutIcon.png' }} style={styles.logoutImage} />
+            <Image source={require('../assets/logoutIcon.png')} style={styles.logoutImage} />
             <View style={styles.logoutTextContainer}>
               <Text style={styles.logoutText}>Logout</Text>
             </View>
@@ -115,8 +116,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     color: '#593825',
-    fontFamily: 'Montserrat',
-    letterSpacing: 0.5,
   },
   profileEmail: {
     fontSize: deviceWidth * 0.05,

@@ -23,7 +23,7 @@ func main() {
 	login := r.Group("/login")
 	{
 		login.POST("/user", controller.LoginHandler)
-		// login.POST("/tailor", controller.TailorLoginHandler)
+		login.POST("/tailor", controller.TailorLoginHandler)
 	}
 	r.POST("/update-profile", controller.UpdateProfile)
 	r.GET("/validate", controller.GetUserFromJWT)
@@ -32,6 +32,8 @@ func main() {
 	product := r.Group("/products")
 	{
 		product.GET("/get-all", controller.GetAllProduct)
+		product.GET("/get-tailor", controller.GetTailorProducts)
+		product.DELETE("/delete/:id", controller.RemoveProduct)
 	}
 
 	tailor := r.Group("/tailors")

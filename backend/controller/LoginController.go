@@ -69,6 +69,68 @@ func LoginHandler(c *gin.Context){
 
 }
 
+func TailorLoginHandler(c *gin.Context){
+	type TailorInput struct{
+		Email string 
+		Pass  string 
+	}
+
+	var input TailorInput
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if input.Email == ""{
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please input email!"})
+		return
+	}
+
+	db := database.GetInstance()
+
+	var user models.Tailor
+
+	if db.Where("email = ?", input.Email).Find(&user).RowsAffected == 0{
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You haven't registered yet!"})
+		return
+	}
+
+	if input.Pass == ""{
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please input password!"})
+		return
+	}
+
+	// if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Pass)) != nil{
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Wrong password!"})
+	// 	return
+	// }
+
+	if user.Password != input.Pass {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect password!"})
+		return
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Hour * 24 * 15).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte("qwertyuiop"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth", tokenString, 3600*24*15, "/", "localhost", false, false)
+
+
+	c.JSON(http.StatusOK, user)
+
+}
+
 func GetUserFromJWT(c *gin.Context){
 	db := database.GetInstance()
 	tokenString, err := c.Cookie(`auth`)

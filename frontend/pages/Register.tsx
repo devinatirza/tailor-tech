@@ -23,6 +23,7 @@ interface Styles {
   logo: ImageStyle;
   text: TextStyle;
   error: TextStyle;
+  backButton: ViewStyle;
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -30,10 +31,10 @@ const styles = StyleSheet.create<Styles>({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
     backgroundColor: '#F8F8F8',
   },
   inputContainer: {
+    paddingHorizontal: 40,
     width: '100%',
     marginBottom: 20,
   },
@@ -80,7 +81,7 @@ const styles = StyleSheet.create<Styles>({
   button: {
     height: 50,
     backgroundColor: '#D9C3A9',
-    borderRadius: 5,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     width: '60%',
@@ -105,6 +106,11 @@ const styles = StyleSheet.create<Styles>({
   error: {
     color: 'red',
     marginBottom: 10,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 55,
+    left: 30,
   },
 });
 
@@ -160,6 +166,9 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Image source={require('../assets/back_icon.png')} style={{ width: 30, height: 26 }} />
+      </TouchableOpacity>
       <Text style={styles.title}>Welcome to TailorTech!</Text>
       <View style={styles.inputContainer}>
        <StyledText nameProp={nameProp} placeholder='Name' setNameProp={setNameProp}/> 

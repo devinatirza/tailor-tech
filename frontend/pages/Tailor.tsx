@@ -43,7 +43,7 @@ const TailorScreen: React.FC = () => {
       <Text style={styles.title}>Tailors</Text>
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
-          <Image source={{ uri: '../assets/searchbar.png' }} style={styles.searchIcon} />
+          <Image source={require('../assets/searchbar.png')} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search for Tailors..."

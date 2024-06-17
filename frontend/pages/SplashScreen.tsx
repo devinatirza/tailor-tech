@@ -22,7 +22,7 @@ const SplashScreen = () => {
   useEffect(() => {
     const delay = 3000;
     const timer = setTimeout(() => {
-      navigation.navigate('Login');
+      navigation.navigate('Role');
     }, delay);
 
     return () => {
@@ -31,7 +31,7 @@ const SplashScreen = () => {
   }, []);
 
   const handlePress = () => {
-    navigation.navigate('Login');
+    navigation.navigate('Role');
   };
 
   return (

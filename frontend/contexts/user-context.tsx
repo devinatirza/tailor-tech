@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { IUser } from "../interfaces/user-interfaces";
 import axios from "axios";
+import { ITailor } from "../interfaces/tailor-interfaces";
 
 const userContext = createContext({} as any)
 
@@ -9,9 +10,9 @@ type ContentLayout = {
 }
 
 export function UserProvider({children}: ContentLayout){
-    const [user, setUser] = useState<IUser|null>(null)
+    const [user, setUser] = useState<IUser|ITailor|null>(null)
 
-    function updateUser(user: IUser){
+    function updateUser(user: IUser|ITailor){
         setUser(user)
     }
 
@@ -36,7 +37,28 @@ export function UserProvider({children}: ContentLayout){
         }
     }
 
-    const data = {user, login, updateUser}
+    async function tailorLogin(email: string, pass: string){
+        try{
+            const response = await axios.post("http://localhost:8000/login/tailor", {
+                email: email,
+                pass: pass
+            }, {
+                withCredentials: true
+            })
+
+            if(response.status === 200){
+                setUser(response.data)
+                return ''
+            }
+            else{
+                return 'An error occured.'
+            }
+        } catch(error){
+            return error.response?.data.error
+        }
+    }
+
+    const data = {user, login, tailorLogin, updateUser}
 
     return <userContext.Provider value={data}>{children}</userContext.Provider>
 }
