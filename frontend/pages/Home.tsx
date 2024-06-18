@@ -67,7 +67,7 @@ const HomeScreen: React.FC = () => {
     { src: '../assets/bottoms_icon.webp', label: 'Bottoms' },
     { src: '../assets/dresses_icon.png', label: 'Dresses' },
     { src: '../assets/suits_icon.png', label: 'Suits' },
-    { src: '../assets/bags_icon.png', label: 'ToteBags' },
+    { src: '../assets/totebag_icon.png', label: 'ToteBags' },
   ];
 
   const formatServiceLabel = (label: string) => {
