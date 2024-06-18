@@ -106,26 +106,6 @@ const TailorLoginScreen: React.FC<IStackScreenProps> = (props) => {
 
   const { tailorLogin, updateUser, user } = useUser();
 
-  useEffect(() => {
-    const validate = async () => {
-      const response = await axios.get("http://localhost:8000/validate", {
-        withCredentials: true,
-      });
-      return response.data;
-    };
-
-    validate()
-      .then((res: ITailor) => {
-        if (!user) {
-          updateUser(res);
-        }
-      })
-      .catch((error) => {
-        // navigate("/")
-      });
-    if (user) navigation.navigate('TailorTechTailor');
-  }, [user]);
-
   async function loginHandler() {
     const res = await tailorLogin(email, password);
 

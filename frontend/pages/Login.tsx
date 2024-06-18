@@ -100,27 +100,7 @@ const LoginScreen: React.FC<IStackScreenProps> = (props) => {
   const [error, setError] = useState('');
 
   const { login, updateUser, user } = useUser();
-
-  useEffect(() => {
-    const validate = async () => {
-      const response = await axios.get("http://localhost:8000/validate", {
-        withCredentials: true,
-      });
-      return response.data;
-    };
-
-    validate()
-      .then((res: IUser) => {
-        if (!user) {
-          updateUser(res);
-        }
-      })
-      .catch((error) => {
-        // navigate("/")
-      });
-    if (user) navigation.navigate('TailorTech');
-  }, [user]);
-
+  
   async function loginHandler() {
     const res = await login(email, password);
 

@@ -8,6 +8,8 @@ import ProfileStack from './ProfileStack';
 import CartScreen from './Cart';
 import { ParamListBase } from '@react-navigation/routers';
 import TailorHomeStack from './TailorHomeStack';
+import TailorProfileScreen from './TailorProfile';
+import AddProductScreen from './AddProduct';
 
 const Tab = createBottomTabNavigator();
 
@@ -71,7 +73,7 @@ const TailorTabNavigation = () => {
         tabBarIcon: ({ color, focused }) => {
           if (route.name === 'Home') {
             return focused ? <HomeIconActive color={color} /> : <HomeIconInactive color={color} />;
-          } else if (route.name === 'Cart') {
+          } else if (route.name === 'Product') {
             return focused ? <AddIconActive color={color} /> : <AddIconInactive color={color} />;
           } else if (route.name === 'Order') {
             return focused ? <OrderIconActive color={color} /> : <OrderIconInactive color={color} />;
@@ -92,9 +94,9 @@ const TailorTabNavigation = () => {
       })}
     >
       <Tab.Screen name="Home" component={TailorHomeStack} />
-      <Tab.Screen name="Cart" component={CartScreen} />
+      <Tab.Screen name="Product" component={AddProductScreen} />
       <Tab.Screen name="Order" component={OrderScreen} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen name="Profile" component={TailorProfileScreen} />
     </Tab.Navigator>
   );
 };

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"main/database"
-	model "main/models"
+	models "main/models"
 	"net/http"
 	"strings"
 
@@ -76,12 +76,43 @@ func GetTailorProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, products)
 }
 
+func GetInactiveTailorProducts(c *gin.Context) {
+	type GetProduct struct {
+		ID      int
+		Product string
+		Tailor  string
+		Desc    string
+		Price   int
+		ImgUrl  string
+		Size    string
+	}
+	db := database.GetInstance()
+
+	var products []GetProduct
+	tailorID := c.Query("tailor_id")
+
+	if tailorID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "tailor_id query parameter is required"})
+		return
+	}
+
+	sql := "SELECT products.id, products.name as product, tailors.name as tailor, products.desc, products.price, products.img_url, products.size " +
+		"FROM products " +
+		"LEFT JOIN tailors ON products.tailor_id = tailors.id " +
+		"WHERE products.tailor_id = ? AND products.is_active = false " +
+		"GROUP BY products.id"
+
+	db.Raw(sql, tailorID).Scan(&products)
+
+	c.JSON(http.StatusOK, products)
+}
+
 func RemoveProduct(c *gin.Context) {
 	productID := c.Param("id")
 
 	db := database.GetInstance()
 
-	var product model.Product
+	var product models.Product
 	if err := db.First(&product, productID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
 		return
@@ -94,4 +125,24 @@ func RemoveProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Product removed successfully"})
+}
+
+func ActivateProduct(c *gin.Context) {
+	productID := c.Param("id")
+
+	db := database.GetInstance()
+
+	var product models.Product
+	if err := db.First(&product, productID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+		return
+	}
+
+	product.IsActive = true
+	if err := db.Save(&product).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to activate product"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Product activated successfully"})
 }

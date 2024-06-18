@@ -65,7 +65,6 @@ const ProfileScreen = () => {
             </View>
           </View>
         </TouchableOpacity>
-        
       </View>
     </View>
   );

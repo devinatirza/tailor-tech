@@ -20,6 +20,7 @@ func main() {
 	}))
 
 	r.POST("/register", controller.Register)
+
 	login := r.Group("/login")
 	{
 		login.POST("/user", controller.LoginHandler)
@@ -32,8 +33,10 @@ func main() {
 	product := r.Group("/products")
 	{
 		product.GET("/get-all", controller.GetAllProduct)
-		product.GET("/get-tailor", controller.GetTailorProducts)
+		product.GET("/get-tailor-active", controller.GetTailorProducts)
+		product.GET("/get-tailor-inactive", controller.GetInactiveTailorProducts)
 		product.DELETE("/delete/:id", controller.RemoveProduct)
+		product.PUT("/activate/:id", controller.ActivateProduct)
 	}
 
 	tailor := r.Group("/tailors")

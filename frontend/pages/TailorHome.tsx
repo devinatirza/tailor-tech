@@ -13,12 +13,14 @@ const TailorHomeScreen: React.FC = () => {
   const [tailorProducts, setTailorProducts] = useState<IProduct[]>([]);
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
   const [searchQuery, setSearchQuery] = useState('');
+  const [view, setView] = useState<'active' | 'inactive'>('active'); 
 
   const { user } = useUser();
 
-  async function fetchProducts(query = '') {
+  async function fetchProducts(query = '', view = 'active') {
     try {
-      const response = await axios.get('http://localhost:8000/products/get-tailor', {
+      const endpoint = view === 'active' ? 'http://localhost:8000/products/get-tailor-active' : 'http://localhost:8000/products/get-tailor-inactive';
+      const response = await axios.get(endpoint, {
         params: { query, tailor_id: user?.ID },
       });
       setTailorProducts(response.data);
@@ -36,9 +38,18 @@ const TailorHomeScreen: React.FC = () => {
     }
   }
 
+  async function handleAddToProduct(productId: number) {
+    try {
+      await axios.put(`http://localhost:8000/products/activate/${productId}`);
+      setTailorProducts((prevProducts) => prevProducts.filter(product => product.ID !== productId));
+    } catch (error) {
+      console.log('Error adding product:', error);
+    }
+  }
+
   useEffect(() => {
     if (user?.ID) {
-      fetchProducts();
+      fetchProducts('', view);
     }
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
       setScreenWidth(window.width);
@@ -46,11 +57,11 @@ const TailorHomeScreen: React.FC = () => {
     return () => {
       subscription?.remove();
     };
-  }, [user]);
+  }, [user, view]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    fetchProducts(query);
+    fetchProducts(query, view);
   };
 
   const numColumns = 2;
@@ -71,21 +82,43 @@ const TailorHomeScreen: React.FC = () => {
           <Image source={require('../assets/searchbar.png')} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Browse Your Collection..."
+            placeholder="Browse Your Collections..."
             placeholderTextColor="#260101"
             value={searchQuery}
             onChangeText={handleSearch}
           />
         </View>
       </View>
-      <FlatList
-        data={tailorProducts}
-        renderItem={({ item }) => <TailorProductCard product={item} itemWidth={itemWidth} handleRemoveFromProduct={handleRemoveFromProduct} />}
-        keyExtractor={(item) => item.ID.toString()}
-        numColumns={numColumns}
-        contentContainerStyle={styles.productsContainer}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
-      />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={[styles.toggleButton, view === 'active' && styles.activeButton]} onPress={() => setView('active')}>
+          <Text style={[styles.toggleButtonText, view === 'active' && styles.activeButtonText]}>Active Collections</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.toggleButton, view === 'inactive' && styles.activeButton]} onPress={() => setView('inactive')}>
+          <Text style={[styles.toggleButtonText, view === 'inactive' && styles.activeButtonText]}>Inactive Collections</Text>
+        </TouchableOpacity>
+      </View>
+      {tailorProducts.length === 0 ? (
+        <Text style={styles.noItemsText}>
+          {view === 'active' ? 'No active collections available.' : 'No inactive collections available.'}
+        </Text>
+      ) : (
+        <FlatList
+          data={tailorProducts}
+          renderItem={({ item }) => (
+            <TailorProductCard 
+              product={item} 
+              itemWidth={itemWidth} 
+              handleRemoveFromProduct={handleRemoveFromProduct} 
+              handleAddToProduct={handleAddToProduct}
+              view={view} 
+            />
+          )}
+          keyExtractor={(item) => item.ID.toString()}
+          numColumns={numColumns}
+          contentContainerStyle={styles.productsContainer}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+        />
+      )}
     </View>
   );
 };
@@ -145,6 +178,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#260101',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 15,
+  },
+  toggleButton: {
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    backgroundColor: '#E4DCD5',
+  },
+  activeButton: {
+    backgroundColor: '#593825',
+  },
+  toggleButtonText: {
+    color: '#260101',
+    fontSize: 16,
+  },
+  activeButtonText: {
+    color: 'white',
+  },
   productsContainer: {
     paddingBottom: 20,
   },
@@ -165,14 +220,19 @@ const styles = StyleSheet.create({
     height: 160,
     resizeMode: 'cover',
   },
-  deleteIconContainer: {
+  iconContainer: {
     position: 'absolute',
     top: 6,
     right: 5.5,
   },
   deleteIcon: {
     width: 30,
-    height: 30,
+    height: 33,
+    resizeMode: 'contain',
+  },
+  restoreIcon: {
+    width: 35,
+    height: 35,
     resizeMode: 'contain',
   },
   productName: {
@@ -212,13 +272,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const TailorProductCard: React.FC<{ product: IProduct; itemWidth: number; handleRemoveFromProduct: (productId: number) => void }> = ({ product, itemWidth, handleRemoveFromProduct }) => {
+const TailorProductCard: React.FC<{ product: IProduct; itemWidth: number; handleRemoveFromProduct: (productId: number) => void, handleAddToProduct: (productId: number) => void, view: 'active' | 'inactive' }> = ({ product, itemWidth, handleRemoveFromProduct, handleAddToProduct, view }) => {
   return (
     <View style={[styles.productItem, { width: itemWidth }]}>
       <Image source={{ uri: product.ImgUrl }} style={styles.productImage} />
-      <TouchableOpacity style={styles.deleteIconContainer} onPress={() => handleRemoveFromProduct(product.ID)}>
-        <Image source={require('../assets/delete_icon.png')} style={styles.deleteIcon} />
-      </TouchableOpacity>
+      {view === 'active' ? (
+        <TouchableOpacity style={styles.iconContainer} onPress={() => handleRemoveFromProduct(product.ID)}>
+          <Image source={require('../assets/delete_icon.png')} style={styles.deleteIcon} />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity style={styles.iconContainer} onPress={() => handleAddToProduct(product.ID)}>
+          <Image source={require('../assets/restore_icon.png')} style={styles.restoreIcon} />
+        </TouchableOpacity>
+      )}
       <Text style={styles.productName}>{product.Product}</Text>
       <Text style={styles.tailorName}>{product.Tailor}</Text>
       <Text style={styles.productDesc}>{product.Desc}</Text>

@@ -14,7 +14,8 @@ const UpdateProfileScreen = () => {
 
   const [name, setName] = useState(user.Name);
   const [email, setEmail] = useState(user.Email);
-  const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState(user.PhoneNumber);
   const [address, setAddress] = useState(user.Address);
@@ -28,7 +29,7 @@ const UpdateProfileScreen = () => {
   });
 
   const handlePasswordChange = (value: string) => {
-    setPassword(value);
+    setNewPassword(value);
 
     setValidations({
       minLength: value.length >= 8,
@@ -40,8 +41,8 @@ const UpdateProfileScreen = () => {
   };
 
   const handleSave = async () => {
-    if (password && password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+    if (newPassword && newPassword !== confirmPassword) {
+      Alert.alert('Error', 'New passwords do not match');
       return;
     }
 
@@ -54,9 +55,14 @@ const UpdateProfileScreen = () => {
       points: user.Points,
     };
 
-    if (password) {
-      updatedUser.password = password;
-      updatedUser.confirm = confirmPassword;
+    if (newPassword) {
+      if (!oldPassword) {
+        Alert.alert('Error', 'Please enter your old password');
+        return;
+      }
+      updatedUser.oldPassword = oldPassword;
+      updatedUser.newPassword = newPassword;
+      updatedUser.confirmPassword = confirmPassword;
     }
 
     try {
@@ -100,22 +106,30 @@ const UpdateProfileScreen = () => {
           onChangeText={setEmail}
           placeholder="Email"
         />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={handlePasswordChange}
-          placeholder="Password"
-          secureTextEntry
-        />
-        {password.length > 0 && (
+        {newPassword.length > 0 && (
           <>
-            <Text style={styles.label}>Confirm Password</Text>
+            <Text style={styles.label}>Old Password</Text>
+            <TextInput
+              style={styles.input}
+              value={oldPassword}
+              onChangeText={setOldPassword}
+              placeholder="Old Password"
+              secureTextEntry
+            />
+            <Text style={styles.label}>New Password</Text>
+            <TextInput
+              style={styles.input}
+              value={newPassword}
+              onChangeText={handlePasswordChange}
+              placeholder="New Password"
+              secureTextEntry
+            />
+            <Text style={styles.label}>Confirm New Password</Text>
             <TextInput
               style={styles.input}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              placeholder="Confirm Password"
+              placeholder="Confirm New Password"
               secureTextEntry
             />
           </>
