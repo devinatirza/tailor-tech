@@ -11,6 +11,7 @@ type ContentLayout = {
 
 export function UserProvider({children}: ContentLayout){
     const [user, setUser] = useState<IUser|ITailor|null>(null)
+    const ip = 'localhost'
 
     function updateUser(user: IUser|ITailor){
         setUser(user)
@@ -18,7 +19,7 @@ export function UserProvider({children}: ContentLayout){
 
     async function login(email: string, pass: string){
         try{
-            const response = await axios.post("http://localhost:8000/login/user", {
+            const response = await axios.post(`http://localhost:8000/login/user`, {
                 email: email,
                 pass: pass
             }, {
@@ -39,7 +40,7 @@ export function UserProvider({children}: ContentLayout){
 
     async function tailorLogin(email: string, pass: string){
         try{
-            const response = await axios.post("http://localhost:8000/login/tailor", {
+            const response = await axios.post(`http://localhost:8000/login/tailor`, {
                 email: email,
                 pass: pass
             }, {
@@ -58,7 +59,7 @@ export function UserProvider({children}: ContentLayout){
         }
     }
 
-    const data = {user, login, tailorLogin, updateUser}
+    const data = {user, login, tailorLogin, updateUser, ip}
 
     return <userContext.Provider value={data}>{children}</userContext.Provider>
 }

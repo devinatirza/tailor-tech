@@ -55,6 +55,7 @@ const HomeStack = () => {
       <Stack.Screen 
         name="Wishlists" 
         component={WishlistScreen}
+        
       />
       <Stack.Screen 
         name="Chats" 

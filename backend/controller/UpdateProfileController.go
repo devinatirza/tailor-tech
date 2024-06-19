@@ -15,15 +15,15 @@ import (
 func UpdateProfile(c *gin.Context) {
 	db := database.GetInstance()
 	type UpdateProfileInput struct {
-		UserID        uint   `json:"userId" binding:"required"`
-		Name          string `json:"name,omitempty"`
-		Email         string `json:"email,omitempty"`
-		OldPassword   string `json:"oldPassword,omitempty"`
-		NewPassword   string `json:"newPassword,omitempty"`
-		Confirm       string `json:"confirm,omitempty"`
-		PhoneNumber   string `json:"phoneNumber,omitempty"`
-		Address       string `json:"address,omitempty"`
-		Points        int    `json:"points,omitempty"`
+		UserID      uint   `json:"userId" binding:"required"`
+		Name        string `json:"name,omitempty"`
+		Email       string `json:"email,omitempty"`
+		OldPassword string `json:"oldPassword,omitempty"`
+		NewPassword string `json:"newPassword,omitempty"`
+		Confirm     string `json:"confirmPassword,omitempty"`
+		PhoneNumber string `json:"phoneNumber,omitempty"`
+		Address     string `json:"address,omitempty"`
+		Points      int    `json:"points,omitempty"`
 	}
 
 	var input UpdateProfileInput
@@ -69,7 +69,7 @@ func UpdateProfile(c *gin.Context) {
 
 	if input.NewPassword != "" {
 		if input.NewPassword != input.Confirm {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Password doesn't match"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
 			return
 		}
 

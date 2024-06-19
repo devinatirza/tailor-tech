@@ -44,11 +44,11 @@ const TailorCard: React.FC<{ tailor: ITailor }> = ({ tailor }) => {
         <Text style={styles.tailorName}>{tailor.Name}</Text>
         <Text style={styles.tailorSpecialty}>{formatSpecialities(tailor.Speciality)}</Text>
         <View style={styles.locationContainer}>
-          <Image source={{ uri: '../assets/location_icon.png' }} style={styles.icon} />
+          <Image source={require('../assets/location_icon.png')} style={styles.icon} />
           <Text style={styles.tailorLocation}>{tailor.Address}</Text>
         </View>
         <View style={styles.ratingContainer}>
-          <Image source={{ uri: '../assets/rating_icon.png' }} style={styles.icon} />
+          <Image source={require('../assets/rating_icon.png')} style={styles.icon} />
           <Text style={styles.ratingText}>{tailor.Rating}</Text>
         </View>
       </View>

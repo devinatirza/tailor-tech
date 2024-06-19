@@ -16,8 +16,8 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
 
     try {
       const response = await axios.post('http://localhost:8000/carts/add-to-cart', {
-        user_id: user.ID,
-        product_id: product.ID
+        UserID: user.ID,
+        ProductID: product.ID
       });
     } catch (error) {
       console.log('Error adding to cart:', error);
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     marginBottom: 20,
-    padding: 10,
+    marginRight: 10,
   },
   productImage: {
     width: '100%',

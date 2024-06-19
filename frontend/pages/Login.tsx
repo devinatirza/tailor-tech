@@ -4,8 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import { useUser } from '../contexts/user-context';
-import { IUser } from '../interfaces/user-interfaces';
-import axios from 'axios';
 
 interface Styles {
   container: ViewStyle;

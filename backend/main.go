@@ -1,79 +1,110 @@
 package main
 
 import (
-	// model "main/models"
+	"fmt"
+	"log"
 	"main/controller"
+	"net"
+	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
+func getLocalIP() (string, error) {
+    addrs, err := net.InterfaceAddrs()
+    if err != nil {
+        return "", err
+    }
+
+    for _, addr := range addrs {
+        if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+            if ipnet.IP.To4() != nil {
+                return ipnet.IP.String(), nil
+            }
+        }
+    }
+    return "", fmt.Errorf("cannot find local IP address")
+}
+
 func main() {
-	// model.Migrate()
-	r := gin.Default()
+    ip, err := getLocalIP()
+    if err != nil {
+        log.Fatalf("Error fetching local IP address: %v", err)
+    }
 
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:8081"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		AllowCredentials: true,
-	}))
+    r := gin.Default()
 
-	r.POST("/register", controller.Register)
+    r.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"http://localhost:8081"}, // Allow all origins for testing purposes
+        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+        AllowCredentials: true,
+    }))
 
-	login := r.Group("/login")
-	{
-		login.POST("/user", controller.LoginHandler)
-		login.POST("/tailor", controller.TailorLoginHandler)
-	}
-	r.POST("/update-profile", controller.UpdateProfile)
-	r.GET("/validate", controller.GetUserFromJWT)
-	r.GET("/logout", controller.LogoutHandler)
+    r.GET("/get-server-ip", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"ip": ip})
+    })
 
-	product := r.Group("/products")
-	{
-		product.GET("/get-all", controller.GetAllProduct)
-		product.GET("/get-tailor-active", controller.GetTailorProducts)
-		product.GET("/get-tailor-inactive", controller.GetInactiveTailorProducts)
-		product.DELETE("/delete/:id", controller.RemoveProduct)
-		product.PUT("/activate/:id", controller.ActivateProduct)
-	}
+    r.POST("/register", controller.Register)
 
-	tailor := r.Group("/tailors")
-	{
-		tailor.GET("/get-all", controller.GetAllTailor)
-	}
+    login := r.Group("/login")
+    {
+        login.POST("/user", controller.LoginHandler)
+        login.POST("/tailor", controller.TailorLoginHandler)
+    }
 
-	coupon := r.Group("/coupons")
-	{
-		coupon.POST("/redeem", controller.RedeemCoupon)
-		coupon.GET("/code", controller.GetUserCoupons)
-	}
+    r.POST("/update-profile", controller.UpdateProfile)
+    r.GET("/validate", controller.GetUserFromJWT)
+    r.GET("/logout", controller.LogoutHandler)
 
-	measurements := r.Group("/measurements")
-	{
-		measurements.POST("/tops", controller.CreateTopMeasurement)
-		measurements.POST("/bottoms", controller.CreateBottomMeasurement)
-		measurements.POST("/dresses", controller.CreateDressMeasurement)
-		measurements.POST("/suits", controller.CreateSuitMeasurement)
-		measurements.POST("/totebags", controller.CreateToteBagMeasurement)
-	}
+    product := r.Group("/products")
+    {
+        product.GET("/get-all", controller.GetAllProduct)
+        product.GET("/get-tailor-active", controller.GetTailorProducts)
+        product.GET("/get-tailor-inactive", controller.GetInactiveTailorProducts)
+        product.DELETE("/delete/:id", controller.RemoveProduct)
+        product.PUT("/activate/:id", controller.ActivateProduct)
+    }
 
-	carts := r.Group("/carts")
-	{
-		carts.POST("/add-to-cart", controller.AddToCart)
-	}
+    tailor := r.Group("/tailors")
+    {
+        tailor.GET("/get-all", controller.GetAllTailor)
+    }
 
-	wishlists := r.Group("/wishlists")
-	{
-		wishlists.POST("/add-to-wishlist", controller.AddToWishlist)
-		wishlists.GET("/:userID", controller.GetWishlist)
-		wishlists.DELETE("/remove", controller.RemoveFromWishlist)
-	}
-	requests := r.Group("/requests")
-	{
-		requests.POST("/add-request", controller.CreateUserRequest)
-	}
+    coupon := r.Group("/coupons")
+    {
+        coupon.POST("/redeem", controller.RedeemCoupon)
+        coupon.GET("/code", controller.GetUserCoupons)
+    }
 
-	r.Run(":8000")
+    measurements := r.Group("/measurements")
+    {
+        measurements.POST("/tops", controller.CreateTopMeasurement)
+        measurements.POST("/bottoms", controller.CreateBottomMeasurement)
+        measurements.POST("/dresses", controller.CreateDressMeasurement)
+        measurements.POST("/suits", controller.CreateSuitMeasurement)
+        measurements.POST("/totebags", controller.CreateToteBagMeasurement)
+    }
+
+    carts := r.Group("/carts")
+    {
+        carts.POST("/add-to-cart", controller.AddToCart)
+        carts.GET("/get-cart/:id", controller.GetCart)
+        carts.DELETE("/remove", controller.RemoveFromCart)
+    }
+
+    wishlists := r.Group("/wishlists")
+    {
+        wishlists.POST("/add-to-wishlist", controller.AddToWishlist)
+        wishlists.GET("/:userID", controller.GetWishlist)
+        wishlists.DELETE("/remove", controller.RemoveFromWishlist)
+    }
+
+    requests := r.Group("/requests")
+    {
+        requests.POST("/add-request", controller.CreateUserRequest)
+    }
+
+    r.Run(":8000")
 }

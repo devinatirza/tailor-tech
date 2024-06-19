@@ -22,20 +22,24 @@ const styles = StyleSheet.create({
 
 const SplashScreen = () => {
   const navigation = useNavigation<any>();
-
-  const { user, updateUser } = useUser();
+  const { user, updateUser, ip } = useUser();
 
   useEffect(() => {
     const delay = 3000;
     const timer = setTimeout(() => {
       const validate = async () => {
         try {
-          const response = await axios.get("http://localhost:8000/validate", {
-            withCredentials: true,
-          });
-          return response.data;
+          if (ip) {
+            const response = await axios.get(`http://localhost:8000/validate`, {
+              withCredentials: true,
+            });
+            return response.data;
+          } else {
+            console.error('IP address not available');
+            return null;
+          }
         } catch (error) {
-          console.error(error);
+          console.error('Validation error:', error);
           return null;
         }
       };
@@ -49,8 +53,8 @@ const SplashScreen = () => {
         .catch((error) => {
           console.error(error);
         });
+
       if (!user) {
-        console.log("masuk")
         navigation.navigate('Role');
       }
     }, delay);
@@ -58,11 +62,10 @@ const SplashScreen = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [ip]);
 
   useEffect(() => {
     if (user) {
-      console.log(user)
       if ('ImgUrl' in user) {
         navigation.navigate('TailorTechTailor');
       } else {
@@ -71,12 +74,8 @@ const SplashScreen = () => {
     }
   }, [user]);
 
-  const handlePress = () => {
-    navigation.navigate('Role');
-  };
-
   return (
-    <TouchableWithoutFeedback onPress={handlePress}>
+    <TouchableWithoutFeedback>
       <View style={styles.container}>
         <Image
           style={styles.image}

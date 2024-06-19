@@ -7,18 +7,19 @@ import { IProduct } from '../interfaces/product-interfaces';
 import TailorCard from './TailorCard';
 import ProductCard from './ProductCard';
 import { HomeStackParamList } from './HomeStack';
+import { useUser } from '../contexts/user-context';
 
 type Navigation = NavigationProp<HomeStackParamList, 'Wishlists', 'Chats'>;
 
 interface ServiceItemProps {
-  src: string;
+  src: any;
   label: string;
   onPress: () => void;
 }
 
 const ServiceItem: React.FC<ServiceItemProps> = ({ src, label, onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.serviceItem}>
-    <Image source={{ uri: src }} style={styles.serviceImage} />
+    <Image source={src} style={styles.serviceImage} />
     <Text style={styles.serviceLabel}>{label}</Text>
   </TouchableOpacity>
 );
@@ -32,10 +33,11 @@ const HomeScreen: React.FC = () => {
   const [tailors, setTailors] = useState<ITailor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { ip } = useUser();
 
   async function fetchProducts() {
     try {
-      const response = await axios.get('http://localhost:8000/products/get-all');
+      const response = await axios.get(`http://${ip}:8000/products/get-all`);
       setProducts(response.data);
     } catch (error) {
       setError('Failed to fetch products');
@@ -47,7 +49,7 @@ const HomeScreen: React.FC = () => {
 
   async function fetchTailors() {
     try {
-      const response = await axios.get('http://localhost:8000/tailors/get-all');
+      const response = await axios.get(`http://${ip}:8000/tailors/get-all`);
       setTailors(response.data);
     } catch (error) {
       setError('Failed to fetch tailors');
@@ -63,11 +65,11 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   const services = [
-    { src: '../assets/tops_icon.webp', label: 'Tops' },
-    { src: '../assets/bottoms_icon.webp', label: 'Bottoms' },
-    { src: '../assets/dresses_icon.png', label: 'Dresses' },
-    { src: '../assets/suits_icon.png', label: 'Suits' },
-    { src: '../assets/totebag_icon.png', label: 'ToteBags' },
+    { src: require('../assets/tops_icon.webp'), label: 'Tops' },
+    { src: require('../assets/bottoms_icon.webp'), label: 'Bottoms' },
+    { src: require('../assets/dresses_icon.png'), label: 'Dresses' },
+    { src: require('../assets/suits_icon.png'), label: 'Suits' },
+    { src: require('../assets/totebag_icon.png'), label: 'ToteBags' },
   ];
 
   const formatServiceLabel = (label: string) => {
@@ -159,8 +161,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   container: {
-    paddingTop: 7,
-    paddingHorizontal: 30,
+    paddingTop: 30,
+    paddingHorizontal: 25,
     backgroundColor: 'white',
     width: '100%',
     alignSelf: 'center',
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
   },
   servicesContainer: {
@@ -186,22 +188,24 @@ const styles = StyleSheet.create({
   },
   serviceItem: {
     alignItems: 'center',
-    width: (deviceWidth / 5) - 30,
+    width: (deviceWidth / 5) - 15,
     marginBottom: 15,
   },
   serviceImage: {
-    width: '100%',
-    height: undefined,
+    width: deviceWidth * 0.15,
+    height: deviceWidth * 0.15,
     aspectRatio: 1,
     borderRadius: 28,
   },
   serviceLabel: {
     marginTop: 8,
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '500',
   },
   moreButton: {
     fontSize: 16,
     color: 'black',
-    marginTop: 15,
   },
   tailorsContainer: {
     marginTop: 8,

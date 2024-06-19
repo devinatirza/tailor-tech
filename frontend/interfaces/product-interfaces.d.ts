@@ -7,3 +7,8 @@ export interface IProduct {
   ImgUrl: string;
   Size: string;
 }
+
+export interface ICart {
+  TotalPrice: number;
+  Products: IProduct[]
+}

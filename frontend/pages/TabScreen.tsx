@@ -68,7 +68,7 @@ const TabNavigation = () => {
           </Pressable>
         ),
         tabBarIcon: ({ color, focused }) => {
-          if (route.name === 'Home') {
+          if (route.name === 'HomeTab') {
             return focused ? <HomeIconActive color={color} /> : <HomeIconInactive color={color} />;
           } else if (route.name === 'Cart') {
             return focused ? <CartIconActive color={color} /> : <CartIconInactive color={color} />;
@@ -90,7 +90,7 @@ const TabNavigation = () => {
         tabBarIconStyle: { width: 32, height: 32 }, 
       })}
     >
-      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="HomeTab" component={HomeStack} />
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Order" component={OrderScreen} />
       <Tab.Screen name="Profile" component={ProfileStack} />
