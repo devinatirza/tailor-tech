@@ -2,9 +2,9 @@ package controller
 
 import (
 	"log"
+	"net/http"
 	"main/database"
 	models "main/models"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +14,6 @@ func RedeemCoupon(c *gin.Context) {
 
 	type RedeemCouponInput struct {
 		UserID    uint   `json:"userId" binding:"required"`
-		NewPoints int    `json:"newPoints" binding:"required"`
 		PromoCode string `json:"promoCode" binding:"required"`
 	}
 
@@ -31,59 +30,37 @@ func RedeemCoupon(c *gin.Context) {
 		return
 	}
 
-	user.Points = input.NewPoints
-
-	tx := db.Begin()
-
-	if err := tx.Save(&user).Error; err != nil {
-		tx.Rollback()
-		log.Printf("Failed to update user points: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update points"})
-		return
-	}
-
-	var promo models.Promo
-	if tx.Where("promo_code = ?", input.PromoCode).First(&promo).RowsAffected == 0 {
-		tx.Rollback()
-		c.JSON(http.StatusNotFound, gin.H{"error": "Promo code not found"})
-		return
-	}
-
 	var userPromo models.UserPromo
-	if err := tx.Where("promo_code = ? AND user_id = ?", input.PromoCode, input.UserID).First(&userPromo).Error; err != nil {
-		if err.Error() == "record not found" {
-			// Create new entry if not found
-			userPromo = models.UserPromo{
-				PromoCode: input.PromoCode,
-				UserID:    input.UserID,
-				Quantity:  1,
-			}
-			if err := tx.Create(&userPromo).Error; err != nil {
-				tx.Rollback()
-				log.Printf("Failed to add promo code to user: %v", err)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to redeem promo code"})
-				return
-			}
-		} else {
-			tx.Rollback()
-			log.Printf("Failed to query user promo: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to redeem promo code"})
-			return
-		}
-	} else {
-		// Update quantity if found
-		userPromo.Quantity++
-		if err := tx.Save(&userPromo).Error; err != nil {
-			tx.Rollback()
-			log.Printf("Failed to update promo code quantity: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update promo code quantity"})
-			return
-		}
+	if db.Where("promo_code = ? AND user_id = ?", input.PromoCode, input.UserID).First(&userPromo).RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Coupon not found or not redeemed"})
+		return
 	}
 
-	tx.Commit()
+	if userPromo.Quantity <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Coupon quantity exhausted"})
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Promo code redeemed successfully!", "user": user})
+	discount := 0
+	switch input.PromoCode {
+	case "TECH15":
+		discount = 150
+	case "TECH35":
+		discount = 350
+	case "TECH75":
+		discount = 750
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid coupon code"})
+		return
+	}
+
+	userPromo.Quantity -= 1
+	if err := db.Save(&userPromo).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update coupon quantity"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Coupon valid", "discount": discount})
 }
 
 func GetUserCoupons(c *gin.Context) {
@@ -102,5 +79,23 @@ func GetUserCoupons(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"coupons": userCoupons})
+	var coupons []map[string]interface{}
+	for _, userCoupon := range userCoupons {
+		discount := 0
+		switch userCoupon.PromoCode {
+		case "TECH15":
+			discount = 150
+		case "TECH35":
+			discount = 350
+		case "TECH75":
+			discount = 750
+		}
+		coupons = append(coupons, map[string]interface{}{
+			"code":     userCoupon.PromoCode,
+			"discount": discount,
+			"quantity": userCoupon.Quantity,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"coupons": coupons})
 }

@@ -14,4 +14,5 @@ type Transaction struct {
 	Products        []Product `gorm:"many2many:tran_products"`
 	Requests        []Request `gorm:"many2many:tran_requests"`
 	Status          string
+	TotalPrice		uint
 }
