@@ -1,67 +1,33 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, TextInput, ScrollView } from 'react-native';
 import { useNavigation, RouteProp, useRoute, NavigationProp } from '@react-navigation/native';
-import axios from 'axios';
 import { HomeStackParamList } from './HomeStack';
 import { useUser } from '../contexts/user-context';
 
 type ConfirmationPageRouteProp = RouteProp<HomeStackParamList, 'Confirmation'>;
-type Navigation = NavigationProp<HomeStackParamList, 'Measurement' | 'RequestSent'>;
+type Navigation = NavigationProp<HomeStackParamList, 'Measurement' | 'RequestPayment'>;
 
 const ConfirmationScreen: React.FC = () => {
   const route = useRoute<ConfirmationPageRouteProp>();
-  const { measurements, selectedType, tailorId, tailorName } = route.params;
+  const { measurements, selectedType, basePrice, tailorId, tailorName } = route.params;
   const navigation = useNavigation<Navigation>();
   const { user } = useUser();
   const [description, setDescription] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!description) {
       setErrorMessage('Please provide details for your tailoring request.');
       return;
     }
 
-    try {
-      const requestEndpoint = 'http://localhost:8000/requests/add-request';
-      const requestData = {
-        UserID: user.ID,
-        Name: user.Name,
-        Desc: description,
-        RequestType: selectedType,
-        TailorID: tailorId,
-        Status: 'Pending',
-      };
-      const requestResponse = await axios.post(requestEndpoint, requestData);
-
-      if (requestResponse.status === 201) {
-        const requestId = requestResponse.data.ID;
-        let endpoint
-        if (selectedType == 'TOTE BAGS') {
-          endpoint = `http://localhost:8000/measurements/totebags`;
-        } else {
-          endpoint = `http://localhost:8000/measurements/${selectedType.toLowerCase()}`;
-        }
-        console.log('Submitting payload:', measurements);
-        const response = await axios.post(endpoint, {
-          ...measurements,
-          RequestID: requestId
-        });
-        if (response.status === 201) {
-          console.log('Measurements saved successfully.');
-          navigation.navigate('RequestSent');
-        } else {
-          console.error(`Unexpected response status: ${response.status}`);
-          setErrorMessage('Failed to save measurements');
-        }
-      } else {
-        console.error(`Unexpected response status: ${requestResponse.status}`);
-        setErrorMessage('Failed to create request');
-      }
-    } catch (error) {
-      console.error('Error saving measurements:', error);
-      setErrorMessage('Failed to save measurements');
-    }
+    navigation.navigate('RequestPayment', {
+      measurements,
+      selectedType,
+      basePrice,
+      tailorId,
+      description,
+    });
   };
 
   const getTitle = () => {
@@ -71,41 +37,45 @@ const ConfirmationScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Confirm Your Order</Text>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Name</Text>
-        <Text style={styles.value}>{user.Name}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Address</Text>
-        <Text style={styles.value}>{user.Address}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Clothing Type</Text>
-        <Text style={styles.value}>{selectedType}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>{getTitle()}</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Measurement', { selectedType: selectedType, tailorId, tailorName })}>
-          <Image source={require('../assets/pencilIcon.png')} style={styles.pencilIcon} />
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.detailContainer}>
+          <Text style={styles.label}>Name</Text>
+          <Text style={styles.value}>{user.Name}</Text>
+        </View>
+        <View style={styles.detailContainer}>
+          <Text style={styles.label}>Clothing Type</Text>
+          <Text style={styles.value}>{selectedType}</Text>
+        </View>
+        <View style={styles.detailContainer}>
+          <Text style={styles.label}>{getTitle()}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Measurement', { selectedType: selectedType, basePrice, tailorId, tailorName })}>
+            <Image source={require('../assets/pencilIcon.png')} style={styles.pencilIcon} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.detailContainer}>
+          <Text style={styles.label}>Tailor's Name</Text>
+          <Text style={styles.value}>{tailorName}</Text>
+        </View>
+        <View style={styles.detailContainer}>
+          <Text style={styles.label}>Tailor's Base Price</Text>
+          <Text style={styles.value}>{basePrice}</Text>
+        </View>
+        <View style={styles.detailContainer}>
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter tailoring details"
+            value={description}
+            onChangeText={setDescription}
+          />
+        </View>
+        {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+      </ScrollView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
+          <Text style={styles.confirmText}>Confirm</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Tailor's Name</Text>
-        <Text style={styles.value}>{tailorName}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Description</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter tailoring details"
-          value={description}
-          onChangeText={setDescription}
-        />
-      </View>
-      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
-      <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
-        <Text style={styles.confirmText}>Confirm</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -116,7 +86,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 30,
-    paddingHorizontal: 40,
     backgroundColor: 'white',
   },
   backIcon: {
@@ -132,8 +101,14 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 10,
   },
+  scrollViewContainer: {
+    paddingHorizontal: 40,
+    paddingBottom: height * 0.17, 
+    flexGrow: 1,
+  },
   detailContainer: {
     marginVertical: 10,
+    flexGrow: 1,
   },
   label: {
     fontSize: 20,
@@ -163,16 +138,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: 'grey',
   },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 85,
+    paddingVertical: 20,
+    backgroundColor: 'white',
+  },
   confirmButton: {
     backgroundColor: '#D9C3A9',
-    position: 'absolute',
-    bottom: 60,
-    left: width * 0.2,
-    right: width * 0.2,
     height: height * 0.06,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10,
   },
   confirmText: {
     fontSize: width * 0.05,

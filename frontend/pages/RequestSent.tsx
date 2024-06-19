@@ -21,10 +21,7 @@ const RequestSent = () => {
   return (
     <View style={styles.container}>
       <Image source={require('../assets/TailorTech_ThankYou.png')} style={styles.logo} />
-      <Text style={styles.message}>
-        Your order is being processed. 
-        Our tailor will reach out to you shortly.
-      </Text>
+      <Text style={styles.message}>Our tailor will confirm your order shortyly</Text>
     </View>
   );
 };
