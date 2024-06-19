@@ -56,7 +56,6 @@ const UpdateProfileScreen = () => {
   };
 
   const handleSave = async () => {
-    // Reset error messages
     setErrorMessages({
       oldPassword: '',
       newPassword: '',

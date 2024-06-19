@@ -1,6 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './Home';
 import TailorScreen from './Tailor';
 import ProductScreen from './Product';
@@ -12,6 +11,7 @@ import WishlistScreen from './Wishlists';
 import ChatScreen from './Chat';
 import CategoriesScreen from './Categories';
 import ConfirmationScreen from './Confirmation';
+import RequestPaymentScreen from './RequestPayment';
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -27,6 +27,7 @@ export type HomeStackParamList = {
   };
   Measurement: { 
     selectedType: string,
+    basePrice: number,
     tailorId: number,
     tailorName: string
   };
@@ -35,27 +36,32 @@ export type HomeStackParamList = {
   Confirmation: { 
     measurements: any,
     selectedType: string, 
+    basePrice: number,
     tailorId: number, 
     tailorName: string,
   };
   RequestSent: undefined;
+  RequestPayment: { 
+    measurements: any,
+    selectedType: string, 
+    basePrice: number,
+    tailorId: number,
+    description: string,
+  };
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
-const Tab = createBottomTabNavigator();
 
 const HomeStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
       <Stack.Screen 
         name="Home" 
         component={HomeScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen 
         name="Wishlists" 
         component={WishlistScreen}
-        
       />
       <Stack.Screen 
         name="Chats" 
@@ -92,6 +98,10 @@ const HomeStack = () => {
       <Stack.Screen 
         name="Confirmation" 
         component={ConfirmationScreen}  
+      />
+      <Stack.Screen 
+        name="RequestPayment" 
+        component={RequestPaymentScreen}  
       />
     </Stack.Navigator>
   );

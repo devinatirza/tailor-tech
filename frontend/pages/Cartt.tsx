@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import CartCard from './CartCard';
@@ -10,24 +11,26 @@ const CartScreen: React.FC = () => {
   const [cartItems, setCartItems] = useState<ICart>({ TotalPrice: 0, Products: [] });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/carts/get-cart/${user.ID}`);
-        if (response.data.message === "Your cart is empty") {
-          setCartItems({ TotalPrice: 0, Products: [] });
-        } else {
-          setCartItems(response.data);
-        }
-      } catch (error) {
-        Alert.alert('Error', 'Failed to fetch cart items');
-      } finally {
-        setLoading(false);
+  const fetchCartItems = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/carts/get-cart/${user.ID}`);
+      if (response.data.message === "Your cart is empty") {
+        setCartItems({ TotalPrice: 0, Products: [] });
+      } else {
+        setCartItems(response.data);
       }
-    };
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch cart items');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchCartItems();
-  }, [user.ID]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchCartItems();
+    }, [user.ID])
+  );
 
   const groupItemsByTailor = (items: ICart) => {
     const groupedItems: { [key: string]: ICart['Products'] } = {};
@@ -70,10 +73,6 @@ const CartScreen: React.FC = () => {
           <Text style={styles.cartQuantityText}>{cartItems.Products.length}</Text>
         </View>
       </View>
-      <View style={styles.addressContainer}>
-        <Text style={styles.addressLabel}>Shipping Address</Text>
-        <Text style={styles.address}>{user.Address}</Text>
-      </View>
       <ScrollView style={styles.scrollView}>
         {Object.keys(groupedCartItems).length > 0 ? (
           Object.keys(groupedCartItems).map((tailor) => (
@@ -108,104 +107,91 @@ const CartScreen: React.FC = () => {
 const { width: deviceWidth } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-backgroundColor: 'white',
-padding: 30,
-},
-headerContainer: {
-flexDirection: 'row',
-alignItems: 'center',
-marginTop: 5,
-marginBottom: 20,
-},
-title: {
-fontSize: deviceWidth * 0.1,
-fontWeight: 'bold',
-color: '#260101',
-},
-cartQuantityCircle: {
-marginLeft: 10,
-backgroundColor: '#D9C3A9',
-borderRadius: 15,
-width: 30,
-height: 30,
-justifyContent: 'center',
-alignItems: 'center',
-},
-cartQuantityText: {
-fontSize: 16,
-color: '#260101',
-fontWeight: 'bold',
-},
-addressContainer: {
-backgroundColor: '#F3EADE',
-padding: 15,
-borderRadius: 8,
-marginBottom: 20,
-},
-addressLabel: {
-fontSize: 22,
-color: '#260101',
-marginBottom: 5,
-fontWeight: 'bold',
-},
-address: {
-fontSize: 16,
-},
-scrollView: {
-marginBottom: 20,
-},
-tailorSection: {
-marginBottom: 20,
-},
-tailorName: {
-fontSize: 26,
-fontWeight: 'bold',
-color: '#260101',
-marginBottom: 10,
-},
-cartContainer: {
-paddingBottom: 20,
-},
-emptyCartText: {
-fontSize: 18,
-color: '#260101',
-textAlign: 'center',
-marginTop: 50,
-},
-checkoutContainer: {
-paddingHorizontal: 10,
-},
-totalContainer: {
-flexDirection: 'row',
-justifyContent: 'space-between',
-alignItems: 'center',
-marginBottom: 20,
-},
-totalLabel: {
-fontSize: 20,
-fontWeight: '600',
-color: '#260101',
-},
-totalPrice: {
-fontSize: 24,
-fontWeight: 'bold',
-color: '#260101',
-},
-checkoutButton: {
-backgroundColor: '#D9C3A9',
-borderRadius: 50,
-paddingVertical: 15,
-paddingHorizontal: 70,
-alignSelf: 'center',
-marginTop: 10,
-},
-checkoutButtonText: {
-fontSize: deviceWidth * 0.05,
-color: '#260101',
-fontWeight: 'bold',
-},
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 30,
+    paddingVertical: 28,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 42,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: deviceWidth * 0.1,
+    fontWeight: 'bold',
+    color: '#260101',
+  },
+  cartQuantityCircle: {
+    marginLeft: 12,
+    marginTop: 5,
+    backgroundColor: '#D9C3A9',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartQuantityText: {
+    fontSize: 16,
+    color: '#260101',
+    fontWeight: 'bold',
+  },
+  scrollView: {
+    marginBottom: 20,
+  },
+  tailorSection: {
+    marginBottom: 20,
+  },
+  tailorName: {
+    fontSize: deviceWidth * 0.065,
+    fontWeight: 'bold',
+    color: '#260101',
+    marginBottom: 10,
+  },
+  cartContainer: {
+    paddingBottom: 20,
+  },
+  emptyCartText: {
+    fontSize: 18,
+    color: '#260101',
+    textAlign: 'center',
+    marginTop: 50,
+  },
+  checkoutContainer: {
+    paddingHorizontal: 10,
+  },
+  totalContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  totalLabel: {
+    fontSize: deviceWidth * 0.055,
+    fontWeight: '600',
+    color: '#260101',
+  },
+  totalPrice: {
+    fontSize: deviceWidth * 0.06,
+    fontWeight: 'bold',
+    color: '#260101',
+  },
+  checkoutButton: {
+    backgroundColor: '#D9C3A9',
+    borderRadius: 50,
+    paddingVertical: 15,
+    paddingHorizontal: 70,
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  checkoutButtonText: {
+    fontSize: deviceWidth * 0.05,
+    color: '#260101',
+    fontWeight: 'bold',
+  },
 });
 
 export default CartScreen;

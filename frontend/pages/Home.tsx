@@ -214,13 +214,6 @@ const styles = StyleSheet.create({
   productsContainer: {
     marginTop: 8,
     flexDirection: 'row',
-    backgroundColor: 'white',
-  },
-  productItem: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    marginRight: 20,
-    width: 180,
   },
 });
 

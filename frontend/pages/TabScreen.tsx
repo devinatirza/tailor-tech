@@ -5,7 +5,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import HomeStack from './HomeStack'; 
 import OrderScreen from './Order';
 import ProfileStack from './ProfileStack'; 
-import CartScreen from './Cart';
+import CartScreen from './Cartt';
 import { ParamListBase } from '@react-navigation/routers';
 
 const Tab = createBottomTabNavigator();
@@ -74,7 +74,7 @@ const TabNavigation = () => {
             return focused ? <CartIconActive color={color} /> : <CartIconInactive color={color} />;
           } else if (route.name === 'Order') {
             return focused ? <OrderIconActive color={color} /> : <OrderIconInactive color={color} />;
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'ProfileTab') {
             return focused ? <ProfileIconActive color={color} /> : <ProfileIconInactive color={color} />;
           }
           return null;
@@ -93,7 +93,7 @@ const TabNavigation = () => {
       <Tab.Screen name="HomeTab" component={HomeStack} />
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Order" component={OrderScreen} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen name="ProfileTab" component={ProfileStack} />
     </Tab.Navigator>
   );
 };
