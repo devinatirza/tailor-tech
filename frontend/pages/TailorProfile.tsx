@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Platform } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -12,15 +12,16 @@ const TailorProfileScreen: React.FC = () => {
   const handleLogout = async () => {
     try {
       await axios.get('http://localhost:8000/logout');
-      document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      updateUser(null);
+      if (Platform.OS === 'web') {
+        document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      }
+      updateUser(null); 
       navigation.navigate('Role');
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
-  console.log('User Data:', user);
 
   return (
     <ScrollView style={styles.mainContainer}>

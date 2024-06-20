@@ -103,8 +103,14 @@ func main() {
 
 	requests := r.Group("/requests")
 	{
-		requests.POST("/add-request", controller.CreateUserRequest)
-		requests.POST("/payment", controller.ProcessPayment)
+		requests.POST("/create", controller.CreateUserRequest)
+	}
+
+	r.POST("/payment", controller.ProcessPayment)
+
+	orders := r.Group(("/orders"))
+	{
+		orders.POST("/create", controller.CreateProductOrder)
 	}
 
 	r.Run(":8000")

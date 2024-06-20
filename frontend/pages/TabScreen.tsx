@@ -7,6 +7,7 @@ import OrderScreen from './Order';
 import ProfileStack from './ProfileStack'; 
 import CartScreen from './Cartt';
 import { ParamListBase } from '@react-navigation/routers';
+import CartStack from './CardStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -70,7 +71,7 @@ const TabNavigation = () => {
         tabBarIcon: ({ color, focused }) => {
           if (route.name === 'HomeTab') {
             return focused ? <HomeIconActive color={color} /> : <HomeIconInactive color={color} />;
-          } else if (route.name === 'Cart') {
+          } else if (route.name === 'CartTab') {
             return focused ? <CartIconActive color={color} /> : <CartIconInactive color={color} />;
           } else if (route.name === 'Order') {
             return focused ? <OrderIconActive color={color} /> : <OrderIconInactive color={color} />;
@@ -91,7 +92,7 @@ const TabNavigation = () => {
       })}
     >
       <Tab.Screen name="HomeTab" component={HomeStack} />
-      <Tab.Screen name="Cart" component={CartScreen} />
+      <Tab.Screen name="CartTab" component={CartStack} />
       <Tab.Screen name="Order" component={OrderScreen} />
       <Tab.Screen name="ProfileTab" component={ProfileStack} />
     </Tab.Navigator>

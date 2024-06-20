@@ -84,9 +84,6 @@ const HomeScreen: React.FC = () => {
           <TouchableOpacity onPress={() => navigation.navigate('Wishlists')}>
             <Image source={require('../assets/wishlist_icon.png')} style={styles.wishlistIcon} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Chats')}>
-            <Image source={require('../assets/chat_icon.png')} style={styles.chatIcon} />
-          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.section}>
@@ -150,12 +147,6 @@ const styles = StyleSheet.create({
   },
   wishlistIcon: {
     width: 36,
-    height: 32,
-    marginLeft: 15,
-    marginTop: 15,
-  },
-  chatIcon: {
-    width: 32,
     height: 32,
     marginLeft: 15,
     marginTop: 15,

@@ -1,13 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import CartCard from './CartCard';
 import { ICart } from '../interfaces/product-interfaces';
+import { NavigationProp } from '@react-navigation/native';
+import { CartStackParamList } from './CardStack';
+
+type Navigation = NavigationProp<CartStackParamList, 'OrderPayment'>;
 
 const CartScreen: React.FC = () => {
   const { user } = useUser();
+  const navigation = useNavigation<Navigation>();
   const [cartItems, setCartItems] = useState<ICart>({ TotalPrice: 0, Products: [] });
   const [loading, setLoading] = useState(true);
 
@@ -95,7 +100,13 @@ const CartScreen: React.FC = () => {
               IDR {cartItems.TotalPrice}K
             </Text>
           </View>
-          <TouchableOpacity style={styles.checkoutButton}>
+          <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={() => navigation.navigate('OrderPayment', {
+              TotalPrice: cartItems.TotalPrice,
+              Products: cartItems.Products,
+            })}
+          >
             <Text style={styles.checkoutButtonText}>Checkout</Text>
           </TouchableOpacity>
         </View>

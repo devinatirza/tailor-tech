@@ -6,6 +6,7 @@ import RequestSent from "../../pages/RequestSent";
 import TailorLoginScreen from "../../pages/TailorLogin";
 import RoleSelection from "../../pages/RoleScreen";
 import TailorTabNavigation from "../../pages/TailorTabScreen";
+import OrderSent from "../../pages/OrderSent";
 
 const routes: IRouteProps[] = [
     
@@ -36,6 +37,10 @@ const routes: IRouteProps[] = [
     {
         name: 'RequestSent',
         component: RequestSent
+    },
+    {
+        name: 'OrderSent',
+        component: OrderSent
     }
 ];
 

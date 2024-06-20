@@ -40,7 +40,6 @@ export type HomeStackParamList = {
     tailorId: number, 
     tailorName: string,
   };
-  RequestSent: undefined;
   RequestPayment: { 
     measurements: any,
     selectedType: string, 
@@ -48,6 +47,7 @@ export type HomeStackParamList = {
     tailorId: number,
     description: string,
   };
+  RequestSent: undefined;
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();

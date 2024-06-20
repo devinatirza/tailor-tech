@@ -5,7 +5,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import HomeStack from './HomeStack'; 
 import OrderScreen from './Order';
 import ProfileStack from './ProfileStack'; 
-import CartScreen from './Cart';
+import CartScreen from './Cartt';
 import { ParamListBase } from '@react-navigation/routers';
 import TailorHomeStack from './TailorHomeStack';
 import TailorProfileScreen from './TailorProfile';

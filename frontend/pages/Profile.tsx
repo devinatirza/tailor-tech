@@ -1,11 +1,11 @@
-import * as React from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions } from "react-native";
+import React from 'react';
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import axios from "axios";
-import { ProfileStackParamList } from "./ProfileStack";
+import axios from 'axios';
+import { ProfileStackParamList } from './ProfileStack';
 
-type Navigation = NavigationProp<ProfileStackParamList, 'UpdateProfile', 'FAQs'>;
+type Navigation = NavigationProp<ProfileStackParamList, 'UpdateProfile' | 'FAQs' | 'CouponCode'>;
 
 const OptionItem: React.FC<{ text: string; iconSrc: any }> = ({ text, iconSrc }) => (
   <View style={styles.optionItemContainer}>
@@ -24,8 +24,10 @@ const ProfileScreen = () => {
   const handleLogout = async () => {
     try {
       await axios.get('http://localhost:8000/logout');
-      document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      updateUser(null);
+      if (Platform.OS === 'web') {
+        document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      }
+      updateUser(null); 
       navigation.navigate('Role');
     } catch (error) {
       console.error('Logout error:', error);
@@ -35,14 +37,18 @@ const ProfileScreen = () => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.innerContainer}>
-        <Text style={styles.profileText}>Profile</Text>
         <View style={styles.profileContainer}>
           <View style={styles.profileContent}>
             <View style={styles.profileImageContainer}>
               <Image source={require('../assets/profileIcon.png')} style={styles.profileImage} />
               <Text style={styles.profileName}>{user?.Name}</Text>
               <Text style={styles.profileEmail}>{user?.Email}</Text>
-              <Text style={styles.profilePoint}>{user?.Points} Points</Text>
+              <View style={styles.profileStatsBox}>
+                <View style={styles.profileStatsContainer}>
+                  <Text style={styles.profileMoney}>IDR {user?.Money}K</Text>
+                  <Text style={styles.profilePoint}>{user?.Points} Points</Text>
+                </View>
+              </View>
               <TouchableOpacity onPress={() => navigation.navigate('UpdateProfile')} style={styles.editProfileButton}>
                 <Text style={styles.editProfileButtonText}>Edit Profile</Text>
               </TouchableOpacity>
@@ -54,8 +60,8 @@ const ProfileScreen = () => {
             <OptionItem text="Coupon Code" iconSrc={require('../assets/voucherIcon.png')} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('FAQs')}>
-          <OptionItem text="FAQs" iconSrc={require('../assets/faqIcon.png')} />
-          </TouchableOpacity>   
+            <OptionItem text="FAQs" iconSrc={require('../assets/faqIcon.png')} />
+          </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={handleLogout}>
           <View style={styles.logoutContainer}>
@@ -75,7 +81,7 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    paddingTop: 28,
+    paddingVertical: 40,
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '100%',
@@ -87,15 +93,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: deviceWidth * 0.1,
     width: '100%',
   },
-  profileText: {
-    fontSize: deviceWidth * 0.09,
-    fontWeight: 'bold',
-    marginTop: 15,
-    color: '#260101',
-  },
   profileContainer: {
     alignItems: 'center',
-    marginTop: 44,
+    marginTop: 54,
   },
   profileContent: {
     flexDirection: 'column',
@@ -121,12 +121,28 @@ const styles = StyleSheet.create({
     color: '#260101',
     textAlign: 'center',
   },
-  profilePoint: {
-    fontSize: deviceWidth * 0.05,
-    color: '#593825',
+  profileStatsBox: {
+    marginTop: 10,
+    paddingHorizontal: 20,
+  },
+  profileStatsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 7,
+  },
+  profileMoney: {
+    fontSize: deviceWidth * 0.053,
+    color: '#260101',
     textAlign: 'center',
-    marginTop: 4,
-    fontWeight: '400',
+    fontWeight: '600',
+    marginRight: 20,
+  },
+  profilePoint: {
+    fontSize: deviceWidth * 0.053,
+    color: '#260101',
+    textAlign: 'center',
+    fontWeight: '500',
+    marginLeft: 20,
   },
   editProfileButton: {
     justifyContent: 'center',

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, FlatList, Dimensions, TextInput } from '
 import axios from 'axios';
 import { ITailor } from '../interfaces/tailor-interfaces';
 import TailorCard from './TailorCard'; 
+import BackButton from '../components/back-button';
 
 const TailorScreen: React.FC = () => {
   const [tailors, setTailors] = useState<ITailor[]>([]);
@@ -40,6 +41,7 @@ const TailorScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.title}>Tailors</Text>
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
@@ -67,16 +69,15 @@ const TailorScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 40,
+    fontSize: (Dimensions.get('window').width * 0.095),
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 55,
     color: '#260101',
     alignSelf: 'flex-start',
-    marginTop: 10,
   },
   container: {
     flex: 1,
-    paddingTop: 7,
+    paddingTop: (Dimensions.get('window').width * 0.18),
     paddingHorizontal: 30,
     backgroundColor: 'white',
   },

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, FlatList, Dimensions, TextInput } from '
 import axios from 'axios';
 import { IProduct } from '../interfaces/product-interfaces';
 import ProductCard from './ProductCard';
+import BackButton from '../components/back-button';
 
 const ProductScreen: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -40,6 +41,7 @@ const ProductScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.title}>Products</Text>
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
@@ -67,18 +69,16 @@ const ProductScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 40,
+    fontSize: (Dimensions.get('window').width * 0.095),
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 55,
     color: '#260101',
     alignSelf: 'flex-start',
-    marginTop: 10,
   },
   container: {
     flex: 1,
-    paddingTop: 7,
-    paddingLeft: 28,
-    paddingRight: 33,
+    paddingTop: (Dimensions.get('window').width * 0.18),
+    paddingHorizontal: 30,
     backgroundColor: 'white',
   },
   searchContainer: {
