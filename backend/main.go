@@ -54,7 +54,12 @@ func main() {
 		login.POST("/tailor", controller.TailorLoginHandler)
 	}
 
-	r.POST("/update-profile", controller.UpdateProfile)
+	user := r.Group("/users")
+	{
+		user.GET("/:id", controller.GetUser)
+		user.POST("/update", controller.UpdateUser)
+	}
+
 	r.GET("/validate", controller.GetUserFromJWT)
 	r.GET("/logout", controller.LogoutHandler)
 

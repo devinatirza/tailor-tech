@@ -71,13 +71,13 @@ const TailorTabNavigation = () => {
           </Pressable>
         ),
         tabBarIcon: ({ color, focused }) => {
-          if (route.name === 'Home') {
+          if (route.name === 'HomeTab') {
             return focused ? <HomeIconActive color={color} /> : <HomeIconInactive color={color} />;
-          } else if (route.name === 'Product') {
+          } else if (route.name === 'ProductTab') {
             return focused ? <AddIconActive color={color} /> : <AddIconInactive color={color} />;
-          } else if (route.name === 'Order') {
+          } else if (route.name === 'OrderTab') {
             return focused ? <OrderIconActive color={color} /> : <OrderIconInactive color={color} />;
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'ProfileTab') {
             return focused ? <ProfileIconActive color={color} /> : <ProfileIconInactive color={color} />;
           }
           return null;
@@ -93,10 +93,10 @@ const TailorTabNavigation = () => {
         tabBarIconStyle: { width: 32, height: 32 }, 
       })}
     >
-      <Tab.Screen name="Home" component={TailorHomeStack} />
-      <Tab.Screen name="Product" component={AddProductScreen} />
-      <Tab.Screen name="Order" component={OrderScreen} />
-      <Tab.Screen name="Profile" component={TailorProfileScreen} />
+      <Tab.Screen name="HomeTab" component={TailorHomeStack} />
+      <Tab.Screen name="ProductTab" component={AddProductScreen} />
+      <Tab.Screen name="OrderTab" component={OrderScreen} />
+      <Tab.Screen name="ProfileTab" component={TailorProfileScreen} />
     </Tab.Navigator>
   );
 };

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { useUser } from '../contexts/user-context';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { ProfileStackParamList } from './ProfileStack';
 
@@ -22,6 +22,11 @@ const ProfileScreen = () => {
   const navigation = useNavigation<Navigation>();
 
   const handleLogout = async () => {
+    if (!user) {
+      console.error('Logout error: User is not logged in');
+      return;
+    }
+
     try {
       await axios.get('http://localhost:8000/logout');
       if (Platform.OS === 'web') {
@@ -33,6 +38,23 @@ const ProfileScreen = () => {
       console.error('Logout error:', error);
     }
   };
+
+  const fetchUserDetails = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/users/${user.ID}`);
+      if (response.status === 200) {
+        updateUser(response.data.user);
+      } else {
+        console.error('Failed to fetch user details');
+      }
+    } catch (error) {
+      console.error('Failed to fetch user details', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails()
+  }, [])
 
   return (
     <View style={styles.mainContainer}>
@@ -46,7 +68,6 @@ const ProfileScreen = () => {
               <View style={styles.profileStatsBox}>
                 <View style={styles.profileStatsContainer}>
                   <Text style={styles.profileMoney}>IDR {user?.Money}K</Text>
-                  <Text style={styles.profilePoint}>{user?.Points} Points</Text>
                 </View>
               </View>
               <TouchableOpacity onPress={() => navigation.navigate('UpdateProfile')} style={styles.editProfileButton}>
@@ -136,13 +157,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
     marginRight: 20,
-  },
-  profilePoint: {
-    fontSize: deviceWidth * 0.053,
-    color: '#260101',
-    textAlign: 'center',
-    fontWeight: '500',
-    marginLeft: 20,
   },
   editProfileButton: {
     justifyContent: 'center',

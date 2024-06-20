@@ -88,7 +88,7 @@ const UpdateProfileScreen = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/update-profile', updatedUser, {
+      const response = await axios.post(`http://localhost:8000/users/update`, updatedUser, {
         headers: {
           'Content-Type': 'application/json',
         },

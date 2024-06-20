@@ -12,7 +12,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func UpdateProfile(c *gin.Context) {
+func GetUser(c *gin.Context) {
+	db := database.GetInstance()
+	userID := c.Param("id")
+
+	var user models.User
+	if err := db.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
+
+func UpdateUser(c *gin.Context) {
 	db := database.GetInstance()
 	type UpdateProfileInput struct {
 		UserID      uint   `json:"userId" binding:"required"`

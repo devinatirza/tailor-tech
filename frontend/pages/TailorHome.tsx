@@ -23,9 +23,10 @@ const TailorHomeScreen: React.FC = () => {
       const response = await axios.get(endpoint, {
         params: { query, tailor_id: user?.ID },
       });
-      setTailorProducts(response.data);
+      setTailorProducts(response.data || []);
     } catch (error) {
       console.log(error);
+      setTailorProducts([]);
     }
   }
 
@@ -97,7 +98,7 @@ const TailorHomeScreen: React.FC = () => {
           <Text style={[styles.toggleButtonText, view === 'inactive' && styles.activeButtonText]}>Inactive Collections</Text>
         </TouchableOpacity>
       </View>
-      {tailorProducts.length === 0 ? (
+      {(!tailorProducts || tailorProducts.length === 0) ? (
         <Text style={styles.noItemsText}>
           {view === 'active' ? 'No active collections available.' : 'No inactive collections available.'}
         </Text>
@@ -184,10 +185,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   toggleButton: {
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingHorizontal: 15,
+    borderRadius: 10,
     backgroundColor: '#E4DCD5',
   },
   activeButton: {
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
   },
   toggleButtonText: {
     color: '#260101',
-    fontSize: 16,
+    fontSize: 15,
   },
   activeButtonText: {
     color: 'white',
