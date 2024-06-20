@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions, FlatList, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, FlatList, Modal, ScrollView } from 'react-native';
 import { useNavigation, RouteProp, useRoute, NavigationProp } from '@react-navigation/native';
 import axios from 'axios';
-import { HomeStackParamList } from './HomeStack';
 import { useUser } from '../contexts/user-context';
+import CartCard from './CartCard';
+import { CartStackParamList } from './CardStack';
 
-type RequestPaymentRouteProp = RouteProp<HomeStackParamList, 'RequestPayment'>;
-type Navigation = NavigationProp<HomeStackParamList, 'RequestSent'>;
+type OrderPaymentRouteProp = RouteProp<CartStackParamList, 'OrderPayment'>;
+type Navigation = NavigationProp<CartStackParamList, 'OrderSent'>;
 
 interface Coupon {
   code: string;
@@ -14,9 +15,8 @@ interface Coupon {
   quantity: number;
 }
 
-const RequestPaymentScreen: React.FC = () => {
-  const route = useRoute<RequestPaymentRouteProp>();
-  const { measurements, selectedType, basePrice, tailorId, description } = route.params;
+const OrderPaymentScreen: React.FC = () => {
+  const route = useRoute<OrderPaymentRouteProp>();
   const navigation = useNavigation<Navigation>();
   const { user } = useUser();
   const [couponCode, setCouponCode] = useState<string>('');
@@ -24,6 +24,8 @@ const RequestPaymentScreen: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [userCoupons, setUserCoupons] = useState<Coupon[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const { TotalPrice, Products } = route.params;
 
   const shippingFee = 10;
 
@@ -57,7 +59,7 @@ const RequestPaymentScreen: React.FC = () => {
   }, [couponCode, userCoupons]);
 
   const handlePayment = async () => {
-    const totalAmount = Math.max(basePrice - discount + shippingFee, 0);
+    const totalAmount = Math.max(TotalPrice - discount + shippingFee, 0);
 
     if (user.Money < totalAmount) {
       setErrorMessage('Insufficient balance to complete the payment.');
@@ -67,7 +69,7 @@ const RequestPaymentScreen: React.FC = () => {
     try {
       const paymentEndpoint = 'http://localhost:8000/payment';
       const paymentData = {
-        UserId: user.ID,
+        UserID: user.ID,
         TotalAmount: totalAmount,
         PromoCode: couponCode,
         PaymentMethod: 'TailorPay',
@@ -76,36 +78,18 @@ const RequestPaymentScreen: React.FC = () => {
       const paymentResponse = await axios.post(paymentEndpoint, paymentData);
 
       if (paymentResponse.status === 200) {
-
-        const requestEndpoint = 'http://localhost:8000/requests/create';
+        const requestEndpoint = 'http://localhost:8000/orders/create';
         const requestData = {
           UserID: user.ID,
           Name: user.Name,
-          Desc: description,
-          RequestType: selectedType,
-          TailorID: tailorId,
+          ProductIDs: Products.map(item => item.ID),
           Status: 'Pending',
+          TotalPrice: totalAmount,
         };
         const requestResponse = await axios.post(requestEndpoint, requestData);
 
         if (requestResponse.status === 201) {
-          const requestId = requestResponse.data.ID;
-          let endpoint;
-          if (selectedType === 'TOTE BAGS') {
-            endpoint = `http://localhost:8000/measurements/totebags`;
-          } else {
-            endpoint = `http://localhost:8000/measurements/${selectedType.toLowerCase()}`;
-          }
-          const response = await axios.post(endpoint, {
-            ...measurements,
-            RequestID: requestId,
-          });
-          if (response.status === 201) {
-            navigation.navigate('RequestSent');
-          } else {
-            console.error(`Unexpected response status: ${response.status}`);
-            setErrorMessage('Failed to save measurements');
-          }
+          navigation.navigate('OrderSent');
         } else {
           console.error(`Unexpected response status: ${requestResponse.status}`);
           setErrorMessage('Failed to create request');
@@ -183,6 +167,12 @@ const RequestPaymentScreen: React.FC = () => {
           </View>
         </Modal>
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Cart Items</Text>
+          {Products.map((item) => (
+            <CartCard key={item.ID} product={item} onRemove={() => {}} />
+          ))}
+        </View>
+        <View style={styles.section}>
           <Text style={styles.sectionTitle}>Payment Options</Text>
           <View style={styles.paymentOption}>
             <Text style={styles.paymentOptionText}>TailorPay</Text>
@@ -191,8 +181,8 @@ const RequestPaymentScreen: React.FC = () => {
         </View>
         <View style={styles.priceCalculation}>
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Base Price</Text>
-            <Text style={styles.priceValue}>{basePrice}K</Text>
+            <Text style={styles.priceLabel}>Price</Text>
+            <Text style={styles.priceValue}>{TotalPrice}K</Text>
           </View>
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Discount</Text>
@@ -206,7 +196,7 @@ const RequestPaymentScreen: React.FC = () => {
       </ScrollView>
       <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Total</Text>
-        <Text style={styles.totalPrice}>{Math.max(basePrice - discount + shippingFee, 0)}K</Text>
+        <Text style={styles.totalPrice}>{Math.max(TotalPrice - discount + shippingFee, 0)}K</Text>
       </View>
       {errorMessage && (
         <View style={styles.errorContainer}>
@@ -409,6 +399,12 @@ const styles = StyleSheet.create({
     color: '#721c24',
     textAlign: 'center',
   },
+  tailorTitle: {
+    fontSize: width * 0.05,
+    fontWeight: 'bold',
+    color: '#260101',
+    marginVertical: 10,
+  }
 });
 
-export default RequestPaymentScreen;
+export default OrderPaymentScreen;
