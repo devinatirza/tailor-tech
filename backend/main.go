@@ -74,6 +74,7 @@ func main() {
 
 	tailor := r.Group("/tailors")
 	{
+		tailor.GET("/:id", controller.GetTailor)
 		tailor.GET("/get-all", controller.GetAllTailor)
 	}
 

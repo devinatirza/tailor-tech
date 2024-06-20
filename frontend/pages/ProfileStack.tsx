@@ -16,6 +16,7 @@ export type ProfileStackParamList = {
   FAQs: undefined;
   CouponCode: undefined;
   CouponRedeem: undefined;
+  Role: undefined;
 };
 
 const Stack = createStackNavigator<ProfileStackParamList>();

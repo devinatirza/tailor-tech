@@ -43,6 +43,7 @@ type GetTailorFinal struct {
 	Email      string
 	Address    string
 	ImgUrl     string
+	Money 	   int
 	Rating     float32
 	Speciality []Speciality
 }
@@ -55,6 +56,7 @@ func GetTailor(id uint) GetTailorFinal{
 		Address string
 		ImgUrl  string
 		Rating  float32
+		Money	int
 	}
 
 	db := database.GetInstance()
@@ -62,7 +64,7 @@ func GetTailor(id uint) GetTailorFinal{
 	var tailor GetTailor
 	var tailorFinal GetTailorFinal
 
-	sql := "SELECT tailors.id, tailors.name, tailors.email, tailors.address, tailors.img_url, round(avg(tailor_ratings.rating), 1) as rating " +
+	sql := "SELECT tailors.id, tailors.name, tailors.email, tailors.address, tailors.img_url, round(avg(tailor_ratings.rating), 1) as rating, tailors.money " +
 		"FROM tailors " +
 		"LEFT JOIN tailor_ratings ON tailor_ratings.tailor_id = tailors.id " +
 		"LEFT JOIN tailor_prices ON tailor_prices.tailor_id = tailors.id " +
@@ -85,6 +87,7 @@ func GetTailor(id uint) GetTailorFinal{
 			Email:      tailor.Email,
 			ImgUrl:     tailor.ImgUrl,
 			Rating:     tailor.Rating,
+			Money: 		tailor.Money,
 			Speciality: specialities,
 		}
 

@@ -10,5 +10,6 @@ export interface ITailor {
   Address: string;
   ImgUrl: string;
   Rating: number;
+  Money: number;
   Speciality: Speciality[];
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Platform } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { useNavigation } from '@react-navigation/native';
@@ -22,7 +22,24 @@ const TailorProfileScreen: React.FC = () => {
     }
   };
 
+  const fetchTailorDetails = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/tailors/${user.ID}`);
+      if (response.status === 200) {
+        updateUser(response.data);
+      } else {
+        console.error('Failed to fetch tailor details');
+      }
+    } catch (error) {
+      console.error('Failed to fetch tailor details', error);
+    }
+  };
 
+  useEffect(() => {
+    fetchTailorDetails()
+  }, [])
+
+  console.log(user)
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.innerContainer}>
@@ -31,7 +48,9 @@ const TailorProfileScreen: React.FC = () => {
           <Image source={{ uri: (user as ITailor)?.ImgUrl }} style={styles.profileImage} />
         </View>
         <Text style={styles.label}>Name</Text>
-        <Text style={styles.text}>{(user as ITailor)?.Name}</Text>
+        <Text style={styles.text}>{user?.Name}</Text>
+        <Text style={styles.label}>Money</Text>
+        <Text style={styles.text}>{(user as ITailor)?.Money}</Text>
         <Text style={styles.label}>Email</Text>
         <Text style={styles.text}>{(user as ITailor)?.Email}</Text>
         <Text style={styles.label}>Address</Text>
