@@ -39,7 +39,7 @@ const SplashScreen = () => {
             return null;
           }
         } catch (error) {
-          console.error('Validation error:', error);
+          // console.error('Validation error:', error);
           return null;
         }
       };

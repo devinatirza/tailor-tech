@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     fontSize: deviceWidth * 0.065,
     fontWeight: 'bold',
     color: '#260101',
-    marginBottom: 10,
   },
   cartContainer: {
     paddingBottom: 20,

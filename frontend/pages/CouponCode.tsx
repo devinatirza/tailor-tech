@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, ScrollView } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Alert, ScrollView } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import axios from "axios";
-import { ProfileStackParamList } from "./ProfileStack";
+import axios from 'axios';
+import { ProfileStackParamList } from './ProfileStack';
 
-type Navigation = NavigationProp<ProfileStackParamList, 'CouponRedeem'>;
+type Navigation = NavigationProp<ProfileStackParamList, 'CouponCode'>;
 
 interface CouponProps {
   code: string;
@@ -27,23 +27,37 @@ const CouponCodeScreen: React.FC = () => {
   const { user } = useUser();
   const navigation = useNavigation<Navigation>();
   const [coupons, setCoupons] = useState<CouponProps[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchCoupons = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/coupons/code', {
+        params: { userId: user.ID }
+      });
+      setCoupons(response.data.coupons || []);
+    } catch (error) {
+      console.error('Failed to fetch user coupons', error);
+    }
+  };
+
+  if (user) {
+    fetchCoupons();
+  }
 
   useEffect(() => {
-    const fetchCoupons = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/coupons/code', {
-          params: { userId: user.ID }
-        });
-        setCoupons(response.data.coupons);
-      } catch (error) {
-        console.error('Failed to fetch user coupons', error);
-      }
-    };
-
-    if (user) {
+    const interval = setInterval(() => {
       fetchCoupons();
-    }
-  }, [user]);
+    }, 360000); 
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   const hasCoupons = coupons.length > 0;
   const buttonText = hasCoupons ? "Get Another Coupon Code" : "Get Coupon Code";

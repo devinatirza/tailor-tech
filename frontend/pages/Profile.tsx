@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -20,6 +20,7 @@ const OptionItem: React.FC<{ text: string; iconSrc: any }> = ({ text, iconSrc })
 const ProfileScreen = () => {
   const { updateUser, user } = useUser();
   const navigation = useNavigation<Navigation>();
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
     if (!user) {
@@ -28,12 +29,18 @@ const ProfileScreen = () => {
     }
 
     try {
-      await axios.get('http://localhost:8000/logout');
-      if (Platform.OS === 'web') {
-        document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      const response = await axios.get('http://localhost:8000/logout', {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        if (Platform.OS === 'web') {
+          document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+        navigation.navigate('Role');
+        updateUser(null); 
+      } else {
+        console.error('Logout error:', response.data);
       }
-      updateUser(null); 
-      navigation.navigate('Role');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -55,6 +62,21 @@ const ProfileScreen = () => {
   useEffect(() => {
     fetchUserDetails()
   }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchUserDetails();
+    }, 60000); 
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.mainContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -152,11 +174,10 @@ const styles = StyleSheet.create({
     marginTop: 7,
   },
   profileMoney: {
-    fontSize: deviceWidth * 0.053,
+    fontSize: deviceWidth * 0.055,
     color: '#260101',
     textAlign: 'center',
     fontWeight: '600',
-    marginRight: 20,
   },
   editProfileButton: {
     justifyContent: 'center',

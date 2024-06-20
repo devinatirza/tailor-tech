@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert, Image } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import axios from 'axios';
@@ -15,26 +15,25 @@ const CouponRedeemScreen = () => {
   const remainingPoints = 100 - points;
   const [selected, setSelected] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log("User points:", points);
-    console.log("User ID:", id);
-  }, [points, id]);
-
-  const handleRedeem = async (promoCode: string, pointsRequired: number) => {
+  const handleExchange = async (promoCode: string, pointsRequired: number) => {
     const newPoints = points - pointsRequired;
 
     try {
-      const response = await axios.post('http://localhost:8000/coupons/redeem', {
+      const response = await axios.post('http://localhost:8000/coupons/exchange', {
         userId: id,
-        newPoints,
         promoCode
       });
-      updateUser({ ...user, Points: newPoints });
-      Alert.alert('Success!', `Your promo code is: ${promoCode}`);
-      navigation.navigate('CouponCode');
+
+      if (response.data.success) {
+        updateUser({ ...user, Points: newPoints });
+        Alert.alert('Success!', `Your promo code is: ${promoCode}`);
+        navigation.navigate('CouponCode');
+      } else {
+        Alert.alert('Error', response.data.message);
+      }
     } catch (error) {
-      console.error('Redeem error:', error);
-      Alert.alert('Error', 'Failed to redeem points. Please try again.');
+      console.error('Exchange error:', error);
+      Alert.alert('Error', 'Failed to exchange points. Please try again.');
     }
   };
 
@@ -48,7 +47,7 @@ const CouponRedeemScreen = () => {
       {points >= 100 && (
         <>
           <Text style={styles.congratulationsText}>
-            Congratulations! You can redeem your points for a discount. Please choose an option below:
+            Congratulations! You can exchange your points for a discount. Please choose an option below:
           </Text>
           <View style={styles.optionsContainer}>
             {points >= 100 && (
@@ -118,7 +117,7 @@ const CouponRedeemScreen = () => {
           {selected && (
             <TouchableOpacity 
               style={styles.redeemButton}
-              onPress={() => handleRedeem(selected, selected === 'TECH75' ? 500 : selected === 'TECH35' ? 200 : 100)}
+              onPress={() => handleExchange(selected, selected === 'TECH75' ? 500 : selected === 'TECH35' ? 200 : 100)}
             >
               <Text style={styles.redeemButtonText}>Redeem</Text>
             </TouchableOpacity>

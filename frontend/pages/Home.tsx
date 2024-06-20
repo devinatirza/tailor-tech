@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: deviceWidth * 0.1,
     fontWeight: 'bold',
-    marginTop: 15,
+    marginTop: 25,
     color: '#260101',
   },
   iconsContainer: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 32,
     marginLeft: 15,
-    marginTop: 15,
+    marginTop: 22,
   },
   container: {
     paddingTop: 30,

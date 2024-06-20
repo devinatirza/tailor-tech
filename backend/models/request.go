@@ -6,6 +6,7 @@ type Request struct {
 	gorm.Model
 	TailorID uint
 	Tailor Tailor
+	UserID uint
 	Name  string
 	Desc string
 	Price int

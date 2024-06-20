@@ -85,6 +85,7 @@ const RequestPaymentScreen: React.FC = () => {
           RequestType: selectedType,
           TailorID: tailorId,
           Status: 'Pending',
+          Price: basePrice
         };
         const requestResponse = await axios.post(requestEndpoint, requestData);
 

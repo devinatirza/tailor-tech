@@ -25,6 +25,17 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
+func GetAllUsers(c *gin.Context) {
+	db := database.GetInstance()
+
+	var users []models.User
+	if err := db.Find(&users).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"users": users})
+}
 
 func UpdateUser(c *gin.Context) {
 	db := database.GetInstance()

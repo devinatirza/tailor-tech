@@ -7,6 +7,7 @@ import { ParamListBase } from '@react-navigation/routers';
 import TailorHomeStack from './TailorHomeStack';
 import TailorProfileScreen from './TailorProfile';
 import AddProductScreen from './AddProduct';
+import TailorOrderScreen from './TailorOrder';
 
 const Tab = createBottomTabNavigator();
 
@@ -92,7 +93,7 @@ const TailorTabNavigation = () => {
     >
       <Tab.Screen name="HomeTab" component={TailorHomeStack} />
       <Tab.Screen name="ProductTab" component={AddProductScreen} />
-      <Tab.Screen name="OrderTab" component={OrderScreen} />
+      <Tab.Screen name="OrderTab" component={TailorOrderScreen} />
       <Tab.Screen name="ProfileTab" component={TailorProfileScreen} />
     </Tab.Navigator>
   );

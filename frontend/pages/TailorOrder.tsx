@@ -4,16 +4,17 @@ import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import { ITransaction } from '../interfaces/transaction-interfaces';
 
-const OrderScreen: React.FC = () => {
+const TailorOrderScreen: React.FC = () => {
   const { user } = useUser();
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [requests, setRequests] = useState<ITransaction[]>([]);
-  const [tailors, setTailors] = useState<{ [key: number]: { Name: string; ImgUrl: string } }>({});
+  const [users, setUsers] = useState<{ [key: number]: { Name: string } }>({});
   const [view, setView] = useState<'tailorRequests' | 'productOrders'>('productOrders');
+  const [loading, setLoading] = useState(false);
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/orders/get-user-order/${user.ID}`);
+      const response = await axios.get(`http://localhost:8000/orders/get-tailor-order/${user.ID}`);
       setTransactions(response.data);
     } catch (error) {
       console.error('Error fetching transactions:', error);
@@ -22,23 +23,23 @@ const OrderScreen: React.FC = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/requests/get-user-request/${user.ID}`);
+      const response = await axios.get(`http://localhost:8000/requests/get-tailor-request/${user.ID}`);
       setRequests(response.data);
     } catch (error) {
       console.error('Error fetching requests:', error);
     }
   };
 
-  const fetchTailors = async () => {
+  const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/tailors/get-all');
-      const tailorData = response.data.reduce((acc: any, tailor: any) => {
-        acc[tailor.ID] = { Name: tailor.Name, ImgUrl: tailor.ImgUrl };
+      const response = await axios.get('http://localhost:8000/users/get-all');
+      const userData = response.data.users.reduce((acc: any, user: any) => {
+        acc[user.ID] = { Name: user.Name };
         return acc;
       }, {});
-      setTailors(tailorData);
+      setUsers(userData);
     } catch (error) {
-      console.error('Error fetching tailors:', error);
+      console.error('Error fetching users:', error);
     }
   };
 
@@ -46,16 +47,28 @@ const OrderScreen: React.FC = () => {
     if (user?.ID) {
       fetchOrders();
       fetchRequests();
-      fetchTailors();
+      fetchUsers();
     }
+  }, [user]);
 
+  useEffect(() => {
     const interval = setInterval(() => {
       fetchOrders();
       fetchRequests();
-    }, 30000); 
-
+      fetchUsers();
+    }, 60000); 
     return () => clearInterval(interval);
   }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  
 
   const requestTypeMapping: { [key: number]: string } = {
     1: 'Top',
@@ -65,23 +78,23 @@ const OrderScreen: React.FC = () => {
     5: 'Tote Bag',
   };
 
-  const handleOrderReceived = async (transactionId: number) => {
+  const handleOrderStatusUpdate = async (transactionId: number, newStatus: string) => {
     try {
-      await axios.post(`http://localhost:8000/orders/confirm-received`, { transactionId });
+      await axios.post(`http://localhost:8000/orders/update-status`, { transactionId, newStatus });
       fetchOrders();
       fetchRequests();
     } catch (error) {
-      console.error('Error confirming received item:', error);
+      console.error('Error updating order status:', error);
     }
   };
 
-  const handleRequestReceived = async (transactionId: number) => {
+  const handleRequestStatusUpdate = async (transactionId: number, newStatus: string) => {
     try {
-      await axios.post(`http://localhost:8000/requests/confirm-received`, { transactionId });
+      await axios.post(`http://localhost:8000/requests/update-status`, { transactionId, newStatus });
       fetchOrders();
       fetchRequests();
     } catch (error) {
-      console.error('Error confirming received item:', error);
+      console.error('Error updating request status:', error);
     }
   };
 
@@ -93,19 +106,27 @@ const OrderScreen: React.FC = () => {
           <Image source={{ uri: product.ImgUrl }} style={styles.productImage} />
           <View style={styles.productDetails}>
             <Text style={styles.productName}>{product.Name}</Text>
-            <Text style={styles.productTailorName}>{tailors[item.TailorID]?.Name}</Text>
+            <Text style={styles.productUserName}>Client: {users[item.UserID]?.Name}</Text>
             <Text style={styles.productSize}>Size: {product.Size}</Text>
             <Text style={styles.productPrice}>IDR {product.Price}K</Text>
           </View>
         </View>
       ))}
-      <Text style={styles.productStatus}>Status: {item.Status}</Text>
-      {item.Status === 'Shipping' && (
+      <Text style={styles.status}>Status: {item.Status}</Text>
+      {item.Status === 'Pending' && (
         <TouchableOpacity 
-          style={styles.confirmButton} 
-          onPress={() => handleOrderReceived(item.ID)}
+          style={styles.statusButton} 
+          onPress={() => handleOrderStatusUpdate(item.ID, 'Confirmed')}
         >
-          <Text style={styles.confirmButtonText}>I have received the item</Text>
+          <Text style={styles.statusButtonText}>Confirm</Text>
+        </TouchableOpacity>
+      )}
+      {item.Status === 'Confirmed' && (
+        <TouchableOpacity 
+          style={styles.statusButton} 
+          onPress={() => handleOrderStatusUpdate(item.ID, 'Shipping')}
+        >
+          <Text style={styles.statusButtonText}>Shipping</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -115,25 +136,40 @@ const OrderScreen: React.FC = () => {
     <View style={styles.transactionItem}>
       <Text style={styles.transactionDate}>{new Date(item.TransactionDate).toLocaleDateString()}</Text>
       <View style={styles.tailorContainer}>
-        <Image source={{ uri: tailors[item.TailorID]?.ImgUrl }} style={styles.tailorImage} />
         <View style={styles.productDetails}>
-          <Text style={styles.tailorName}>{tailors[item.TailorID]?.Name}</Text>
+          <Text style={styles.userName}>{users[item.UserID]?.Name}</Text>
           {item.Requests.map(request => (
             <View key={request.ID} style={styles.requestDetails}>
               <Text style={styles.selectedType}>Clothing Type: {requestTypeMapping[request.RequestType]}</Text>
               <Text style={styles.productDesc}>Description: {request.Desc}</Text>
-              <Text style={styles.productPrice}>IDR {request.Price}K</Text>
+              <Text style={styles.requestPrice}>IDR {request.Price}K</Text>
             </View>
           ))}
         </View>
       </View>
-      <Text style={styles.productStatus}>Status: {item.Status}</Text>
-      {item.Status === 'Shipping' && (
+      <Text style={styles.status}>Status: {item.Status}</Text>
+      {item.Status === 'Pending' && (
         <TouchableOpacity 
-          style={styles.confirmButton} 
-          onPress={() => handleRequestReceived(item.ID)}
+          style={styles.statusButton} 
+          onPress={() => handleRequestStatusUpdate(item.ID, 'Confirmed')}
         >
-          <Text style={styles.confirmButtonText}>I have received the item</Text>
+          <Text style={styles.statusButtonText}>Confirm</Text>
+        </TouchableOpacity>
+      )}
+      {item.Status === 'Confirmed' && (
+        <TouchableOpacity 
+          style={styles.statusButton} 
+          onPress={() => handleRequestStatusUpdate(item.ID, 'In Progress')}
+        >
+          <Text style={styles.statusButtonText}>In Progress</Text>
+        </TouchableOpacity>
+      )}
+      {item.Status === 'In Progress' && (
+        <TouchableOpacity 
+          style={styles.statusButton} 
+          onPress={() => handleRequestStatusUpdate(item.ID, 'Shipping')}
+        >
+          <Text style={styles.statusButtonText}>Shipping</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -175,7 +211,7 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: width * 0.18,
+    paddingTop: width * 0.18,
     paddingHorizontal: 30,
     backgroundColor: 'white',
   },
@@ -197,7 +233,7 @@ const styles = StyleSheet.create({
   toggleButton: {
     marginHorizontal: 10,
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05,
     borderRadius: 15,
     backgroundColor: '#E4DCD5',
   },
@@ -206,7 +242,7 @@ const styles = StyleSheet.create({
   },
   toggleButtonText: {
     color: '#260101',
-    fontSize: 16,
+    fontSize: width * 0.042,
   },
   activeButtonText: {
     color: 'white',
@@ -235,6 +271,12 @@ const styles = StyleSheet.create({
   },
   tailorName: {
     fontSize: width * 0.05,
+    fontWeight: 'bold',
+    color: '#260101',
+    marginBottom: 5,
+  },
+  userName: {
+    fontSize: width * 0.065,
     fontWeight: 'bold',
     color: '#260101',
     marginBottom: 5,
@@ -272,7 +314,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#260101',
   },
-  productTailorName: {
+  productUserName: {
     fontSize: width * 0.045,
     fontWeight: '500',
     color: '#260101',
@@ -293,22 +335,24 @@ const styles = StyleSheet.create({
     color: '#260101',
     marginTop: 5,
   },
-  productStatus: {
-    fontSize: width * 0.04,
-    color: '#593825',
-    textAlign: 'right',
-    marginTop: 8,
-  },
-  requestStatus: {
-    fontSize: width * 0.04,
+  status: {
+    fontSize: width * 0.045,
     color: '#593825',
     textAlign: 'right',
     marginTop: 10,
   },
+  requestPrice: {
+    fontSize: width * 0.045,
+    fontWeight: 'bold',
+    color: '#260101',
+    position: 'absolute',
+    top: -65,
+    right: 0,
+  },
   productsContainer: {
     paddingBottom: 20,
   },
-  confirmButton: {
+  statusButton: {
     backgroundColor: '#593825',
     borderRadius: 10,
     paddingVertical: 10,
@@ -316,11 +360,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
-  confirmButtonText: {
+  statusButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
 });
 
-export default OrderScreen;
+export default TailorOrderScreen;
