@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const CartScreen = () => {
+const AddProductScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Your Cart</Text>
+      <Text>Add Your Collection Here</Text>
     </View>
   );
 };
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CartScreen;
+export default AddProductScreen;

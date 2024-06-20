@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useRoute, RouteProp, useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList } from './HomeStack';
+import BackButton from '../components/back-button';
 
 type ClothingTypesRouteProp = RouteProp<HomeStackParamList, 'Categories'>;
 type Navigation = NavigationProp<HomeStackParamList, 'Measurement'>;
@@ -26,7 +27,7 @@ const CategoriesScreen: React.FC = () => {
 
   const getPrice = (type: string) => {
     const speciality = specialities.find((speciality: { Category: string }) => speciality.Category.toUpperCase() === type);
-    return speciality ? speciality.Price + 'K' : '';
+    return speciality ? speciality.Price : 0;
   };
 
   const handleSelect = (type: string) => {
@@ -35,16 +36,19 @@ const CategoriesScreen: React.FC = () => {
 
   const handleChoose = () => {
     if (selected) {
+      const basePrice = getPrice(selected);
       navigation.navigate('Measurement', { 
         selectedType: selected,
+        basePrice ,
         tailorId,
-        tailorName
+        tailorName,
       });
     }
   };
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.title}>Choose Your Clothing</Text>
       {clothingTypes.map((item, index) => (
         <TouchableOpacity 
@@ -64,7 +68,7 @@ const CategoriesScreen: React.FC = () => {
               {item.type}
             </Text>
             {isSpeciality(item.type) && (
-              <Text style={styles.basePriceText}>Base Price: {getPrice(item.type)}</Text>
+              <Text style={styles.basePriceText}>Base Price: {getPrice(item.type)}K</Text>
             )}
           </View>
           {selected === item.type && (
@@ -82,19 +86,18 @@ const CategoriesScreen: React.FC = () => {
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: width * 0.06,
+    fontWeight: 'bold',
+    marginLeft: 55,
+    color: '#260101',
+    marginBottom: 50,
+  },
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingTop: width * 0.2,
+    paddingHorizontal: 30,
     backgroundColor: 'white',
-  },
-  title: {
-    fontSize: width * 0.08,
-    fontWeight: 'bold',
-    marginBottom: 40,
-    marginTop: 10,
-    textAlign: 'center',
-    color: '#260101',
   },
   option: {
     marginBottom: 25,
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
   chooseButton: {
     backgroundColor: '#D9C3A9',
     position: 'absolute',
-    bottom: 60,
+    bottom: 40,
     left: width * 0.2,
     right: width * 0.2,
     height: height * 0.06,

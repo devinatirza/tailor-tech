@@ -7,7 +7,9 @@ import OrderScreen from './Order';
 import ProfileStack from './ProfileStack'; 
 import CartScreen from './Cartt';
 import { ParamListBase } from '@react-navigation/routers';
-import CartStack from './CardStack';
+import TailorHomeStack from './TailorHomeStack';
+import TailorProfileScreen from './TailorProfile';
+import AddProductScreen from './AddProduct';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,12 +25,12 @@ const HomeIconInactive = ({ color }: { color: string }) => (
   <Image source={require('../assets/home_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />
 );
 
-const CartIconActive = ({ color }: { color: string }) => (
-  <Image source={require('../assets/cart_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />
+const AddIconActive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/addProduct_icon.png')} style={{ width: 32, height: 32, tintColor: color }} />
 );
 
-const CartIconInactive = ({ color }: { color: string }) => (
-  <Image source={require('../assets/cart_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />
+const AddIconInactive = ({ color }: { color: string }) => (
+  <Image source={require('../assets/addProduct_icon_inactive.png')} style={{ width: 32, height: 32, tintColor: color }} />
 );
 
 const OrderIconActive = ({ color }: { color: string }) => (
@@ -47,7 +49,7 @@ const ProfileIconInactive = ({ color }: { color: string }) => (
   <Image source={require('../assets/profile_icon_inactive_9.png')} style={{ width: 32, height: 32, tintColor: color }} />
 );
 
-const TabNavigation = () => {
+const TailorTabNavigation = () => {
   const navigation = useNavigation();
 
   return (
@@ -71,9 +73,9 @@ const TabNavigation = () => {
         tabBarIcon: ({ color, focused }) => {
           if (route.name === 'HomeTab') {
             return focused ? <HomeIconActive color={color} /> : <HomeIconInactive color={color} />;
-          } else if (route.name === 'CartTab') {
-            return focused ? <CartIconActive color={color} /> : <CartIconInactive color={color} />;
-          } else if (route.name === 'Order') {
+          } else if (route.name === 'ProductTab') {
+            return focused ? <AddIconActive color={color} /> : <AddIconInactive color={color} />;
+          } else if (route.name === 'OrderTab') {
             return focused ? <OrderIconActive color={color} /> : <OrderIconInactive color={color} />;
           } else if (route.name === 'ProfileTab') {
             return focused ? <ProfileIconActive color={color} /> : <ProfileIconInactive color={color} />;
@@ -91,12 +93,12 @@ const TabNavigation = () => {
         tabBarIconStyle: { width: 32, height: 32 }, 
       })}
     >
-      <Tab.Screen name="HomeTab" component={HomeStack} />
-      <Tab.Screen name="CartTab" component={CartStack} />
-      <Tab.Screen name="Order" component={OrderScreen} />
-      <Tab.Screen name="ProfileTab" component={ProfileStack} />
+      <Tab.Screen name="HomeTab" component={TailorHomeStack} />
+      <Tab.Screen name="ProductTab" component={AddProductScreen} />
+      <Tab.Screen name="OrderTab" component={OrderScreen} />
+      <Tab.Screen name="ProfileTab" component={TailorProfileScreen} />
     </Tab.Navigator>
   );
 };
 
-export default TabNavigation;
+export default TailorTabNavigation;

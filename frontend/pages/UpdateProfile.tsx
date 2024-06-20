@@ -14,7 +14,8 @@ const UpdateProfileScreen = () => {
 
   const [name, setName] = useState(user.Name);
   const [email, setEmail] = useState(user.Email);
-  const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState(user.PhoneNumber);
   const [address, setAddress] = useState(user.Address);
@@ -27,8 +28,14 @@ const UpdateProfileScreen = () => {
     specialChar: false,
   });
 
+  const [errorMessages, setErrorMessages] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+
   const handlePasswordChange = (value: string) => {
-    setPassword(value);
+    setNewPassword(value);
 
     setValidations({
       minLength: value.length >= 8,
@@ -37,11 +44,31 @@ const UpdateProfileScreen = () => {
       digit: /\d/.test(value),
       specialChar: /[~`!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]/.test(value),
     });
+
+    const errors = [];
+    if (value.length < 8) errors.push('Password must be at least 8 characters long');
+    if (!/[A-Z]/.test(value)) errors.push('Password must contain at least one uppercase letter');
+    if (!/[a-z]/.test(value)) errors.push('Password must contain at least one lowercase letter');
+    if (!/\d/.test(value)) errors.push('Password must contain at least one digit');
+    if (!/[~`!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]/.test(value)) errors.push('Password must contain at least one special character');
+
+    setErrorMessages(prev => ({ ...prev, newPassword: errors.join(', ') }));
   };
 
   const handleSave = async () => {
-    if (password && password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+    setErrorMessages({
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    });
+
+    if (newPassword && newPassword !== confirmPassword) {
+      setErrorMessages(prev => ({ ...prev, confirmPassword: 'New passwords do not match' }));
+      return;
+    }
+
+    if (newPassword && !oldPassword) {
+      setErrorMessages(prev => ({ ...prev, oldPassword: 'Please enter your old password' }));
       return;
     }
 
@@ -54,13 +81,14 @@ const UpdateProfileScreen = () => {
       points: user.Points,
     };
 
-    if (password) {
-      updatedUser.password = password;
-      updatedUser.confirm = confirmPassword;
+    if (newPassword) {
+      updatedUser.oldPassword = oldPassword;
+      updatedUser.newPassword = newPassword;
+      updatedUser.confirmPassword = confirmPassword;
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/update-profile', updatedUser, {
+      const response = await axios.post(`http://localhost:8000/users/update`, updatedUser, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -75,8 +103,13 @@ const UpdateProfileScreen = () => {
         Alert.alert('Success', 'Profile updated successfully!');
         navigation.navigate('Profile');
       }
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred. Please try again later.');
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.error || 'An error occurred. Please try again later.';
+      if (errorMsg.includes('Old password is incorrect')) {
+        setErrorMessages(prev => ({ ...prev, oldPassword: errorMsg }));
+      } else {
+        Alert.alert('Error', errorMsg);
+      }
     }
   };
 
@@ -84,7 +117,7 @@ const UpdateProfileScreen = () => {
     <ScrollView style={styles.mainContainer}>
       <View style={styles.innerContainer}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: '../assets/profileIcon.png' }} style={styles.profileImage} />
+          <Image source={require('../assets/profileIcon.png')} style={styles.profileImage} />
         </View>
         <Text style={styles.label}>Name</Text>
         <TextInput
@@ -100,26 +133,33 @@ const UpdateProfileScreen = () => {
           onChangeText={setEmail}
           placeholder="Email"
         />
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>Old Password</Text>
         <TextInput
           style={styles.input}
-          value={password}
-          onChangeText={handlePasswordChange}
-          placeholder="Password"
+          value={oldPassword}
+          onChangeText={setOldPassword}
+          placeholder="Old Password"
           secureTextEntry
         />
-        {password.length > 0 && (
-          <>
-            <Text style={styles.label}>Confirm Password</Text>
-            <TextInput
-              style={styles.input}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="Confirm Password"
-              secureTextEntry
-            />
-          </>
-        )}
+        {errorMessages.oldPassword ? <Text style={styles.errorText}>{errorMessages.oldPassword}</Text> : null}
+        <Text style={styles.label}>New Password</Text>
+        <TextInput
+          style={styles.input}
+          value={newPassword}
+          onChangeText={handlePasswordChange}
+          placeholder="New Password"
+          secureTextEntry
+        />
+        {errorMessages.newPassword ? <Text style={styles.errorText}>{errorMessages.newPassword}</Text> : null}
+        <Text style={styles.label}>Confirm New Password</Text>
+        <TextInput
+          style={styles.input}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirm New Password"
+          secureTextEntry
+        />
+        {errorMessages.confirmPassword ? <Text style={styles.errorText}>{errorMessages.confirmPassword}</Text> : null}
         <Text style={styles.label}>Address</Text>
         <TextInput
           style={[styles.input, styles.addressInput]}
@@ -146,7 +186,7 @@ const UpdateProfileScreen = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    paddingTop: 28,
+    paddingVertical: 30,
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '100%',
@@ -157,6 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 30,
     width: '100%',
+    paddingBottom: 30,
   },
   imageContainer: {
     alignItems: 'center',
@@ -186,6 +227,11 @@ const styles = StyleSheet.create({
   addressInput: {
     height: 80,
     textAlignVertical: 'top',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+    marginLeft: 15,
   },
   buttonContainer: {
     backgroundColor: '#D9C3A9',

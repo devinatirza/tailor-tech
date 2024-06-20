@@ -5,4 +5,5 @@ export interface IUser {
     PhoneNumber: string
     Address: string
     Points: number
+    Money: number
 }

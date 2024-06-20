@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity }
 import axios from 'axios';
 import { IProduct } from '../interfaces/product-interfaces';
 import { useUser } from '../contexts/user-context';
+import BackButton from '../components/back-button';
 
 const WishlistScreen: React.FC = () => {
   const [wishlistProducts, setWishlistProducts] = useState<IProduct[]>([]);
@@ -92,6 +93,7 @@ const WishlistScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton /> 
       <Text style={styles.title}>Your Wishlists</Text>
       {wishlistProducts.length === 0 ? (
         <Text style={styles.noItemsText}>Your wishlist is currently empty</Text>
@@ -111,17 +113,16 @@ const WishlistScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 34,
+    fontSize: (Dimensions.get('window').width * 0.095),
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 55,
     color: '#260101',
     alignSelf: 'flex-start',
-    marginTop: 10,
     marginBottom: 10,
   },
   container: {
     flex: 1,
-    paddingTop: 7,
+    paddingTop: (Dimensions.get('window').width * 0.18),
     paddingLeft: 24,
     paddingRight: 33,
     backgroundColor: 'white',

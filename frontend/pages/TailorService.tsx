@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ITailor } from '../interfaces/tailor-interfaces';
 import TailorCard from './TailorCard';
 import { useRoute } from '@react-navigation/native';
+import BackButton from '../components/back-button';
 
 const TailorService: React.FC = () => {
   const route = useRoute();
@@ -44,6 +45,7 @@ const TailorService: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.title}>{speciality} Tailors</Text>
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
@@ -71,15 +73,15 @@ const TailorService: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 32,
+    fontSize: (Dimensions.get('window').width * 0.095),
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 55,
     color: '#260101',
     alignSelf: 'flex-start',
   },
   container: {
     flex: 1,
-    paddingTop: 7,
+    paddingTop: (Dimensions.get('window').width * 0.18),
     paddingHorizontal: 30,
     backgroundColor: 'white',
   },

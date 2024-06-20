@@ -19,6 +19,7 @@ type User struct {
 	Wishlist []Product `gorm:"many2many:wishlists"`
 	Points int
 	Promos []Promo `gorm:"many2many:user_promos;references:PromoCode;joinReferences:PromoCode"`
+	Money int
 }
 
 func (user *User) SetPassword(password string) error {

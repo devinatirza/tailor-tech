@@ -55,6 +55,7 @@ const MeasurementPage: React.FC = () => {
     navigation.navigate('Confirmation', {
       measurements,
       selectedType,
+      basePrice: route.params.basePrice,
       tailorId: route.params.tailorId,
       tailorName: route.params.tailorName
     });

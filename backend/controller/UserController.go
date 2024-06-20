@@ -12,14 +12,29 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func UpdateProfile(c *gin.Context) {
+func GetUser(c *gin.Context) {
+	db := database.GetInstance()
+	userID := c.Param("id")
+
+	var user models.User
+	if err := db.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
+
+func UpdateUser(c *gin.Context) {
 	db := database.GetInstance()
 	type UpdateProfileInput struct {
 		UserID      uint   `json:"userId" binding:"required"`
 		Name        string `json:"name,omitempty"`
 		Email       string `json:"email,omitempty"`
-		Password    string `json:"password,omitempty"`
-		Confirm     string `json:"confirm,omitempty"`
+		OldPassword string `json:"oldPassword,omitempty"`
+		NewPassword string `json:"newPassword,omitempty"`
+		Confirm     string `json:"confirmPassword,omitempty"`
 		PhoneNumber string `json:"phoneNumber,omitempty"`
 		Address     string `json:"address,omitempty"`
 		Points      int    `json:"points,omitempty"`
@@ -66,31 +81,36 @@ func UpdateProfile(c *gin.Context) {
 		user.Email = input.Email
 	}
 
-	if input.Password != "" {
-		if input.Password != input.Confirm {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Password doesn't match"})
+	if input.NewPassword != "" {
+		if input.NewPassword != input.Confirm {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
+			return
+		}
+
+		if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword)) != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Old password is incorrect"})
 			return
 		}
 
 		var passwordChecks []string
 
-		if len(input.Password) < 8 {
+		if len(input.NewPassword) < 8 {
 			passwordChecks = append(passwordChecks, "Password must be at least 8 characters long")
 		}
 
-		if !containsUppercase(input.Password) {
+		if !containsUppercase(input.NewPassword) {
 			passwordChecks = append(passwordChecks, "Password must contain at least one uppercase letter")
 		}
 
-		if !containsLowercase(input.Password) {
+		if !containsLowercase(input.NewPassword) {
 			passwordChecks = append(passwordChecks, "Password must contain at least one lowercase letter")
 		}
 
-		if !containsDigit(input.Password) {
+		if !containsDigit(input.NewPassword) {
 			passwordChecks = append(passwordChecks, "Password must contain at least one digit")
 		}
 
-		if !containsSpecialChar(input.Password) {
+		if !containsSpecialChar(input.NewPassword) {
 			passwordChecks = append(passwordChecks, "Password must contain at least one special character")
 		}
 
@@ -99,7 +119,7 @@ func UpdateProfile(c *gin.Context) {
 			return
 		}
 
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.NewPassword), bcrypt.DefaultCost)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not hash password"})
 			return

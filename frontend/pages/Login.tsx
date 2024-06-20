@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ViewStyle, TextStyle, ImageStyle } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import { useUser } from '../contexts/user-context';
-import { IUser } from '../interfaces/user-interfaces';
-import axios from 'axios';
 
 interface Styles {
   container: ViewStyle;
@@ -19,6 +17,7 @@ interface Styles {
   logo: ImageStyle;
   text: TextStyle;
   error: TextStyle;
+  backButton: ViewStyle;
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -26,12 +25,12 @@ const styles = StyleSheet.create<Styles>({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
     backgroundColor: '#F8F8F8',
   },
   inputContainer: {
     width: '100%',
     marginBottom: 20,
+    paddingHorizontal: 40,
   },
   inputLine: {
     borderBottomColor: '#401201',
@@ -58,7 +57,7 @@ const styles = StyleSheet.create<Styles>({
   button: {
     height: 50,
     backgroundColor: '#D9C3A9',
-    borderRadius: 5,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     width: '60%',
@@ -84,6 +83,11 @@ const styles = StyleSheet.create<Styles>({
     color: 'red',
     marginBottom: 10,
   },
+  backButton: {
+    position: 'absolute',
+    top: 55,
+    left: 30,
+  },
 });
 
 const LoginScreen: React.FC<IStackScreenProps> = (props) => {
@@ -94,27 +98,7 @@ const LoginScreen: React.FC<IStackScreenProps> = (props) => {
   const [error, setError] = useState('');
 
   const { login, updateUser, user } = useUser();
-
-  useEffect(() => {
-    const validate = async () => {
-      const response = await axios.get("http://localhost:8000/validate", {
-        withCredentials: true,
-      });
-      return response.data;
-    };
-
-    validate()
-      .then((res: IUser) => {
-        if (!user) {
-          updateUser(res);
-        }
-      })
-      .catch((error) => {
-        // navigate("/")
-      });
-    if (user) navigation.navigate('TailorTech');
-  }, [user]);
-
+  
   async function loginHandler() {
     const res = await login(email, password);
 
@@ -129,6 +113,9 @@ const LoginScreen: React.FC<IStackScreenProps> = (props) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Image source={require('../assets/back_icon.png')} style={{ width: 30, height: 26 }} />
+      </TouchableOpacity>
       <Text style={styles.title}>Welcome Back!</Text>
       <View style={styles.inputContainer}>
         <View style={styles.inputLine}>
@@ -145,7 +132,7 @@ const LoginScreen: React.FC<IStackScreenProps> = (props) => {
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.text}>Didn't have an account?</Text>
+        <Text style={styles.text}>Don't have an account?</Text>
       </TouchableOpacity>
       <StatusBar style="auto" />
     </View>

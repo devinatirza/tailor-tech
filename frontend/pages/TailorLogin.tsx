@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Linking, ViewStyle, TextStyle, ImageStyle } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Linking, ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import { useUser } from '../contexts/user-context';
 import { IUser } from '../interfaces/user-interfaces';
 import axios from 'axios';
+import { ITailor } from '../interfaces/tailor-interfaces';
 
 interface Styles {
   container: ViewStyle;
@@ -19,6 +20,8 @@ interface Styles {
   logo: ImageStyle;
   text: TextStyle;
   error: TextStyle;
+  backButton: ViewStyle;
+  contactLink: TextStyle;
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -26,10 +29,10 @@ const styles = StyleSheet.create<Styles>({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
     backgroundColor: '#F8F8F8',
   },
   inputContainer: {
+    paddingHorizontal: 40,
     width: '100%',
     marginBottom: 20,
   },
@@ -58,7 +61,7 @@ const styles = StyleSheet.create<Styles>({
   button: {
     height: 50,
     backgroundColor: '#D9C3A9',
-    borderRadius: 5,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     width: '60%',
@@ -78,11 +81,19 @@ const styles = StyleSheet.create<Styles>({
   text: {
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 10,
   },
   error: {
     color: 'red',
     marginBottom: 10,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 55,
+    left: 30,
+  },
+  contactLink: {
+    color: '#401201',
+    fontWeight: 'bold',
   },
 });
 
@@ -93,46 +104,29 @@ const TailorLoginScreen: React.FC<IStackScreenProps> = (props) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const { login, updateUser, user } = useUser();
-
-  useEffect(() => {
-    const validate = async () => {
-      const response = await axios.get("http://localhost:8000/validate", {
-        withCredentials: true,
-      });
-      return response.data;
-    };
-
-    validate()
-      .then((res: IUser) => {
-        if (!user) {
-          updateUser(res);
-        }
-      })
-      .catch((error) => {
-        // navigate("/")
-      });
-    if (user) navigation.navigate('TailorTech');
-  }, [user]);
+  const { tailorLogin, updateUser, user } = useUser();
 
   async function loginHandler() {
-    const res = await login(email, password);
+    const res = await tailorLogin(email, password);
 
     if (res === '') {
       setEmail('');
       setPassword('');
-      navigation.navigate('TailorTech');
+      navigation.navigate('TailorTechTailor');
     } else {
       setError(res);
     }
   }
 
-  const handleChatCallAssistant = () => {
+  const handleContact = () => {
     Linking.openURL('https://wa.me/628975611789'); 
   };
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Image source={require('../assets/back_icon.png')} style={{ width: 30, height: 26 }} />
+      </TouchableOpacity>
       <Text style={styles.title}>Welcome Back!</Text>
       <View style={styles.inputContainer}>
         <View style={styles.inputLine}>
@@ -148,8 +142,9 @@ const TailorLoginScreen: React.FC<IStackScreenProps> = (props) => {
           <Text style={styles.buttonText}>Login</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity  onPress={handleChatCallAssistant}>
-        <Text style={styles.text}>Please contact us for Tailor Registration</Text>
+      <TouchableOpacity  onPress={handleContact}>
+      <Text style={styles.text}>Please contact us for Tailor Registration</Text>
+        <Text style={styles.text}>(click here)</Text>
       </TouchableOpacity>
       <StatusBar style="auto" />
     </View>

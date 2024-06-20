@@ -15,9 +15,9 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/carts/add-to-cart', {
-        user_id: user.ID,
-        product_id: product.ID
+      await axios.post('http://localhost:8000/carts/add-to-cart', {
+        UserID: user.ID,
+        ProductID: product.ID
       });
     } catch (error) {
       console.log('Error adding to cart:', error);
@@ -31,22 +31,22 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/wishlists/add-to-wishlist', {
+      await axios.post('http://localhost:8000/wishlists/add-to-wishlist', {
         user_id: user.ID,
         product_id: product.ID
       });
     } catch (error) {
-        console.log('Error adding to wishlist:', error);
+      console.log('Error adding to wishlist:', error);
     }
   };
 
   return (
     <View style={[styles.productItem, { width: itemWidth }]}>
       <Image source={{ uri: product.ImgUrl }} style={styles.productImage} />
-      <TouchableOpacity style={styles.plusIconContainer} onPress={handleAddToCart}>
+      <TouchableOpacity style={styles.plusIconContainer} onPress={handleAddToCart} activeOpacity={0.6}>
         <Image source={require('../assets/sale_icon.png')} style={styles.plusIcon} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.favIconContainer} onPress={handleAddToWishlist}>
+      <TouchableOpacity style={styles.favIconContainer} onPress={handleAddToWishlist} activeOpacity={0.6}>
         <Image source={require('../assets/fav_icon.png')} style={styles.favIcon} />
       </TouchableOpacity>
       <Text style={styles.productName}>{product.Product}</Text>
@@ -63,12 +63,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     marginBottom: 20,
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
   },
   productImage: {
     width: '100%',
     height: 160,
     resizeMode: 'cover',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   favIconContainer: {
     position: 'absolute',
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontSize: 15,
     textAlign: 'center',
-    marginHorizontal: 5,
+    marginHorizontal: 11,
   },
   productSize: {
     marginTop: 2,

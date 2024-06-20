@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image } from 'react-native';
 
 const FAQsScreen = () => {
-  const upIcon = '../assets/upIcon.png';
-  const downIcon = '../assets/downIcon.png';
+  const upIcon = require('../assets/upIcon.png');
+  const downIcon = require('../assets/downIcon.png');
 
   const [expanded, setExpanded] = useState<number | null>(null);
 
@@ -107,7 +107,7 @@ const FAQsScreen = () => {
             <View key={index} style={styles.faqItem}>
               <TouchableOpacity style={styles.questionContainer} onPress={() => toggleExpand(index)}>
                 <Text style={styles.questionText}>{faq.question}</Text>
-                <Image source={{uri: expanded === index ? upIcon : downIcon}} style={styles.icon} />
+                <Image source={expanded === index ? upIcon : downIcon} style={styles.icon} />
               </TouchableOpacity>
               {expanded === index && <Text style={styles.answerText}>{faq.answer}</Text>}
             </View>
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     fontSize: deviceWidth * 0.09,
     fontWeight: 'bold',
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 20,
     color: '#260101',
     textAlign: 'center',
   },

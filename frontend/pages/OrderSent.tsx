@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 
-const RequestSent = () => {
+const OrderSent = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const RequestSent = () => {
   return (
     <View style={styles.container}>
       <Image source={require('../assets/TailorTech_ThankYou.png')} style={styles.logo} />
-      <Text style={styles.message}>Our tailor will confirm your order shortyly</Text>
+      <Text style={styles.message}>Your order is being processed</Text>
     </View>
   );
 };
@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RequestSent;
+export default OrderSent;

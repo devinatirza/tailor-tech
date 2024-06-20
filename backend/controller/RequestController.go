@@ -18,6 +18,7 @@ type CreateRequestInput struct {
 	RequestType string
 	TailorID    uint
 	Status      string
+	TotalPrice  uint
 }
 
 func CreateUserRequest(c *gin.Context) {
@@ -52,6 +53,7 @@ func CreateUserRequest(c *gin.Context) {
 		TailorID:        input.TailorID,
 		Requests:        []model.Request{request},
 		Status:          input.Status,
+		TotalPrice:      input.TotalPrice,
 	}
 
 	if err := db.Create(&transaction).Error; err != nil {
