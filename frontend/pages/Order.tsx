@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, Dimensions, TouchableOpacity, Modal } from 'react-native';
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import { ITransaction } from '../interfaces/transaction-interfaces';
+import RatingScreen from './RatingScreen';
 
 const OrderScreen: React.FC = () => {
   const { user } = useUser();
@@ -10,6 +11,8 @@ const OrderScreen: React.FC = () => {
   const [requests, setRequests] = useState<ITransaction[]>([]);
   const [tailors, setTailors] = useState<{ [key: number]: { Name: string; ImgUrl: string } }>({});
   const [view, setView] = useState<'tailorRequests' | 'productOrders'>('productOrders');
+  const [ratingModalVisible, setRatingModalVisible] = useState(false);
+  const [selectedTransactionId, setSelectedTransactionId] = useState<number | null>(null);
 
   const fetchOrders = async () => {
     try {
@@ -52,7 +55,7 @@ const OrderScreen: React.FC = () => {
     const interval = setInterval(() => {
       fetchOrders();
       fetchRequests();
-    }, 30000); 
+    }, 30000);
 
     return () => clearInterval(interval);
   }, []);
@@ -70,6 +73,8 @@ const OrderScreen: React.FC = () => {
       await axios.post(`http://localhost:8000/orders/confirm-received`, { transactionId });
       fetchOrders();
       fetchRequests();
+      setSelectedTransactionId(transactionId);
+      setRatingModalVisible(true);
     } catch (error) {
       console.error('Error confirming received item:', error);
     }
@@ -80,6 +85,8 @@ const OrderScreen: React.FC = () => {
       await axios.post(`http://localhost:8000/requests/confirm-received`, { transactionId });
       fetchOrders();
       fetchRequests();
+      setSelectedTransactionId(transactionId);
+      setRatingModalVisible(true);
     } catch (error) {
       console.error('Error confirming received item:', error);
     }
@@ -95,7 +102,7 @@ const OrderScreen: React.FC = () => {
             <Text style={styles.productName}>{product.Name}</Text>
             <Text style={styles.productTailorName}>{tailors[item.TailorID]?.Name}</Text>
             <Text style={styles.productSize}>Size: {product.Size}</Text>
-            <Text style={styles.productPrice}>IDR {product.Price}K</Text>
+            <Text style={styles.productPrice}>IDR {item.TotalPrice}K</Text>
           </View>
         </View>
       ))}
@@ -122,7 +129,7 @@ const OrderScreen: React.FC = () => {
             <View key={request.ID} style={styles.requestDetails}>
               <Text style={styles.selectedType}>Clothing Type: {requestTypeMapping[request.RequestType]}</Text>
               <Text style={styles.productDesc}>Description: {request.Desc}</Text>
-              <Text style={styles.productPrice}>IDR {request.Price}K</Text>
+              <Text style={styles.productPrice}>IDR {item.TotalPrice}K</Text>
             </View>
           ))}
         </View>
@@ -165,6 +172,25 @@ const OrderScreen: React.FC = () => {
           keyExtractor={(item) => item.ID.toString()}
           contentContainerStyle={styles.productsContainer}
         />
+      )}
+      {ratingModalVisible && selectedTransactionId !== null && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={ratingModalVisible}
+          onRequestClose={() => {
+            setRatingModalVisible(false);
+            setSelectedTransactionId(null);
+          }}
+        >
+          <RatingScreen
+            transactionId={selectedTransactionId}
+            onClose={() => {
+              setRatingModalVisible(false);
+              setSelectedTransactionId(null);
+            }}
+          />
+        </Modal>
       )}
     </View>
   );

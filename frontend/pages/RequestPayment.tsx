@@ -82,10 +82,11 @@ const RequestPaymentScreen: React.FC = () => {
           UserID: user.ID,
           Name: user.Name,
           Desc: description,
+          Price: basePrice,
           RequestType: selectedType,
           TailorID: tailorId,
           Status: 'Pending',
-          Price: basePrice
+          TotalPrice: totalAmount,
         };
         const requestResponse = await axios.post(requestEndpoint, requestData);
 
@@ -413,3 +414,4 @@ const styles = StyleSheet.create({
 });
 
 export default RequestPaymentScreen;
+

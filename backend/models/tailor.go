@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"main/database"
 
 	"gorm.io/gorm"
@@ -59,6 +60,8 @@ func GetTailor(id uint) GetTailorFinal{
 		Money	int
 	}
 
+	fmt.Println(id)
+
 	db := database.GetInstance()
 
 	var tailor GetTailor
@@ -68,10 +71,13 @@ func GetTailor(id uint) GetTailorFinal{
 		"FROM tailors " +
 		"LEFT JOIN tailor_ratings ON tailor_ratings.tailor_id = tailors.id " +
 		"LEFT JOIN tailor_prices ON tailor_prices.tailor_id = tailors.id " +
-		"LEFT JOIN outfits ON outfits.id = tailor_prices.outfit_id "
+		"LEFT JOIN outfits ON outfits.id = tailor_prices.outfit_id " +
+		"WHERE tailors.id = ? "
 
 	sql += "GROUP BY tailors.id"
-	db.Where("tailors.id = ?", id).Raw(sql).Scan(&tailor)
+	db.Raw(sql, id).Scan(&tailor)
+
+	fmt.Println(tailor.ID)
 
 		var specialities []Speciality
 		sql = "SELECT outfits.category, tailor_prices.price " +

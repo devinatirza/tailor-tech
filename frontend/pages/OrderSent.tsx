@@ -10,7 +10,7 @@ const OrderSent = () => {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'TailorTech' }],
+          routes: [{ name: 'Home' }],
         })
       );
     }, 3000);

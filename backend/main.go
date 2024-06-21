@@ -129,5 +129,7 @@ func main() {
 		orders.POST("/confirm-received", controller.HandleOrderReceived)
 	}
 
+	r.POST("/submit-rating", controller.SubmitRating)
+
 	r.Run(":8000")
 }
