@@ -10,10 +10,10 @@ import (
 )
 
 type PaymentRequest struct {
-	UserID       uint  
-	TotalAmount  int    
-	PromoCode    string
-	PaymentMethod string
+	UserID        uint   `json:"userId"`
+	TotalAmount   int    `json:"totalAmount"`
+	PromoCode     string `json:"promoCode"`
+	PaymentMethod string `json:"paymentMethod"`
 }
 
 type PaymentResponse struct {
@@ -51,17 +51,15 @@ func ProcessPayment(c *gin.Context) {
 		return
 	}
 
-	var userPromo models.UserPromo
 	if paymentRequest.PromoCode != "" {
+		var userPromo models.UserPromo
 		if err := tx.Where("promo_code = ? AND user_id = ?", paymentRequest.PromoCode, paymentRequest.UserID).First(&userPromo).Error; err != nil {
 			tx.Rollback()
 			log.Printf("Failed to query user promo: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query user promo"})
 			return
 		}
-	}
 
-	if paymentRequest.PromoCode != "" {
 		if userPromo.Quantity > 0 {
 			userPromo.Quantity--
 			if userPromo.Quantity == 0 {
@@ -84,7 +82,11 @@ func ProcessPayment(c *gin.Context) {
 		}
 	}
 
-	tx.Commit()
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+		return
+	}
 
 	log.Printf("Payment processed successfully for user: %d", paymentRequest.UserID)
 

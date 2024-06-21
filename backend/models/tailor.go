@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"main/database"
 
 	"gorm.io/gorm"
@@ -60,8 +59,6 @@ func GetTailor(id uint) GetTailorFinal{
 		Money	int
 	}
 
-	fmt.Println(id)
-
 	db := database.GetInstance()
 
 	var tailor GetTailor
@@ -76,8 +73,6 @@ func GetTailor(id uint) GetTailorFinal{
 
 	sql += "GROUP BY tailors.id"
 	db.Raw(sql, id).Scan(&tailor)
-
-	fmt.Println(tailor.ID)
 
 		var specialities []Speciality
 		sql = "SELECT outfits.category, tailor_prices.price " +

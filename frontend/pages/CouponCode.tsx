@@ -40,16 +40,9 @@ const CouponCodeScreen: React.FC = () => {
     }
   };
 
-  if (user) {
-    fetchCoupons();
-  }
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchCoupons();
-    }, 360000); 
-    return () => clearInterval(interval);
-  }, []);
+    fetchCoupons()
+  }, [])
 
   if (loading) {
     return (

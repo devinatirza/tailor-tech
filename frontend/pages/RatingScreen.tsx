@@ -1,56 +1,52 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import axios from 'axios';
 
-const RatingScreen: React.FC<{ transactionId: number, onClose: () => void }> = ({ transactionId, onClose }) => {
+interface RatingScreenProps {
+  transactionId: number;
+  onClose: () => void;
+}
+
+const RatingScreen: React.FC<RatingScreenProps> = ({ transactionId, onClose }) => {
   const [rating, setRating] = useState<number>(0);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleRatingSubmit = async () => {
-    if (rating < 1 || rating > 5) {
-      setErrorMessage('Rating must be between 1 and 5');
-      return;
-    }
-
+  const handleSubmitRating = async () => {
     try {
       const response = await axios.post('http://localhost:8000/submit-rating', { transactionId, rating });
       if (response.status === 200) {
         onClose();
       } else {
-        setErrorMessage('Failed to submit rating');
+        console.log('Failed to submit rating');
       }
     } catch (error) {
-      setErrorMessage('Failed to submit rating');
+      console.error('Error submitting rating:', error);
     }
   };
 
   return (
-    <Modal
-      transparent={true}
-      animationType="slide"
-      visible={true}
-      onRequestClose={onClose}
-    >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>Rate Your Tailor</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter rating (1-5)"
-            keyboardType="numeric"
-            value={String(rating)}
-            onChangeText={(text) => setRating(Number(text))}
-          />
-          {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
-          <TouchableOpacity style={styles.submitButton} onPress={handleRatingSubmit}>
-            <Text style={styles.submitButtonText}>Submit Rating</Text>
+    <View style={styles.modalContainer}>
+      <View style={styles.modalContent}>
+        <Text style={styles.title}>Rate Your Experience</Text>
+        <View style={styles.ratingContainer}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <TouchableOpacity key={star} onPress={() => {
+              setRating(star);
+              console.log(`Rating set to: ${star}`);
+            }}>
+              <Text style={[styles.star, star <= rating && styles.selectedStar]}>★</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmitRating}>
+            <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>Close</Text>
+          <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </Modal>
+    </View>
   );
 };
 
@@ -65,7 +61,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '80%',
-    backgroundColor: 'white',
+    backgroundColor: '#F3EADE',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
@@ -76,45 +72,48 @@ const styles = StyleSheet.create({
     color: '#260101',
     marginBottom: 20,
   },
-  input: {
-    width: '100%',
-    padding: 10,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
+  ratingContainer: {
+    flexDirection: 'row',
     marginBottom: 20,
-    textAlign: 'center',
-    fontSize: width * 0.045,
-    color: '#260101',
+  },
+  star: {
+    fontSize: 40,
+    color: '#ccc',
+    marginHorizontal: 5,
+  },
+  selectedStar: {
+    color: '#DAAB26',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   submitButton: {
+    flex: 1,
     backgroundColor: '#593825',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    marginBottom: 10,
+    marginRight: 5,
   },
   submitButtonText: {
     color: 'white',
     fontSize: width * 0.045,
     fontWeight: 'bold',
   },
-  closeButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  cancelButton: {
+    flex: 1,
+    backgroundColor: '#E4DCD5',
+    padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    backgroundColor: '#D9C3A9',
+    marginLeft: 5,
   },
-  closeButtonText: {
+  cancelButtonText: {
     color: '#260101',
     fontSize: width * 0.045,
-  },
-  errorText: {
-    color: 'red',
-    fontSize: width * 0.04,
-    marginBottom: 20,
+    fontWeight: 'bold',
   },
 });
 

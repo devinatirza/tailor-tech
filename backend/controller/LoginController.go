@@ -96,8 +96,6 @@ func TailorLoginHandler(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(user.ID)
-
 	tailor := models.GetTailor(user.ID)
 
 	if input.Pass == "" {
@@ -114,8 +112,6 @@ func TailorLoginHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect password!"})
 		return
 	}
-
-	fmt.Println(tailor.ID)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
