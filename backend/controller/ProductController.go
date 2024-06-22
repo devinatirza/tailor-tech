@@ -146,3 +146,40 @@ func ActivateProduct(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Product activated successfully"})
 }
+
+type AddProductRequest struct {
+	Name     string `json:"Name" binding:"required"`
+	TailorID uint   `json:"TailorID" binding:"required"`
+	Desc     string `json:"Desc"`
+	Price    int    `json:"Price" binding:"required"`
+	Size     string `json:"Size"`
+	ImgUrl   string `json:"ImgUrl"`
+	IsActive bool   `json:"IsActive"`
+}
+
+func AddProduct(c *gin.Context) {
+	db := database.GetInstance()
+
+	var request AddProductRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	product := models.Product{
+		Name:     request.Name,
+		TailorID: request.TailorID,
+		Desc:     request.Desc,
+		Price:    request.Price,
+		Size:     request.Size,
+		ImgUrl:   request.ImgUrl,
+		IsActive: request.IsActive,
+	}
+
+	if err := db.Create(&product).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add product"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Product added successfully"})
+}

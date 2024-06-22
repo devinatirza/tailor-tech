@@ -71,6 +71,7 @@ func main() {
 		product.GET("/get-tailor-inactive", controller.GetInactiveTailorProducts)
 		product.DELETE("/delete/:id", controller.RemoveProduct)
 		product.PUT("/activate/:id", controller.ActivateProduct)
+		product.POST("/add", controller.AddProduct)
 	}
 
 	tailor := r.Group("/tailors")

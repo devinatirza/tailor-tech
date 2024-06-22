@@ -6,7 +6,7 @@ import { IProduct } from '../interfaces/product-interfaces';
 import { TailorHomeStackParamList } from './TailorHomeStack';
 import { useUser } from '../contexts/user-context';
 
-type Navigation = NavigationProp<TailorHomeStackParamList, 'Chats'>;
+type Navigation = NavigationProp<TailorHomeStackParamList>;
 
 const TailorHomeScreen: React.FC = () => {
   const navigation = useNavigation<Navigation>();
