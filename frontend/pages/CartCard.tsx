@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: width * 0.05,
     color: '#260101',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginRight: 5,
   },
   productSize: {
     fontSize: 18,

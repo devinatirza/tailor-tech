@@ -12,7 +12,6 @@ import ChatScreen from './Chat';
 import CategoriesScreen from './Categories';
 import ConfirmationScreen from './Confirmation';
 import RequestPaymentScreen from './RequestPayment';
-import HomeServiceSent from './HomeServiceSent';
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -92,10 +91,6 @@ const HomeStack = () => {
       <Stack.Screen 
         name="HomeService" 
         component={HomeServiceScreen} 
-      />
-      <Stack.Screen 
-        name="HomeServiceSent" 
-        component={HomeServiceSent} 
       />
       <Stack.Screen 
         name="Confirmation" 

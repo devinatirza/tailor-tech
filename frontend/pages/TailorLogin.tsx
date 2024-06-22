@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Linking, ViewStyle, TextStyle, ImageStyle } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import { useUser } from '../contexts/user-context';
-import { IUser } from '../interfaces/user-interfaces';
-import axios from 'axios';
-import { ITailor } from '../interfaces/tailor-interfaces';
 
 interface Styles {
   container: ViewStyle;
@@ -29,7 +25,7 @@ const styles = StyleSheet.create<Styles>({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
   },
   inputContainer: {
     paddingHorizontal: 40,

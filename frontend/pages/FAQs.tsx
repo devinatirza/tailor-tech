@@ -11,7 +11,7 @@ const FAQsScreen = () => {
   const faqs = [
     {
       question: 'What is TailorTech?',
-      answer: 'TailorTech is your go-to platform for booking services to sew or fix your tops, bottoms, dresses, suits, and bags. Our talented tailors also offer unique, ready-made items for purchase.',
+      answer: 'TailorTech is your go-to platform for booking services to sew or fix your tops, bottoms, dresses, suits, and tote bags. Our talented tailors also offer unique, ready-made items for purchase.',
     },
     {
       question: 'How do I book a service?',
@@ -23,15 +23,11 @@ const FAQsScreen = () => {
     },
     {
       question: 'What types of measurements are available?',
-      answer: 'We offer four convenient measurement options:\n• Self Measurement\n• Video-guide Measurement\n• Chat or Call Assistant\n• Home Service',
+      answer: 'We offer three convenient measurement options:\n• Self Measurement\n• Chat or Call Assistant\n• Home Service',
     },
     {
       question: 'How does the self-measurement option work?',
       answer: 'The self-measurement option provides you with easy-to-follow guidelines and tools within the app to help you take accurate measurements by yourself.',
-    },
-    {
-      question: 'What is the video-guide measurement?',
-      answer: 'Our video-guide measurement offers a detailed step-by-step video tutorial to help you measure yourself accurately.',
     },
     {
       question: 'What is the chat or call assistant measurement?',
@@ -47,7 +43,7 @@ const FAQsScreen = () => {
     },
     {
       question: 'What payment methods are accepted?',
-      answer: 'We accept a range of payment options including:\n• Credit/Debit cards\n• PayPal\n• Other local methods',
+      answer: 'We accept TailorPay which you can top up on your profile page.',
     },
     {
       question: 'How can I exchange my points for a coupon code?',
@@ -86,8 +82,8 @@ const FAQsScreen = () => {
       answer: 'Communication with tailors is available only through our built-in messaging feature to ensure a smooth and secure interaction.',
     },
     {
-      question: 'How are tailor ratings and reviews handled?',
-      answer: 'After each service, you can rate and review your tailor. These reviews help other users make informed decisions.',
+      question: 'How are tailor ratings handled?',
+      answer: 'After each service, you can rate your tailor. These ratings help other users make informed decisions.',
     },
     {
       question: 'What should I do if I\'m not satisfied with the service?',

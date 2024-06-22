@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, FlatList, 
 import { useNavigation, RouteProp, useRoute, NavigationProp } from '@react-navigation/native';
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
-import CartCard from './CartCard';
 import { CartStackParamList } from './CartStack';
 import BackButton from '../components/back-button';
 
@@ -14,6 +13,14 @@ interface Coupon {
   code: string;
   discount: number;
   quantity: number;
+}
+
+interface Product {
+  ID: number;
+  Product: string;
+  Size: string;
+  Price: number;
+  ImgUrl: string;
 }
 
 const OrderPaymentScreen: React.FC = () => {
@@ -118,6 +125,19 @@ const OrderPaymentScreen: React.FC = () => {
     </TouchableOpacity>
   );
 
+  const renderCartItem = (item: Product) => (
+    <View style={styles.card} key={item.ID}>
+      <Image source={{ uri: item.ImgUrl }} style={styles.productImage} />
+      <View style={styles.productInfo}>
+        <Text style={styles.productName}>{item.Product}</Text>
+        <Text style={styles.productSize}>Size - {item.Size}</Text>
+      </View>
+      <View style={styles.priceContainer}>
+        <Text style={styles.productPrice}>IDR {item.Price}K</Text>
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <BackButton/>
@@ -167,9 +187,7 @@ const OrderPaymentScreen: React.FC = () => {
         </Modal>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Cart Items</Text>
-          {Products.map((item) => (
-            <CartCard key={item.ID} product={item} onRemove={() => {}} />
-          ))}
+          {Products.map(renderCartItem)}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Payment Options</Text>
@@ -390,12 +408,42 @@ const styles = StyleSheet.create({
     color: '#721c24',
     textAlign: 'center',
   },
-  tailorTitle: {
+  card: {
+    flexDirection: 'row',
+    borderRadius: 8,
+    padding: 5,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  productImage: {
+    width: width * 0.2,
+    height: width * 0.23,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  productInfo: {
+    flex: 1,
+  },
+  productName: {
     fontSize: width * 0.05,
-    fontWeight: 'bold',
     color: '#260101',
-    marginVertical: 10,
-  }
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  productSize: {
+    fontSize: 18,
+    color: '#260101',
+  },
+  priceContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  productPrice: {
+    fontSize: 18,
+    color: '#260101',
+    fontWeight: 'bold',
+    marginBottom: 35,
+  },
 });
 
 export default OrderPaymentScreen;

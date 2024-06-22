@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from './ProfileStack';
+import BackButton from '../components/back-button';
 
 type Navigation = NavigationProp<ProfileStackParamList, 'Profile'>;
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
@@ -128,6 +129,8 @@ const UpdateProfileScreen: React.FC = () => {
   };
 
   return (
+    <>
+    <BackButton/>
     <ScrollView style={styles.mainContainer}>
       <View style={styles.innerContainer}>
         <View style={styles.imageContainer}>
@@ -194,6 +197,7 @@ const UpdateProfileScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </>
   );
 };
 
@@ -206,6 +210,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'white',
+    paddingTop: deviceHeight * 0.09,
   },
   innerContainer: {
     flex: 1,

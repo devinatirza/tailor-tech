@@ -73,7 +73,7 @@ const TailorService: React.FC = () => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: (Dimensions.get('window').width * 0.095),
+    fontSize: (Dimensions.get('window').width * 0.09),
     fontWeight: 'bold',
     marginLeft: 55,
     color: '#260101',

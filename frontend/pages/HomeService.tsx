@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { HomeStackParamList } from './HomeStack';
 import BackButton from '../components/back-button';
 
-type Navigation = NavigationProp<HomeStackParamList, 'RequestSent'>;
+type Navigation = NavigationProp<HomeStackParamList, 'HomeServiceSent'>;
 
 interface Assistant {
   ID: number;
@@ -18,8 +18,8 @@ interface Assistant {
 const HomeService: React.FC = () => {
   const { user } = useUser();
   const navigation = useNavigation<Navigation>();
-  const [date, setDate] = useState(new Date(new Date().setDate(new Date(new Date().toUTCString()).getDate() + 1)));
-  const [time, setTime] = useState(new Date(new Date().toUTCString()));
+  const [date, setDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)));
+  const [time, setTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [assistants, setAssistants] = useState<Assistant[]>([]);
@@ -30,64 +30,59 @@ const HomeService: React.FC = () => {
   const fee = 'IDR 35K';
 
   useEffect(() => {
-    const fetchAssistants = async (selectedDate: Date) => {
+    const fetchAssistants = async (selectedDate: Date, selectedTime: Date) => {
       try {
-        const response = await axios.get(`http://localhost:8000/assistants/available?date=${selectedDate.toISOString().split('T')[0]}`);
+        const response = await axios.get(`http://localhost:8000/assistants/available?date=${selectedDate.toISOString().split('T')[0]}&time=${selectedTime.toTimeString().split(' ')[0]}`);
         setAssistants(response.data);
       } catch (error) {
         console.error('Error fetching assistants:', error);
       }
     };
 
-    fetchAssistants(date);
-  }, [date]);
-
-  const toLocalTime = (date: Date) => {
-    const offset = date.getTimezoneOffset() * 60000
-    return new Date(date.getTime() - offset)
-  }
+    fetchAssistants(date, time);
+  }, [date, time]);
 
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
     const currentDate = selectedDate || date;
     const now = new Date();
-    const beforeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 3, now.getMinutes())
-  
+    const beforeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 3, now.getMinutes());
+
     if (currentDate < now) {
       setErrorMessage('You cannot book a date in the past.');
       setShowDatePicker(false);
       return;
     }
 
-    else if (currentDate < beforeTime) {
+    if (currentDate < beforeTime) {
       setErrorMessage('Booking must be at least 3 hours from now.');
       setShowDatePicker(false);
       return;
     }
-  
+
     setShowDatePicker(false);
     setDate(currentDate);
     setErrorMessage('');
   };
 
-  const handleTimeChange = (event: any, selectedDate: Date | undefined) => {
-    const currentDate = selectedDate || date;
+  const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
+    const currentTime = selectedTime || time;
     const now = new Date();
-    const beforeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 3, now.getMinutes())
-  
-    if (currentDate < now) {
-      setErrorMessage('You cannot book a date in the past.');
+    const beforeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 3, now.getMinutes());
+
+    if (currentTime < now) {
+      setErrorMessage('You cannot book a time in the past.');
       setShowTimePicker(false);
       return;
     }
 
-    else if (currentDate < beforeTime) {
+    if (currentTime < beforeTime) {
       setErrorMessage('Booking must be at least 3 hours from now.');
       setShowTimePicker(false);
       return;
     }
-  
+
     setShowTimePicker(false);
-    setDate(currentDate);
+    setTime(currentTime);
     setErrorMessage('');
   };
 
@@ -97,20 +92,17 @@ const HomeService: React.FC = () => {
       return;
     }
 
-    console.log(toLocalTime(date))
-
     try {
       const response = await axios.post('http://localhost:8000/assistants/booking', {
         UserID: user.ID,
         Date: date.toISOString().split('T')[0],
-        Time: date.toTimeString().split(' ')[0],
+        Time: time.toTimeString().split(' ')[0],
         AssistantID: selectedAssistant.ID,
         Address: user.Address,
       });
 
       if (response.status === 200) {
-        alert('Home service confirmed');
-        navigation.navigate('RequestSent');
+        navigation.navigate('HomeServiceSent');
       } else {
         setErrorMessage(response.data.error || 'Failed to confirm home service');
       }
@@ -157,13 +149,13 @@ const HomeService: React.FC = () => {
       <View style={styles.formGroup}>
         <Text style={styles.label}>Time</Text>
         <View style={styles.dateTimeInputContainer}>
-          <Text style={styles.inputText}>{date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+          <Text style={styles.inputText}>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
           <TouchableOpacity onPress={() => setShowTimePicker(true)} style={styles.iconContainer}>
             <Icon name="clock-o" size={24} color="#401201" />
           </TouchableOpacity>
           {showTimePicker && (
             <DateTimePicker
-              value={date}
+              value={time}
               mode="time"
               display="default"
               onChange={handleTimeChange}
