@@ -1,24 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Dimensions, Alert, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity, Alert, ActivityIndicator, ScrollView, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { storage } from '../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import axios from 'axios';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, storage } from '../firebaseConfig';
 import { useUser } from '../contexts/user-context';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { TailorHomeStackParamList } from './TailorHomeStack';
+import axios from 'axios';
+import BackButton from '../components/back-button';
 
-type Navigation = NavigationProp<TailorHomeStackParamList>;
 const { width } = Dimensions.get('window');
 
-const AddProduct: React.FC = () => {
+const AddProduct = () => {
   const { user } = useUser();
-  const navigation = useNavigation<Navigation>();
-  const [Name, setName] = useState('');
-  const [Desc, setDesc] = useState('');
-  const [Price, setPrice] = useState('');
-  const [Size, setSize] = useState('');
-  const [ImgUrl, setImageUri] = useState<string | null>(null);
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
+  const [price, setPrice] = useState('');
+  const [size, setSize] = useState('');
+  const [imageUri, setImageUri] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   const pickImage = async () => {
@@ -35,55 +33,39 @@ const AddProduct: React.FC = () => {
   };
 
   const uploadImage = async () => {
-    if (!ImgUrl) return null;
+    if (!imageUri) return null;
 
     setUploading(true);
-    const response = await fetch(ImgUrl);
+    const response = await fetch(imageUri);
     const blob = await response.blob();
     const storageRef = ref(storage, `images/${new Date().toISOString()}`);
     await uploadBytes(storageRef, blob);
 
-    const uploadedImgUrl = await getDownloadURL(storageRef);
+    const imgUrl = await getDownloadURL(storageRef);
     setUploading(false);
-    return uploadedImgUrl;
+    return imgUrl;
   };
 
   const handleAddProduct = async () => {
-    if (!Name || !Desc || !Price || !Size || !ImgUrl) {
+    if (!name || !desc || !price || !size || !imageUri) {
       Alert.alert('Error', 'Please fill all fields and select an image.');
       return;
     }
 
     try {
-      const uploadedImgUrl = await uploadImage();
-      if (!uploadedImgUrl) {
-        Alert.alert('Error', 'Failed to upload image.');
-        return;
-      }
-
-      console.log('Uploading product with data:', {
-        Name,
-        Desc,
-        Price: parseInt(Price),
-        Size,
-        ImgUrl: uploadedImgUrl,
-        TailorID: user.ID,
-        IsActive: true,
-      });
+      const imgUrl = await uploadImage();
 
       const response = await axios.post('http://localhost:8000/products/add', {
-        Name,
-        Desc,
-        Price: parseInt(Price),
-        Size,
-        ImgUrl: uploadedImgUrl,
-        TailorID: user.ID,
-        IsActive: true,
+        name,
+        desc,
+        price,
+        size,
+        imgUrl,
+        tailorId: user.ID,
       });
 
       if (response.status === 200) {
         Alert.alert('Success', 'Product added successfully');
-        navigation.navigate('Home');
       } else {
         Alert.alert('Error', 'Failed to add product');
       }
@@ -95,23 +77,24 @@ const AddProduct: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <Text style={styles.title}>Add Product</Text>
       <ScrollView>
         <Text style={styles.label}>Product Name</Text>
-        <TextInput value={Name} onChangeText={setName} style={styles.input} />
+        <TextInput value={name} onChangeText={setName} style={styles.input} />
 
         <Text style={styles.label}>Description</Text>
-        <TextInput value={Desc} onChangeText={setDesc} style={styles.input} multiline numberOfLines={4} />
+        <TextInput value={desc} onChangeText={setDesc} style={styles.input} multiline numberOfLines={4} />
 
         <Text style={styles.label}>Price</Text>
-        <TextInput value={Price} onChangeText={setPrice} style={styles.input} keyboardType="numeric" />
+        <TextInput value={price} onChangeText={setPrice} style={styles.input} keyboardType="numeric" />
 
         <Text style={styles.label}>Size</Text>
-        <TextInput value={Size} onChangeText={setSize} style={styles.input} />
+        <TextInput value={size} onChangeText={setSize} style={styles.input} />
 
         <Text style={styles.label}>Image</Text>
-        {ImgUrl ? (
-          <Image source={{ uri: ImgUrl }} style={styles.image} />
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.image} />
         ) : (
           <TouchableOpacity onPress={pickImage} style={styles.pickImageButton}>
             <Text style={styles.pickImageText}>Pick an image</Text>
@@ -134,7 +117,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: width * 0.18,
-    paddingBottom: width * 0.1,
     paddingHorizontal: width * 0.08,
     backgroundColor: 'white',
   },
@@ -143,6 +125,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#260101',
     marginBottom: 45,
+    marginLeft: 45,
   },
   label: {
     fontSize: width * 0.05,
@@ -184,7 +167,7 @@ const styles = StyleSheet.create({
     padding: width * 0.04,
     alignItems: 'center',
     marginTop: 30,
-    marginHorizontal: width * 0.1,
+    marginHorizontal: width * 0.15,
   },
   addButtonText: {
     color: '#401201',
