@@ -89,7 +89,7 @@ func GetTailorRequest(c *gin.Context){
 
     subquery := db.Table("tran_requests").Select("transaction_id").Where("tailor_id = ?", tailorID)
 
-    db.Preload("Requests").Where("tailor_id = ?", tailorID).Where("id in (?)", subquery).Order("transaction_date desc").Find(&tran)
+    db.Preload("Requests").Preload("Requests.Top").Preload("Requests.Bottom").Preload("Requests.Dress").Preload("Requests.Suit").Preload("Requests.ToteBag").Where("tailor_id = ?", tailorID).Where("id in (?)", subquery).Order("transaction_date desc").Find(&tran)
 
     c.JSON(http.StatusOK, tran)
 }

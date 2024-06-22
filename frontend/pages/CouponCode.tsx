@@ -4,6 +4,7 @@ import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { ProfileStackParamList } from './ProfileStack';
+import BackButton from '../components/back-button';
 
 type Navigation = NavigationProp<ProfileStackParamList, 'CouponCode'>;
 
@@ -58,6 +59,8 @@ const CouponCodeScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <BackButton/>
+      <Text style={styles.title}>Coupon Code</Text>
       <View style={styles.headerTextContainer}>
         <Text style={styles.headerText}>Apply your coupon code on the payment page to unlock a special discount and enhance your shopping experience</Text>
       </View>
@@ -92,10 +95,18 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingHorizontal: deviceWidth * 0.1,
-    paddingTop: 20,
+    paddingTop: deviceWidth * 0.19,
     width: '100%',
     backgroundColor: 'white',
     alignItems: 'center',
+  },
+  title: {
+    fontSize: deviceWidth * 0.08,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    color: '#260101',
+    marginBottom: 10,
+    marginLeft: 45,
   },
   headerTextContainer: {
     marginTop: 16,

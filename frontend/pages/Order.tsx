@@ -46,11 +46,9 @@ const OrderScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    if (user?.ID) {
-      fetchOrders();
-      fetchRequests();
-      fetchTailors();
-    }
+    fetchOrders();
+    fetchRequests();
+    fetchTailors();
 
     const interval = setInterval(() => {
       fetchOrders();
@@ -201,8 +199,9 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: width * 0.18,
-    paddingHorizontal: 30,
+    paddingTop: width * 0.18,
+    paddingBottom: width * 0.1,
+    paddingHorizontal: width * 0.085,
     backgroundColor: 'white',
   },
   header: {
@@ -318,6 +317,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#260101',
     marginTop: 5,
+    marginBottom: 15,
   },
   productStatus: {
     fontSize: width * 0.04,
@@ -329,7 +329,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
     color: '#593825',
     textAlign: 'right',
-    marginTop: 10,
   },
   productsContainer: {
     paddingBottom: 20,

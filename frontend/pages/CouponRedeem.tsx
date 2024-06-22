@@ -4,6 +4,7 @@ import { useUser } from '../contexts/user-context';
 import axios from 'axios';
 import { NavigationProp, useNavigation } from '@react-navigation/native'; 
 import { ProfileStackParamList } from './ProfileStack';
+import BackButton from '../components/back-button';
 
 type Navigation = NavigationProp<ProfileStackParamList, 'CouponCode'>;
 
@@ -43,6 +44,8 @@ const CouponRedeemScreen = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
+      <Text style={styles.title}>Point Redeem</Text>
       <Text style={styles.pointsText}>You have {points} points!</Text>
       {points >= 100 && (
         <>
@@ -138,27 +141,35 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingHorizontal: width * 0.05,
+    paddingTop: height * 0.088,
     backgroundColor: 'white',
   },
+  title: {
+    fontSize: width * 0.08,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    color: '#260101',
+    marginBottom: 10,
+    marginLeft: 65,
+  },
   pointsText: {
-    marginTop: 40,
-    fontSize: 28,
+    marginTop: width * 0.07,
+    fontSize: width * 0.065,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
     color: '#260101',
   },
   congratulationsText: {
-    fontSize: 20,
+    fontSize: width * 0.05,
     textAlign: 'center',
     marginHorizontal: 20,
     marginBottom: 20,
     color: '#260101',
   },
   keepGoingText: {
-    fontSize: 20,
+    fontSize: width * 0.05,
     textAlign: 'center',
     marginHorizontal: 20,
     marginBottom: 20,

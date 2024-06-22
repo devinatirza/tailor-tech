@@ -6,7 +6,7 @@ import { useUser } from '../contexts/user-context';
 import CartCard from './CartCard';
 import { ICart } from '../interfaces/product-interfaces';
 import { NavigationProp } from '@react-navigation/native';
-import { CartStackParamList } from './CardStack';
+import { CartStackParamList } from './CartStack';
 
 type Navigation = NavigationProp<CartStackParamList, 'OrderPayment'>;
 
@@ -34,13 +34,13 @@ const CartScreen: React.FC = () => {
   useFocusEffect(
     useCallback(() => {
       fetchCartItems();
-    }, [user.ID])
+    }, [])
   );
 
   const groupItemsByTailor = (items: ICart) => {
     const groupedItems: { [key: string]: ICart['Products'] } = {};
 
-    items.Products.forEach((item) => {
+    items.Products?.forEach((item) => {
       if (!groupedItems[item.Tailor]) {
         groupedItems[item.Tailor] = [];
       }

@@ -23,12 +23,8 @@ const Tab = createBottomTabNavigator();
 const ProfileStack = () => {
   
   return (
-    <Stack.Navigator initialRouteName={'Profile'}>
-        <Stack.Screen name='Profile' component={ProfileScreen}
-        options={{
-        headerShown: false
-        }}>   
-        </Stack.Screen>
+    <Stack.Navigator initialRouteName={'Profile'} screenOptions={{ headerShown: false }}>
+        <Stack.Screen name='Profile' component={ProfileScreen}></Stack.Screen>
         <Stack.Screen name='UpdateProfile' component={UpdateProfileScreen}></Stack.Screen>
         <Stack.Screen name='CouponCode' component={CouponCodeScreen}></Stack.Screen>  
         <Stack.Screen name='CouponRedeem' component={CouponRedeemScreen}></Stack.Screen>  

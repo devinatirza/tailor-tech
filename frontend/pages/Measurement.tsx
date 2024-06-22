@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, TextI
 import { useRoute, RouteProp, useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList } from './HomeStack';
 import InputField from '../components/input-field';
+import BackButton from '../components/back-button';
 
 type MeasurementPageRouteProp = RouteProp<HomeStackParamList, 'Measurement'>;
 type Navigation = NavigationProp<HomeStackParamList, 'Measurement'>;
@@ -135,6 +136,7 @@ const MeasurementPage: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <Text style={styles.title}>{getHeaderTitle()}</Text>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.inputContainer}>
@@ -162,21 +164,22 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 30,
-    paddingHorizontal: 5,
+    paddingTop: (Dimensions.get('window').width * 0.19),
+    paddingHorizontal: (Dimensions.get('window').width * 0.04),
     backgroundColor: 'white',
   },
   title: {
-    fontSize: width * 0.08,
+    fontSize: (width * 0.08),
     fontWeight: 'bold',
-    marginVertical: 40,
-    textAlign: 'center',
+    marginLeft: 70,
     color: '#260101',
-    marginTop: 10,
+    alignSelf: 'flex-start',
+    marginBottom: 20,
   },
   scrollViewContainer: {
     paddingHorizontal: 40,
-    paddingBottom: height * 0.17, 
+    paddingBottom: height * 0.2, 
+    paddingTop: height * 0.04, 
     flexGrow: 1,
   },
   inputContainer: {

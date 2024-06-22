@@ -120,7 +120,7 @@ func main() {
 
 	r.POST("/payment", controller.ProcessPayment)
 
-	orders := r.Group(("/orders"))
+	orders := r.Group("/orders")
 	{
 		orders.POST("/create", controller.CreateProductOrder)
 		orders.GET("/get-user-order/:id", controller.GetUserOrder)
@@ -130,6 +130,12 @@ func main() {
 	}
 
 	r.POST("/submit-rating", controller.SubmitRating)
+
+	assistants := r.Group("/assistants")
+	{
+		assistants.GET("/available", controller.GetAvailableAssistants)
+		assistants.POST("/booking", controller.BookAssistant)
+	}
 
 	r.Run(":8000")
 }

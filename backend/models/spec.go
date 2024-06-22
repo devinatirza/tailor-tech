@@ -2,7 +2,6 @@ package model
 
 type Top struct {
 	RequestID       uint `gorm:"primaryKey"`
-	Request         Request
 	Chest           string
 	ShoulderToWaist string
 	Shoulder        string
@@ -14,7 +13,6 @@ type Top struct {
 
 type Bottom struct {
 	RequestID    uint `gorm:"primaryKey"`
-	Request      Request
 	WaistToAnkle string
 	Waist        string
 	Hip          string
@@ -26,7 +24,6 @@ type Bottom struct {
 
 type Dress struct {
 	RequestID   uint `gorm:"primaryKey"`
-	Request     Request
 	Chest       string
 	Shoulder    string
 	DressLength string
@@ -36,7 +33,6 @@ type Dress struct {
 
 type Suit struct {
 	RequestID    uint `gorm:"primaryKey"`
-	Request      Request
 	Chest        string
 	Waist        string
 	Hip          string
@@ -52,7 +48,6 @@ type Suit struct {
 
 type ToteBag struct {
 	RequestID uint `gorm:"primaryKey"`
-	Request   Request
 	Color     string
 	Material  string
 	Writing   string

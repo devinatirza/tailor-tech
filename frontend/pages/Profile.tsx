@@ -38,11 +38,9 @@ const ProfileScreen = () => {
         }
         navigation.navigate('Role');
         updateUser(null); 
-      } else {
-        console.error('Logout error:', response.data);
-      }
+      } 
     } catch (error) {
-      console.error('Logout error:', error);
+      
     }
   };
 

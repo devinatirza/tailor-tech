@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: (Dimensions.get('window').width * 0.18),
-    paddingHorizontal: 30,
+    paddingHorizontal: (Dimensions.get('window').width * 0.08),
     backgroundColor: 'white',
   },
   searchContainer: {

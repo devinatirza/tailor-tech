@@ -7,7 +7,7 @@ import OrderScreen from './Order';
 import ProfileStack from './ProfileStack'; 
 import CartScreen from './Cartt';
 import { ParamListBase } from '@react-navigation/routers';
-import CartStack from './CardStack';
+import CartStack from './CartStack';
 
 const Tab = createBottomTabNavigator();
 

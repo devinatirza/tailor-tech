@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 20,
     paddingVertical: 10,
-    paddingHorizontal: 5,
   },
   productImage: {
     width: '100%',

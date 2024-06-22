@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, FlatList, Dimensions, TouchableOpacity }
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import { ITransaction } from '../interfaces/transaction-interfaces';
+import MeasurementDetails from '../components/measurement-detail'
 
 const TailorOrderScreen: React.FC = () => {
   const { user } = useUser();
@@ -11,6 +12,7 @@ const TailorOrderScreen: React.FC = () => {
   const [users, setUsers] = useState<{ [key: number]: { Name: string } }>({});
   const [view, setView] = useState<'tailorRequests' | 'productOrders'>('productOrders');
   const [loading, setLoading] = useState(false);
+  const [measurementVisibility, setMeasurementVisibility] = useState<{ [key: number]: boolean }>({});
 
   const fetchOrders = async () => {
     try {
@@ -43,32 +45,39 @@ const TailorOrderScreen: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (user?.ID) {
+  const fetchStatusUpdate = async (transactionId: number, newStatus: string, type: 'order' | 'request') => {
+    try {
+      const endpoint = type === 'order' ? `http://localhost:8000/orders/update-status` : `http://localhost:8000/requests/update-status`;
+      await axios.post(endpoint, { transactionId, newStatus });
       fetchOrders();
       fetchRequests();
-      fetchUsers();
+    } catch (error) {
+      console.error('Error updating status:', error);
     }
-  }, [user]);
+  };
+  
+
+  useEffect(() => {
+    fetchOrders();
+    fetchRequests();
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       fetchOrders();
       fetchRequests();
       fetchUsers();
-    }, 60000); 
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  
+  const toggleMeasurementVisibility = (requestId: number) => {
+    setMeasurementVisibility(prevState => ({
+      ...prevState,
+      [requestId]: !prevState[requestId]
+    }));
+  };
 
   const requestTypeMapping: { [key: number]: string } = {
     1: 'Top',
@@ -76,26 +85,6 @@ const TailorOrderScreen: React.FC = () => {
     3: 'Dress',
     4: 'Suit',
     5: 'Tote Bag',
-  };
-
-  const handleOrderStatusUpdate = async (transactionId: number, newStatus: string) => {
-    try {
-      await axios.post(`http://localhost:8000/orders/update-status`, { transactionId, newStatus });
-      fetchOrders();
-      fetchRequests();
-    } catch (error) {
-      console.error('Error updating order status:', error);
-    }
-  };
-
-  const handleRequestStatusUpdate = async (transactionId: number, newStatus: string) => {
-    try {
-      await axios.post(`http://localhost:8000/requests/update-status`, { transactionId, newStatus });
-      fetchOrders();
-      fetchRequests();
-    } catch (error) {
-      console.error('Error updating request status:', error);
-    }
   };
 
   const renderProductOrderItem = ({ item }: { item: ITransaction }) => (
@@ -116,7 +105,7 @@ const TailorOrderScreen: React.FC = () => {
       {item.Status === 'Pending' && (
         <TouchableOpacity 
           style={styles.statusButton} 
-          onPress={() => handleOrderStatusUpdate(item.ID, 'Confirmed')}
+          onPress={() => fetchStatusUpdate(item.ID, 'Confirmed', 'order')}
         >
           <Text style={styles.statusButtonText}>Confirm</Text>
         </TouchableOpacity>
@@ -124,7 +113,7 @@ const TailorOrderScreen: React.FC = () => {
       {item.Status === 'Confirmed' && (
         <TouchableOpacity 
           style={styles.statusButton} 
-          onPress={() => handleOrderStatusUpdate(item.ID, 'Shipping')}
+          onPress={() => fetchStatusUpdate(item.ID, 'Shipping', 'order')}
         >
           <Text style={styles.statusButtonText}>Shipping</Text>
         </TouchableOpacity>
@@ -143,6 +132,13 @@ const TailorOrderScreen: React.FC = () => {
               <Text style={styles.selectedType}>Clothing Type: {requestTypeMapping[request.RequestType]}</Text>
               <Text style={styles.productDesc}>Description: {request.Desc}</Text>
               <Text style={styles.requestPrice}>IDR {request.Price}K</Text>
+              <TouchableOpacity onPress={() => toggleMeasurementVisibility(request.ID)} style={styles.measurementButton}>
+                <Text style={styles.measurementButtonText}>Measurement Details</Text>
+                <Image source={require('../assets/downIcon.png')} style={styles.arrowIcon} />
+              </TouchableOpacity>
+              {measurementVisibility[request.ID] && (
+                <MeasurementDetails request={request} />
+              )}
             </View>
           ))}
         </View>
@@ -151,7 +147,7 @@ const TailorOrderScreen: React.FC = () => {
       {item.Status === 'Pending' && (
         <TouchableOpacity 
           style={styles.statusButton} 
-          onPress={() => handleRequestStatusUpdate(item.ID, 'Confirmed')}
+          onPress={() => fetchStatusUpdate(item.ID, 'Confirmed', 'request')}
         >
           <Text style={styles.statusButtonText}>Confirm</Text>
         </TouchableOpacity>
@@ -159,7 +155,7 @@ const TailorOrderScreen: React.FC = () => {
       {item.Status === 'Confirmed' && (
         <TouchableOpacity 
           style={styles.statusButton} 
-          onPress={() => handleRequestStatusUpdate(item.ID, 'In Progress')}
+          onPress={() => fetchStatusUpdate(item.ID, 'In Progress', 'request')}
         >
           <Text style={styles.statusButtonText}>In Progress</Text>
         </TouchableOpacity>
@@ -167,7 +163,7 @@ const TailorOrderScreen: React.FC = () => {
       {item.Status === 'In Progress' && (
         <TouchableOpacity 
           style={styles.statusButton} 
-          onPress={() => handleRequestStatusUpdate(item.ID, 'Shipping')}
+          onPress={() => fetchStatusUpdate(item.ID, 'Shipping', 'request')}
         >
           <Text style={styles.statusButtonText}>Shipping</Text>
         </TouchableOpacity>
@@ -321,8 +317,9 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   productDesc: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.05,
     color: '#593825',
+    marginTop: 3,
   },
   productSize: {
     fontSize: width * 0.043,
@@ -334,12 +331,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#260101',
     marginTop: 5,
+    marginBottom: 15,
   },
   status: {
     fontSize: width * 0.045,
     color: '#593825',
     textAlign: 'right',
-    marginTop: 10,
   },
   requestPrice: {
     fontSize: width * 0.045,
@@ -364,6 +361,30 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  measurementButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  measurementButtonText: {
+    color: '#260101',
+    fontWeight: 'bold',
+    marginRight: 5,
+    fontSize: width * 0.043,
+    marginTop: 10,
+  },
+  measurementDetails: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#F3EADE',
+    borderRadius: 10,
+  },
+  arrowIcon: {
+    width: 22,
+    height: 22,
+    tintColor: '#260101',
+    marginTop: 10,
   },
 });
 
