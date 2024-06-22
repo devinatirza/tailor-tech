@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Linking, Dimensions } from 'r
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import HomeServiceScreen from './HomeService';
 import { HomeStackParamList } from './HomeStack';
+import BackButton from '../components/back-button';
 
 type Navigation = NavigationProp<HomeStackParamList, 'HomeService'>;
 
@@ -15,6 +16,7 @@ const HelpOption = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <Text style={styles.title}>Help</Text>
       <View style={styles.optionContainer}>
         <TouchableOpacity style={styles.button1} onPress={handleChatCallAssistant}>
@@ -41,8 +43,8 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 40,
+    paddingVertical: height * 0.0752,
+    paddingHorizontal: width * 0.1,
     backgroundColor: 'white',
   },
   title: {
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 30,
     color: '#260101',
-    textAlign: 'left',
+    marginLeft: 40,
   },
   optionContainer: {
     marginBottom: 30,

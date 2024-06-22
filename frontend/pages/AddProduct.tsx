@@ -61,14 +61,24 @@ const AddProduct: React.FC = () => {
         return;
       }
 
-      const response = await axios.post('http://localhost:8000/products/add', {
+      console.log('Uploading product with data:', {
         Name,
         Desc,
-        Price: parseInt(Price), 
+        Price: parseInt(Price),
         Size,
         ImgUrl: uploadedImgUrl,
         TailorID: user.ID,
-        IsActive: true, 
+        IsActive: true,
+      });
+
+      const response = await axios.post('http://localhost:8000/products/add', {
+        Name,
+        Desc,
+        Price: parseInt(Price),
+        Size,
+        ImgUrl: uploadedImgUrl,
+        TailorID: user.ID,
+        IsActive: true,
       });
 
       if (response.status === 200) {

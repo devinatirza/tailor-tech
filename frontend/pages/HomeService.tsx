@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { HomeStackParamList } from './HomeStack';
+import BackButton from '../components/back-button';
 
 type Navigation = NavigationProp<HomeStackParamList, 'RequestSent'>;
 
@@ -133,9 +134,7 @@ const HomeService: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>←</Text>
-      </TouchableOpacity>
+      <BackButton/>
       <Text style={styles.title}>Home Service</Text>
       <View style={styles.formGroup}>
         <Text style={styles.label}>Date</Text>
@@ -233,22 +232,16 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingVertical: height * 0.089,
+    paddingHorizontal: width * 0.1,
     backgroundColor: 'white',
-  },
-  backButton: {
-    marginTop: 20,
-  },
-  backButtonText: {
-    fontSize: 18,
-    color: '#401201',
   },
   title: {
     fontSize: width * 0.08,
     fontWeight: 'bold',
-    textAlign: 'center',
     color: '#401201',
-    marginVertical: 20,
+    marginBottom: 30,
+    marginLeft: 45,
   },
   formGroup: {
     marginVertical: 10,
