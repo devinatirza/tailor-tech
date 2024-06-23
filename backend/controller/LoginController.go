@@ -190,6 +190,7 @@ func GetUserFromJWT(c *gin.Context) {
 }
 
 func LogoutHandler(c *gin.Context) {
-	c.SetCookie("auth", "", -1, "/", "localhost", false, false)
+	c.SetCookie("auth", "", -1, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
 }
+

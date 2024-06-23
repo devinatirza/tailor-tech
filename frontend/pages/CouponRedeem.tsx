@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert, Image } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import axios from 'axios';
 import { NavigationProp, useNavigation } from '@react-navigation/native'; 
 import { ProfileStackParamList } from './ProfileStack';
+import BackButton from '../components/back-button';
 
 type Navigation = NavigationProp<ProfileStackParamList, 'CouponCode'>;
 
@@ -15,26 +16,25 @@ const CouponRedeemScreen = () => {
   const remainingPoints = 100 - points;
   const [selected, setSelected] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log("User points:", points);
-    console.log("User ID:", id);
-  }, [points, id]);
-
-  const handleRedeem = async (promoCode: string, pointsRequired: number) => {
+  const handleExchange = async (promoCode: string, pointsRequired: number) => {
     const newPoints = points - pointsRequired;
 
     try {
-      const response = await axios.post('http://localhost:8000/coupons/redeem', {
+      const response = await axios.post('http://localhost:8000/coupons/exchange', {
         userId: id,
-        newPoints,
         promoCode
       });
-      updateUser({ ...user, Points: newPoints });
-      Alert.alert('Success!', `Your promo code is: ${promoCode}`);
-      navigation.navigate('CouponCode');
+
+      if (response.data.success) {
+        updateUser({ ...user, Points: newPoints });
+        Alert.alert('Success!', `Your promo code is: ${promoCode}`);
+        navigation.navigate('CouponCode');
+      } else {
+        Alert.alert('Error', response.data.message);
+      }
     } catch (error) {
-      console.error('Redeem error:', error);
-      Alert.alert('Error', 'Failed to redeem points. Please try again.');
+      console.error('Exchange error:', error);
+      Alert.alert('Error', 'Failed to exchange points. Please try again.');
     }
   };
 
@@ -44,11 +44,13 @@ const CouponRedeemScreen = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
+      <Text style={styles.title}>Point Redeem</Text>
       <Text style={styles.pointsText}>You have {points} points!</Text>
       {points >= 100 && (
         <>
           <Text style={styles.congratulationsText}>
-            Congratulations! You can redeem your points for a discount. Please choose an option below:
+            Congratulations! You can exchange your points for a discount. Please choose an option below:
           </Text>
           <View style={styles.optionsContainer}>
             {points >= 100 && (
@@ -118,7 +120,7 @@ const CouponRedeemScreen = () => {
           {selected && (
             <TouchableOpacity 
               style={styles.redeemButton}
-              onPress={() => handleRedeem(selected, selected === 'TECH75' ? 500 : selected === 'TECH35' ? 200 : 100)}
+              onPress={() => handleExchange(selected, selected === 'TECH75' ? 500 : selected === 'TECH35' ? 200 : 100)}
             >
               <Text style={styles.redeemButtonText}>Redeem</Text>
             </TouchableOpacity>
@@ -139,27 +141,35 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingHorizontal: width * 0.05,
+    paddingTop: height * 0.088,
     backgroundColor: 'white',
   },
+  title: {
+    fontSize: width * 0.08,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    color: '#260101',
+    marginBottom: 10,
+    marginLeft: 65,
+  },
   pointsText: {
-    marginTop: 40,
-    fontSize: 28,
+    marginTop: width * 0.07,
+    fontSize: width * 0.065,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
     color: '#260101',
   },
   congratulationsText: {
-    fontSize: 20,
+    fontSize: width * 0.05,
     textAlign: 'center',
     marginHorizontal: 20,
     marginBottom: 20,
     color: '#260101',
   },
   keepGoingText: {
-    fontSize: 20,
+    fontSize: width * 0.05,
     textAlign: 'center',
     marginHorizontal: 20,
     marginBottom: 20,

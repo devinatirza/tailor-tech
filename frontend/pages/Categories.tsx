@@ -49,7 +49,7 @@ const CategoriesScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <BackButton />
-      <Text style={styles.title}>Choose Your Clothing</Text>
+      <Text style={styles.title}>Clothing Type</Text>
       {clothingTypes.map((item, index) => (
         <TouchableOpacity 
           key={index} 
@@ -87,7 +87,7 @@ const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: width * 0.06,
+    fontSize: width * 0.073,
     fontWeight: 'bold',
     marginLeft: 55,
     color: '#260101',

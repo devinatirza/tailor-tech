@@ -61,11 +61,11 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: 'white',
     borderRadius: 8,
-    marginRight: 20,
     width: 160,
+    marginHorizontal: 3,
   },
   tailorImage: {
-    width: 160,
+    width: 155,
     height: 126,
     resizeMode: 'cover',
     borderRadius: 8,

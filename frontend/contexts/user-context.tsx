@@ -13,7 +13,7 @@ export function UserProvider({children}: ContentLayout){
     const [user, setUser] = useState<IUser|ITailor|null>(null)
     const ip = 'localhost'
 
-    function updateUser(user: IUser|ITailor){
+    function updateUser(user: IUser|ITailor|null){
         setUser(user)
     }
 

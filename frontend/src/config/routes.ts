@@ -7,6 +7,7 @@ import TailorLoginScreen from "../../pages/TailorLogin";
 import RoleSelection from "../../pages/RoleScreen";
 import TailorTabNavigation from "../../pages/TailorTabScreen";
 import OrderSent from "../../pages/OrderSent";
+import HomeServiceSent from "../../pages/HomeServiceSent";
 
 const routes: IRouteProps[] = [
     
@@ -41,6 +42,10 @@ const routes: IRouteProps[] = [
     {
         name: 'OrderSent',
         component: OrderSent
+    },
+    {
+        name: 'HomeServiceSent',
+        component: HomeServiceSent
     }
 ];
 

@@ -64,6 +64,14 @@ const HomeScreen: React.FC = () => {
     fetchTailors();
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchProducts();
+      fetchTailors();
+    }, 600000);
+    return () => clearInterval(interval);
+  }, []);
+
   const services = [
     { src: require('../assets/tops_icon.webp'), label: 'Tops' },
     { src: require('../assets/bottoms_icon.webp'), label: 'Bottoms' },
@@ -80,11 +88,9 @@ const HomeScreen: React.FC = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>TailorTech</Text>
-        <View style={styles.iconsContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Wishlists')}>
             <Image source={require('../assets/wishlist_icon.png')} style={styles.wishlistIcon} />
           </TouchableOpacity>
-        </View>
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle} id='Services'>Services</Text>
@@ -139,17 +145,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: deviceWidth * 0.1,
     fontWeight: 'bold',
-    marginTop: 15,
+    marginTop: 25,
     color: '#260101',
   },
-  iconsContainer: {
-    flexDirection: 'row',
-  },
+
   wishlistIcon: {
     width: 36,
     height: 32,
-    marginLeft: 15,
-    marginTop: 15,
+    top: 12,
+    right: 8,
   },
   container: {
     paddingTop: 30,

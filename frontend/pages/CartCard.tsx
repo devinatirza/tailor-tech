@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { IProduct } from '../interfaces/product-interfaces';
 
 interface CartCardProps {
@@ -25,17 +25,19 @@ const CartCard: React.FC<CartCardProps> = ({ product, onRemove }) => {
   );
 };
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     borderRadius: 8,
-    padding: 10,
+    padding: 5,
     marginBottom: 15,
     alignItems: 'center',
   },
   productImage: {
-    width: 80,
-    height: 80,
+    width: width * 0.2,
+    height: width * 0.23,
     borderRadius: 8,
     marginRight: 10,
   },
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productName: {
-    fontSize: 22,
+    fontSize: width * 0.05,
     color: '#260101',
     fontWeight: 'bold'
   },
@@ -60,10 +62,13 @@ const styles = StyleSheet.create({
     color: '#260101',
     fontWeight: 'bold',
     marginBottom: 5,
+    marginTop: 10,
   },
   deleteIcon: {
-    width: 24,
-    height: 24,
+    width: width * 0.05,
+    height: width * 0.06,
+    marginTop: 5,
+    marginRight: 5,
   },
 });
 

@@ -2,7 +2,9 @@ package controller
 
 import (
 	"main/database"
+	model "main/models"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +23,7 @@ func GetAllTailor(c *gin.Context) {
 		Address string
 		ImgUrl  string
 		Rating  float32
+		Money	int
 	}
 
 	type GetTailorFinal struct {
@@ -30,6 +33,7 @@ func GetAllTailor(c *gin.Context) {
 		Address    string
 		ImgUrl     string
 		Rating     float32
+		Money	   int
 		Speciality []Speciality
 	}
 
@@ -40,7 +44,7 @@ func GetAllTailor(c *gin.Context) {
 	query := c.Query("query")
 	speciality := c.Query("speciality")
 
-	sql := "SELECT tailors.id, tailors.name, tailors.email, tailors.address, tailors.img_url, round(avg(tailor_ratings.rating), 1) as rating " +
+	sql := "SELECT tailors.id, tailors.name, tailors.email, tailors.address, tailors.img_url, round(avg(tailor_ratings.rating), 1) as rating, tailors.money " +
 		"FROM tailors " +
 		"LEFT JOIN tailor_ratings ON tailor_ratings.tailor_id = tailors.id " +
 		"LEFT JOIN tailor_prices ON tailor_prices.tailor_id = tailors.id " +
@@ -88,9 +92,21 @@ func GetAllTailor(c *gin.Context) {
 			Email:      tailor.Email,
 			ImgUrl:     tailor.ImgUrl,
 			Rating:     tailor.Rating,
+			Money: 		tailor.Money,
 			Speciality: specialities,
 		})
 	}
 
 	c.JSON(http.StatusOK, tailorFinal)
+}
+
+func GetTailor(c *gin.Context){
+	id := c.Param("id")
+
+	tid, _ := strconv.ParseUint(id, 10, 32)
+
+	tailor := model.GetTailor(uint(tid))
+
+	c.JSON(http.StatusOK, tailor)
+	
 }

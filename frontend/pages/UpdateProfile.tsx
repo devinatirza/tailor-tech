@@ -8,7 +8,21 @@ import { ProfileStackParamList } from './ProfileStack';
 type Navigation = NavigationProp<ProfileStackParamList, 'Profile'>;
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-const UpdateProfileScreen = () => {
+interface Validations {
+  minLength: boolean;
+  uppercase: boolean;
+  lowercase: boolean;
+  digit: boolean;
+  specialChar: boolean;
+}
+
+interface ErrorMessages {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+const UpdateProfileScreen: React.FC = () => {
   const { user, updateUser } = useUser();
   const navigation = useNavigation<Navigation>();
 
@@ -20,7 +34,7 @@ const UpdateProfileScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState(user.PhoneNumber);
   const [address, setAddress] = useState(user.Address);
 
-  const [validations, setValidations] = useState({
+  const [validations, setValidations] = useState<Validations>({
     minLength: false,
     uppercase: false,
     lowercase: false,
@@ -28,7 +42,7 @@ const UpdateProfileScreen = () => {
     specialChar: false,
   });
 
-  const [errorMessages, setErrorMessages] = useState({
+  const [errorMessages, setErrorMessages] = useState<ErrorMessages>({
     oldPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -45,7 +59,7 @@ const UpdateProfileScreen = () => {
       specialChar: /[~`!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]/.test(value),
     });
 
-    const errors = [];
+    const errors: string[] = [];
     if (value.length < 8) errors.push('Password must be at least 8 characters long');
     if (!/[A-Z]/.test(value)) errors.push('Password must contain at least one uppercase letter');
     if (!/[a-z]/.test(value)) errors.push('Password must contain at least one lowercase letter');

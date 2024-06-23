@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, TextInput,
 import { useNavigation, RouteProp, useRoute, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList } from './HomeStack';
 import { useUser } from '../contexts/user-context';
+import BackButton from '../components/back-button';
 
 type ConfirmationPageRouteProp = RouteProp<HomeStackParamList, 'Confirmation'>;
 type Navigation = NavigationProp<HomeStackParamList, 'Measurement' | 'RequestPayment'>;
@@ -36,7 +37,8 @@ const ConfirmationScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Confirm Your Order</Text>
+      <BackButton/>
+      <Text style={styles.title}>Confirm Order</Text>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.detailContainer}>
           <Text style={styles.label}>Name</Text>
@@ -85,21 +87,17 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 30,
+    paddingTop: (Dimensions.get('window').width * 0.19),
+    paddingHorizontal: (Dimensions.get('window').width * 0.01),
     backgroundColor: 'white',
   },
-  backIcon: {
-    width: 24,
-    height: 24,
-    marginVertical: 10,
-  },
   title: {
-    fontSize: width * 0.08,
+    fontSize: (width * 0.08),
     fontWeight: 'bold',
-    textAlign: 'center',
+    marginLeft: 80,
     color: '#260101',
-    marginBottom: 30,
-    marginTop: 10,
+    alignSelf: 'flex-start',
+    marginBottom: 25,
   },
   scrollViewContainer: {
     paddingHorizontal: 40,
@@ -140,7 +138,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     left: 0,
     right: 0,
     paddingHorizontal: 85,

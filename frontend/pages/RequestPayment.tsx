@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions, FlatList, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, Dimensions, FlatList, Modal, ScrollView } from 'react-native';
 import { useNavigation, RouteProp, useRoute, NavigationProp } from '@react-navigation/native';
 import axios from 'axios';
 import { HomeStackParamList } from './HomeStack';
 import { useUser } from '../contexts/user-context';
+import BackButton from '../components/back-button';
 
 type RequestPaymentRouteProp = RouteProp<HomeStackParamList, 'RequestPayment'>;
 type Navigation = NavigationProp<HomeStackParamList, 'RequestSent'>;
@@ -60,7 +61,7 @@ const RequestPaymentScreen: React.FC = () => {
     const totalAmount = Math.max(basePrice - discount + shippingFee, 0);
 
     if (user.Money < totalAmount) {
-      setErrorMessage('Insufficient balance to complete the payment.');
+      Alert.alert('Error', 'Insufficient balance to complete the payment.');
       return;
     }
 
@@ -82,9 +83,11 @@ const RequestPaymentScreen: React.FC = () => {
           UserID: user.ID,
           Name: user.Name,
           Desc: description,
+          Price: basePrice,
           RequestType: selectedType,
           TailorID: tailorId,
           Status: 'Pending',
+          TotalPrice: totalAmount,
         };
         const requestResponse = await axios.post(requestEndpoint, requestData);
 
@@ -135,9 +138,7 @@ const RequestPaymentScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Image source={require('../assets/back_icon.png')} style={styles.backIcon} />
-      </TouchableOpacity>
+      <BackButton/>
       <Text style={styles.title}>Payment</Text>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.section}>
@@ -226,28 +227,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingTop: width * 0.188,
+    paddingBottom: width * 0.08,
+    paddingHorizontal: width * 0.02,
   },
   scrollContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    zIndex: 1,
-  },
-  backIcon: {
-    width: width * 0.06,
-    height: width * 0.06,
-    tintColor: '#260101',
+    paddingVertical: 10,
   },
   title: {
-    fontSize: width * 0.08,
+    fontSize: width * 0.085,
     fontWeight: 'bold',
-    textAlign: 'center',
+    alignSelf: 'flex-start',
     color: '#260101',
-    marginBottom: 10,
+    marginBottom: 15,
+    marginLeft: 85,
   },
   section: {
     marginVertical: 20,
@@ -259,7 +253,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   addressText: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.05,
     color: '#333',
   },
   shippingOption: {
@@ -402,7 +396,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#f5c6cb',
     borderWidth: 1,
-    marginTop: 20,
+    marginVertical: 20,
   },
   errorText: {
     fontSize: 16,
@@ -412,3 +406,4 @@ const styles = StyleSheet.create({
 });
 
 export default RequestPaymentScreen;
+

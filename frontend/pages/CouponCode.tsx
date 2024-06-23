@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, ScrollView } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Alert, ScrollView } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import axios from "axios";
-import { ProfileStackParamList } from "./ProfileStack";
+import axios from 'axios';
+import { ProfileStackParamList } from './ProfileStack';
+import BackButton from '../components/back-button';
 
-type Navigation = NavigationProp<ProfileStackParamList, 'CouponRedeem'>;
+type Navigation = NavigationProp<ProfileStackParamList, 'CouponCode'>;
 
 interface CouponProps {
   code: string;
@@ -27,23 +28,30 @@ const CouponCodeScreen: React.FC = () => {
   const { user } = useUser();
   const navigation = useNavigation<Navigation>();
   const [coupons, setCoupons] = useState<CouponProps[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchCoupons = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/coupons/code', {
+        params: { userId: user.ID }
+      });
+      setCoupons(response.data.coupons || []);
+    } catch (error) {
+      console.error('Failed to fetch user coupons', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchCoupons = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/coupons/code', {
-          params: { userId: user.ID }
-        });
-        setCoupons(response.data.coupons);
-      } catch (error) {
-        console.error('Failed to fetch user coupons', error);
-      }
-    };
+    fetchCoupons()
+  }, [])
 
-    if (user) {
-      fetchCoupons();
-    }
-  }, [user]);
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   const hasCoupons = coupons.length > 0;
   const buttonText = hasCoupons ? "Get Another Coupon Code" : "Get Coupon Code";
@@ -51,6 +59,8 @@ const CouponCodeScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <BackButton/>
+      <Text style={styles.title}>Coupon Code</Text>
       <View style={styles.headerTextContainer}>
         <Text style={styles.headerText}>Apply your coupon code on the payment page to unlock a special discount and enhance your shopping experience</Text>
       </View>
@@ -85,10 +95,18 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingHorizontal: deviceWidth * 0.1,
-    paddingTop: 20,
+    paddingTop: deviceWidth * 0.19,
     width: '100%',
     backgroundColor: 'white',
     alignItems: 'center',
+  },
+  title: {
+    fontSize: deviceWidth * 0.08,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    color: '#260101',
+    marginBottom: 10,
+    marginLeft: 45,
   },
   headerTextContainer: {
     marginTop: 16,

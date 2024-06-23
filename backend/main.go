@@ -57,6 +57,7 @@ func main() {
 	user := r.Group("/users")
 	{
 		user.GET("/:id", controller.GetUser)
+		user.GET("/get-all", controller.GetAllUsers)
 		user.POST("/update", controller.UpdateUser)
 	}
 
@@ -74,6 +75,7 @@ func main() {
 
 	tailor := r.Group("/tailors")
 	{
+		tailor.GET("/:id", controller.GetTailor)
 		tailor.GET("/get-all", controller.GetAllTailor)
 	}
 
@@ -81,6 +83,7 @@ func main() {
 	{
 		coupon.POST("/redeem", controller.RedeemCoupon)
 		coupon.GET("/code", controller.GetUserCoupons)
+		coupon.POST("/exchange", controller.ExchangePointsForCoupon)
 	}
 
 	measurements := r.Group("/measurements")
@@ -109,13 +112,29 @@ func main() {
 	requests := r.Group("/requests")
 	{
 		requests.POST("/create", controller.CreateUserRequest)
+		requests.GET("/get-user-request/:id", controller.GetUserRequest)
+		requests.GET("/get-tailor-request/:id", controller.GetTailorRequest)
+		requests.POST("/update-status", controller.UpdateRequestStatus)
+		requests.POST("/confirm-received", controller.HandleRequestReceived)
 	}
 
 	r.POST("/payment", controller.ProcessPayment)
 
-	orders := r.Group(("/orders"))
+	orders := r.Group("/orders")
 	{
 		orders.POST("/create", controller.CreateProductOrder)
+		orders.GET("/get-user-order/:id", controller.GetUserOrder)
+		orders.GET("/get-tailor-order/:id", controller.GetTailorOrder)
+		orders.POST("/update-status", controller.UpdateOrderStatus)
+		orders.POST("/confirm-received", controller.HandleOrderReceived)
+	}
+
+	r.POST("/submit-rating", controller.SubmitRating)
+
+	assistants := r.Group("/assistants")
+	{
+		assistants.GET("/available", controller.GetAvailableAssistants)
+		assistants.POST("/booking", controller.BookAssistant)
 	}
 
 	r.Run(":8000")

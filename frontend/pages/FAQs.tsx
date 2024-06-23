@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image } from 'react-native';
+import BackButton from '../components/back-button';
 
 const FAQsScreen = () => {
   const upIcon = require('../assets/upIcon.png');
@@ -100,6 +101,7 @@ const FAQsScreen = () => {
 
   return (
     <View style={styles.mainContainer}>
+      <BackButton />
       <Text style={styles.titleText}>FAQs</Text>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.innerContainer}>
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: 'white',
+    paddingTop: deviceWidth * 0.13,
   },
   scrollContainer: {
     flex: 1,
@@ -131,6 +134,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     paddingHorizontal: deviceWidth * 0.1,
+    paddingBottom: deviceWidth * 0.05,
     width: '100%',
   },
   titleText: {
@@ -149,12 +153,14 @@ const styles = StyleSheet.create({
   questionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5,
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   questionText: {
     fontSize: 18,
     fontWeight: '600',
     color: '#260101',
+    flex: 1, 
   },
   icon: {
     width: 24,

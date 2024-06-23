@@ -4,7 +4,8 @@ import { useNavigation, RouteProp, useRoute, NavigationProp } from '@react-navig
 import axios from 'axios';
 import { useUser } from '../contexts/user-context';
 import CartCard from './CartCard';
-import { CartStackParamList } from './CardStack';
+import { CartStackParamList } from './CartStack';
+import BackButton from '../components/back-button';
 
 type OrderPaymentRouteProp = RouteProp<CartStackParamList, 'OrderPayment'>;
 type Navigation = NavigationProp<CartStackParamList, 'OrderSent'>;
@@ -119,9 +120,7 @@ const OrderPaymentScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Image source={require('../assets/back_icon.png')} style={styles.backIcon} />
-      </TouchableOpacity>
+      <BackButton/>
       <Text style={styles.title}>Payment</Text>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.section}>
@@ -215,29 +214,21 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: width * 0.19,
+    paddingBottom: width * 0.06,
+    paddingHorizontal: height * 0.01,
     backgroundColor: 'white',
   },
   scrollContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    zIndex: 1,
-  },
-  backIcon: {
-    width: width * 0.06,
-    height: width * 0.06,
-    tintColor: '#260101',
   },
   title: {
     fontSize: width * 0.08,
     fontWeight: 'bold',
-    textAlign: 'center',
+    alignSelf: 'flex-start',
     color: '#260101',
-    marginBottom: 10,
+    marginBottom: 20,
+    marginLeft: 80,
   },
   section: {
     marginVertical: 20,

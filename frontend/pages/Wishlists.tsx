@@ -67,7 +67,7 @@ const WishlistScreen: React.FC = () => {
     return () => {
       subscription?.remove();
     };
-  }, [user]);
+  }, []);
 
   const numColumns = 2;
   const itemWidth = screenWidth / numColumns - 40;

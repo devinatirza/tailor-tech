@@ -72,11 +72,6 @@ const TailorHomeScreen: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>TailorTech</Text>
-        <View style={styles.iconsContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('Chats')}>
-            <Image source={require('../assets/chat_icon.png')} style={styles.chatIcon} />
-          </TouchableOpacity>
-        </View>
       </View>
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
@@ -129,9 +124,8 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 7,
-    paddingLeft: 28,
-    paddingRight: 33,
+    paddingTop: deviceHeight * 0.05,
+    paddingHorizontal: deviceWidth * 0.06,
     backgroundColor: 'white',
   },
   header: {
@@ -146,15 +140,6 @@ const styles = StyleSheet.create({
     color: '#260101',
     marginTop: 15,
     marginLeft: 5,
-  },
-  iconsContainer: {
-    flexDirection: 'row',
-  },
-  chatIcon: {
-    width: 32,
-    height: 32,
-    marginLeft: 15,
-    marginTop: 15,
   },
   searchContainer: {
     marginTop: 18,

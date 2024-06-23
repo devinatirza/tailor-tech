@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   logo: {
-    width: 245,
-    height: 237,
+    width: width * 0.5,
+    height: width * 0.45,
   },
   option: {
     width: '80%',
@@ -94,10 +94,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   optionText: {
-    fontSize: width * 0.06,
+    fontSize: width * 0.055,
     fontWeight: '500',
     textAlign: 'center',
-    fontFamily: 'Roboto',
   },
   activeOptionText: {
     color: '#260101',
