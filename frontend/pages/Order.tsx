@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: width * 0.18,
-    paddingBottom: width * 0.1,
+    paddingBottom: width * 0.02,
     paddingHorizontal: width * 0.085,
     backgroundColor: 'white',
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#260101',
     marginLeft: 5,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   buttonContainer: {
     flexDirection: 'row',

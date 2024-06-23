@@ -6,7 +6,7 @@ import { IProduct } from '../interfaces/product-interfaces';
 import { TailorHomeStackParamList } from './TailorHomeStack';
 import { useUser } from '../contexts/user-context';
 
-type Navigation = NavigationProp<TailorHomeStackParamList, 'Chats'>;
+type Navigation = NavigationProp<TailorHomeStackParamList>;
 
 const TailorHomeScreen: React.FC = () => {
   const navigation = useNavigation<Navigation>();
@@ -212,13 +212,13 @@ const styles = StyleSheet.create({
     right: 5.5,
   },
   deleteIcon: {
-    width: 30,
-    height: 33,
+    width: 22,
+    height: 25,
     resizeMode: 'contain',
   },
   restoreIcon: {
-    width: 35,
-    height: 35,
+    width: 28,
+    height: 28,
     resizeMode: 'contain',
   },
   productName: {

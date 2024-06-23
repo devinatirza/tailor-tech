@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Platform } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Platform, Alert } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
@@ -36,6 +36,7 @@ const ProfileScreen = () => {
         if (Platform.OS === 'web') {
           document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         }
+        Alert.alert('Logout', 'You have been logged out')
         navigation.navigate('Role');
         updateUser(null); 
       } 

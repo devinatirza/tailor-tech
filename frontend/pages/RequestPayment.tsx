@@ -43,7 +43,7 @@ const RequestPaymentScreen: React.FC = () => {
     };
 
     fetchUserCoupons();
-  }, [user.ID]);
+  }, []);
 
   useEffect(() => {
     if (couponCode) {

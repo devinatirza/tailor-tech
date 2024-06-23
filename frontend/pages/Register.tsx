@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, Image, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { CheckBox } from 'react-native-elements';
@@ -7,6 +7,7 @@ import { IStackScreenProps } from '../src/library/StackScreenProps';
 import { StatusBar } from 'expo-status-bar';
 import axios, { AxiosError } from 'axios';
 import StyledText from '../components/text-input';
+import BackButton from '../components/back-button';
 
 interface Styles {
   container: ViewStyle;
@@ -26,15 +27,18 @@ interface Styles {
   backButton: ViewStyle;
 }
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create<Styles>({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
+    paddingTop: width * 0.04,
   },
   inputContainer: {
-    paddingHorizontal: 40,
+    paddingHorizontal: width * 0.12,
     width: '100%',
     marginBottom: 20,
   },
@@ -54,21 +58,17 @@ const styles = StyleSheet.create<Styles>({
   validationContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: 0,
+    marginRight: 70,
   },
   checkBoxText: {
     fontSize: 16,
-    paddingVertical: 0,
-    paddingHorizontal: 0,
-    marginTop: 0, 
-    marginBottom: 0, 
   },
   checkBoxRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },  
   title: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
@@ -148,7 +148,7 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
         navigation.navigate('Login')
       }
     } catch (error) {
-      setError(error.response?.data.error || 'An error occurred');
+      console.log('An error occurred');
     }
   };
 
@@ -166,10 +166,8 @@ const RegisterScreen: React.FunctionComponent<IStackScreenProps> = (props) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Image source={require('../assets/back_icon.png')} style={{ width: 30, height: 26 }} />
-      </TouchableOpacity>
-      <Text style={styles.title}>Welcome to TailorTech!</Text>
+      <BackButton/>
+      <Text style={styles.title}>Registration</Text>
       <View style={styles.inputContainer}>
        <StyledText nameProp={nameProp} placeholder='Name' setNameProp={setNameProp}/> 
        <StyledText nameProp={emailProp} placeholder='Email' setNameProp={setEmailProp}/> 

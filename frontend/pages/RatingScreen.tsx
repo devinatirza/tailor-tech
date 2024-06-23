@@ -31,7 +31,6 @@ const RatingScreen: React.FC<RatingScreenProps> = ({ transactionId, onClose }) =
           {[1, 2, 3, 4, 5].map((star) => (
             <TouchableOpacity key={star} onPress={() => {
               setRating(star);
-              console.log(`Rating set to: ${star}`);
             }}>
               <Text style={[styles.star, star <= rating && styles.selectedStar]}>★</Text>
             </TouchableOpacity>

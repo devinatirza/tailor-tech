@@ -34,10 +34,13 @@ func CreateProductOrder(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Products not found"})
         return
     }
-    for _, p := range products {
-        p.IsActive = false
-        db.Exec("delete from carts where user_id = ? and product_id = ?", input.UserID, p.ID)
-        db.Save(&p)
+    for _, product := range products {
+        product.IsActive = false
+        db.Exec("delete from carts where user_id = ? and product_id = ?", input.UserID, product.ID)
+        if err := db.Save(&product).Error; err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
     }
 
     transactions := make(map[uint]*model.Transaction)
@@ -65,6 +68,7 @@ func CreateProductOrder(c *gin.Context) {
 
     c.JSON(http.StatusCreated, gin.H{"message": "Orders created successfully"})
 }
+
 
 func GetUserOrder(c *gin.Context){
     db := database.GetInstance()

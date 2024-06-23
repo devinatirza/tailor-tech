@@ -12,34 +12,34 @@ const MeasurementDetails: React.FC<MeasurementDetailsProps> = ({ request }) => {
         return (
           <>
             <Text style={styles.detailText}>Chest: {request.Top.Chest} cm</Text>
-            <Text style={styles.detailText}>Shoulder to Waist: {request.Top.ShoulderToWaist}</Text>
-            <Text style={styles.detailText}>Shoulder: {request.Top.Shoulder}</Text>
-            <Text style={styles.detailText}>Sleeve Length: {request.Top.SleeveLength}</Text>
-            <Text style={styles.detailText}>Waist: {request.Top.Waist}</Text>
-            <Text style={styles.detailText}>Neck: {request.Top.Neck}</Text>
+            <Text style={styles.detailText}>Shoulder to Waist: {request.Top.ShoulderToWaist} cm</Text>
+            <Text style={styles.detailText}>Shoulder: {request.Top.Shoulder} cm</Text>
+            <Text style={styles.detailText}>Sleeve Length: {request.Top.SleeveLength} cm</Text>
+            <Text style={styles.detailText}>Waist: {request.Top.Waist} cm</Text>
+            <Text style={styles.detailText}>Neck: {request.Top.Neck} cm</Text>
             <Text style={styles.detailText}>Collar: {request.Top.Collar ? 'Yes' : 'No'}</Text>
           </>
         );
       case 2:
         return (
           <>
-            <Text style={styles.detailText}>Waist to Ankle: {request.Bottom.WaistToAnkle}</Text>
-            <Text style={styles.detailText}>Waist: {request.Bottom.Waist}</Text>
-            <Text style={styles.detailText}>Hip: {request.Bottom.Hip}</Text>
-            <Text style={styles.detailText}>Ankle: {request.Bottom.Ankle}</Text>
-            <Text style={styles.detailText}>Thigh: {request.Bottom.Thigh}</Text>
-            <Text style={styles.detailText}>Knee: {request.Bottom.Knee}</Text>
-            <Text style={styles.detailText}>Cuff Width: {request.Bottom.CuffWidth}</Text>
+            <Text style={styles.detailText}>Waist to Ankle: {request.Bottom.WaistToAnkle} cm</Text>
+            <Text style={styles.detailText}>Waist: {request.Bottom.Waist} cm</Text>
+            <Text style={styles.detailText}>Hip: {request.Bottom.Hip} cm</Text>
+            <Text style={styles.detailText}>Ankle: {request.Bottom.Ankle} cm</Text>
+            <Text style={styles.detailText}>Thigh: {request.Bottom.Thigh} cm</Text>
+            <Text style={styles.detailText}>Knee: {request.Bottom.Knee} cm</Text>
+            <Text style={styles.detailText}>Cuff Width: {request.Bottom.CuffWidth} cm</Text>
           </>
         );
       case 3:
         return (
           <>
-            <Text style={styles.detailText}>Chest: {request.Dress.Chest}</Text>
-            <Text style={styles.detailText}>Shoulder: {request.Dress.Shoulder}</Text>
-            <Text style={styles.detailText}>Dress Length: {request.Dress.DressLength}</Text>
-            <Text style={styles.detailText}>Waist: {request.Dress.Waist}</Text>
-            <Text style={styles.detailText}>Hip: {request.Dress.Hip}</Text>
+            <Text style={styles.detailText}>Chest: {request.Dress.Chest} cm</Text>
+            <Text style={styles.detailText}>Shoulder: {request.Dress.Shoulder} cm</Text>
+            <Text style={styles.detailText}>Dress Length: {request.Dress.DressLength} cm</Text>
+            <Text style={styles.detailText}>Waist: {request.Dress.Waist} cm</Text>
+            <Text style={styles.detailText}>Hip: {request.Dress.Hip} cm</Text>
           </>
         );
       case 4:
@@ -47,15 +47,15 @@ const MeasurementDetails: React.FC<MeasurementDetailsProps> = ({ request }) => {
           <>
             <Text style={styles.detailText}>Chest: {request.Suit.Chest} cm</Text>
             <Text style={styles.detailText}>Waist: {request.Suit.Waist} cm</Text>
-            <Text style={styles.detailText}>Hip: {request.Suit.Hip}</Text>
-            <Text style={styles.detailText}>Shoulder: {request.Suit.Shoulder}</Text>
-            <Text style={styles.detailText}>Sleeve Length: {request.Suit.SleeveLength}</Text>
-            <Text style={styles.detailText}>Jacket Length: {request.Suit.JacketLength}</Text>
-            <Text style={styles.detailText}>Inseam: {request.Suit.Inseam}</Text>
-            <Text style={styles.detailText}>Outseam: {request.Suit.Outseam}</Text>
-            <Text style={styles.detailText}>Thigh: {request.Suit.Thigh}</Text>
-            <Text style={styles.detailText}>Knee: {request.Suit.Knee}</Text>
-            <Text style={styles.detailText}>Ankle: {request.Suit.Ankle}</Text>
+            <Text style={styles.detailText}>Hip: {request.Suit.Hip} cm</Text>
+            <Text style={styles.detailText}>Shoulder: {request.Suit.Shoulder} cm</Text>
+            <Text style={styles.detailText}>Sleeve Length: {request.Suit.SleeveLength} cm</Text>
+            <Text style={styles.detailText}>Jacket Length: {request.Suit.JacketLength} cm</Text>
+            <Text style={styles.detailText}>Inseam: {request.Suit.Inseam} cm</Text>
+            <Text style={styles.detailText}>Outseam: {request.Suit.Outseam} cm</Text>
+            <Text style={styles.detailText}>Thigh: {request.Suit.Thigh} cm</Text>
+            <Text style={styles.detailText}>Knee: {request.Suit.Knee} cm</Text>
+            <Text style={styles.detailText}>Ankle: {request.Suit.Ankle} cm</Text>
           </>
         );
       case 5:

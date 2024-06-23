@@ -3,10 +3,11 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ChatScreen from './Chat';
 import TailorHomeScreen from './TailorHome';
+import AddProduct from './AddProduct';
 
 export type TailorHomeStackParamList = {
   Home: undefined;
-  Chats: undefined;
+  AddProduct: undefined;
 };
 
 const Stack = createStackNavigator<TailorHomeStackParamList>();
@@ -21,8 +22,8 @@ const TailorHomeStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen 
-        name="Chats" 
-        component={ChatScreen}
+        name="AddProduct" 
+        component={AddProduct}
       />
     </Stack.Navigator>
   );
