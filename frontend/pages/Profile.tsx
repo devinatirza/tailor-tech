@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Platform, Alert } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Modal, TextInput, Dimensions, Platform, Alert, ScrollView } from 'react-native';
 import { useUser } from '../contexts/user-context';
 import { NavigationProp, useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
@@ -21,6 +21,8 @@ const ProfileScreen = () => {
   const { updateUser, user } = useUser();
   const navigation = useNavigation<Navigation>();
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [topupAmount, setTopUpAmount] = useState('');
 
   const handleLogout = async () => {
     if (!user) {
@@ -36,7 +38,7 @@ const ProfileScreen = () => {
         if (Platform.OS === 'web') {
           document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         }
-        Alert.alert('Logout', 'You have been logged out')
+        Alert.alert('Success', 'You have been logged out')
         navigation.navigate('Role');
         updateUser(null); 
       } 
@@ -55,6 +57,32 @@ const ProfileScreen = () => {
       }
     } catch (error) {
       console.error('Failed to fetch user details', error);
+    }
+  };
+
+  const handleTopUp = async () => {
+    const amount = Number(topupAmount);
+    if (isNaN(amount) || amount <= 0) {
+      Alert.alert("Error", "Please enter a valid amount")
+      return;
+    }
+
+    try {
+      const response = await axios.post(`http://localhost:8000/users/topup/${user.ID}`, {
+        amount: amount,
+      }, {
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        fetchUserDetails(); 
+        setIsModalVisible(false); 
+        setTopUpAmount(''); 
+      } else {
+        console.error('TopUp error:', response.data);
+      }
+    } catch (error) {
+      console.error('TopUp error:', error);
     }
   };
 
@@ -78,7 +106,7 @@ const ProfileScreen = () => {
   }
 
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView style={styles.mainContainer}>
       <View style={styles.innerContainer}>
         <View style={styles.profileContainer}>
           <View style={styles.profileContent}>
@@ -89,6 +117,9 @@ const ProfileScreen = () => {
               <View style={styles.profileStatsBox}>
                 <View style={styles.profileStatsContainer}>
                   <Text style={styles.profileMoney}>IDR {user?.Money}K</Text>
+                  <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                    <Image source={require('../assets/topup-icon.png')} style={styles.topupIcon} />
+                  </TouchableOpacity>
                 </View>
               </View>
               <TouchableOpacity onPress={() => navigation.navigate('UpdateProfile')} style={styles.editProfileButton}>
@@ -114,7 +145,34 @@ const ProfileScreen = () => {
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Top Up Money</Text>
+                <TextInput
+                  style={styles.modalInput}
+                  placeholder="Enter amount"
+                  keyboardType="numeric"
+                  value={topupAmount}
+                  onChangeText={setTopUpAmount}
+                />
+                <TouchableOpacity style={styles.modalButton} onPress={handleTopUp}>
+                  <Text style={styles.modalButtonText}>Top Up</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </ScrollView>
   );
 };
 
@@ -177,6 +235,11 @@ const styles = StyleSheet.create({
     color: '#260101',
     textAlign: 'center',
     fontWeight: '600',
+  },
+  topupIcon: {
+    width: 24,
+    height: 24,
+    marginLeft: 10,
   },
   editProfileButton: {
     justifyContent: 'center',
@@ -241,6 +304,45 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#AC1A1A',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    width: deviceWidth * 0.75,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize    : 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  modalInput: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  modalButton: {
+    width: '40%',
+    padding: 10,
+    backgroundColor: '#D9C3A9',
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  modalButtonText: {
+    color: '#401201',
+    fontWeight: 'bold',
   },
 });
 

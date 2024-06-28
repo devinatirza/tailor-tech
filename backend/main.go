@@ -59,6 +59,7 @@ func main() {
 		user.GET("/:id", controller.GetUser)
 		user.GET("/get-all", controller.GetAllUsers)
 		user.POST("/update", controller.UpdateUser)
+		user.POST("/topup/:id", controller.TopUpHandler)
 	}
 
 	r.GET("/validate", controller.GetUserFromJWT)
@@ -78,6 +79,7 @@ func main() {
 	{
 		tailor.GET("/:id", controller.GetTailor)
 		tailor.GET("/get-all", controller.GetAllTailor)
+		tailor.POST("/withdraw/:id", controller.WithdrawalHandler)
 	}
 
 	coupon := r.Group("/coupons")

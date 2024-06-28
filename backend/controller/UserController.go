@@ -37,6 +37,38 @@ func GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"users": users})
 }
 
+type TopUpInput struct {
+	Amount int `json:"amount"`
+}
+   
+func TopUpHandler(c *gin.Context) {
+	db := database.GetInstance()
+   
+	userID := c.Param("id")
+   
+	var input TopUpInput
+	var user models.User
+   
+	if err := c.ShouldBindJSON(&input); err != nil {
+	 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+	 	return
+	}
+   
+	if err := db.First(&user, userID).Error; err != nil {
+	 	c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	 	return
+	}
+   
+	user.Money += input.Amount
+   
+	if err := db.Save(&user).Error; err != nil {
+	 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update balance"})
+	 	return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
 func UpdateUser(c *gin.Context) {
 	db := database.GetInstance()
 	type UpdateProfileInput struct {

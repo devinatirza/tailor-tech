@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"main/database"
 	model "main/models"
 	"net/http"
@@ -109,4 +110,37 @@ func GetTailor(c *gin.Context){
 
 	c.JSON(http.StatusOK, tailor)
 	
+}
+
+type WithdrawAmount struct {
+	Amount int 
+}
+
+func WithdrawalHandler(c *gin.Context) {
+	db := database.GetInstance()
+   
+	tailorID := c.Param("id")
+   
+	var input WithdrawAmount
+	var tailor model.Tailor
+   
+	if err := c.ShouldBindJSON(&input); err != nil {
+		fmt.Println()
+	 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+	 	return
+	}
+   
+	if err := db.First(&tailor, tailorID).Error; err != nil {
+	 	c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	 	return
+	}
+   
+	tailor.Money -= input.Amount
+   
+	if err := db.Save(&tailor).Error; err != nil {
+	 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update balance"})
+	 	return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"tailor": tailor})
 }
