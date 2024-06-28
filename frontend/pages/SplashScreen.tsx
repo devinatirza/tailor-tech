@@ -39,7 +39,7 @@ const SplashScreen = () => {
             return null;
           }
         } catch (error) {
-          // console.error('Validation error:', error);
+          
           return null;
         }
       };
@@ -72,7 +72,7 @@ const SplashScreen = () => {
         navigation.navigate('TailorTech');
       }
     }
-  }, [user]);
+  }, []);
 
   return (
     <TouchableWithoutFeedback>
